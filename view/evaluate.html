@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>评价</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        #evaluate-list {
+            background-color: #fff;
+        }
+
+        .evaluate-item {
+            margin: 0 0.266667rem;
+            border-bottom: 0.013333rem solid #e3e5e9;
+            overflow:hidden;
+        }
+
+        .evaluate-item:last-child {
+            border-bottom: none;
+        }
+
+        .evaluate-item .head {
+            position: relative;
+            height: 1.093333rem;
+            line-height: 1.093333rem;
+        }
+
+        .evaluate-item .head img {
+            position: absolute;
+            left: 0;
+            top: 0.2rem;
+            width: 0.693333rem;
+            height: 0.693333rem;
+            border-radius:0.3466667rem;
+        }
+
+        .evaluate-item .head h2 {
+            float: left;
+            padding-left: 0.906667rem;
+            font-size: 0.266667rem;
+            color: #333;
+        }
+
+        .evaluate-item .head .starlevel {
+            float: right;
+            font-size: 0.373333rem;
+            color:#f72f2f;
+        }
+
+        .evaluate-item .comment {
+            margin-top: 0.04rem;
+            line-height: 0.426667rem;
+            font-size: 0.373333rem;
+            color: #333;
+        }
+
+        .evaluate-item .imglist {
+            margin: 0.24rem 0;
+            overflow:hidden;
+        }
+
+        .evaluate-item .imglist img {
+            float: left;
+            margin-right:0.106667rem;
+            width: 2.28rem;
+            height: 2.28rem;
+        }
+
+        .evaluate-item .imglist img:last-child {
+            margin-right: 0;
+        }
+
+        .evaluate-item .config {
+            height: 0.72rem;
+            padding-left: 0.053333rem;
+            line-height: 0.72rem;
+            font-size: 0.32rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>评价</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="evaluate-list">
+        <div id="evaluate-list-box"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.evaluate = (function(){
+        var commodityId = T.Util.getPara('commodityId');//商品ID
+        var dropLoad = '';//下拉刷新
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//分页步长
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        var o = {
+            init:function(){
+                o.bindEvent();//事件绑定
+                o.getEvaluate(commodityId);//获取评价列表
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定下滑加载更多
+                $(window).off().scroll(o.loadMoreData);
+                //绑定下拉刷新
+                $('#evaluate-list').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getEvaluate(commodityId);
+                    },
+                    threshold : 50
+                });
+            },
+            //加载更多数据
+            loadMoreData:function(){
+                var scrollTop = $(this).scrollTop() + 5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(hasMore){
+                        o.getEvaluate(commodityId);
+                    }
+                }
+            },
+            //获取评价
+            getEvaluate:function(commodityId){
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    needToken:'no',
+                    reqUrl:'/order/services/order/shareOrder.json?commodityId=' + commodityId+'&page=' + pageIndex + '&limit=' + pageSize + '&type=3',
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO,htmlArr=[];
+                        if(data.res_data.value.ISEND == '2'){
+                            pageIndex++;
+                            hasMore = true;
+                        }else{
+                            hasMore = false;
+                        }
+                        for(var i=0,j=d.length;i<j;i++){
+                            htmlArr.push('<div class="evaluate-item"><div class="head"><img src="' + d[i].PIC + '">');
+                            htmlArr.push('<h2>' + (d[i].NICK_NAME||d[i].USER_MOBILE) + '</h2><p class="starlevel">' + T.Util.repeat("★",d[i].SHARE_LEVEL) + '</p></div>');
+                            if(d[i].SHARE_DESC){
+                                htmlArr.push('<p class="comment">' + d[i].SHARE_DESC + '</p>');
+                            }
+                            htmlArr.push('<div class="imglist">');
+                            $.each(d[i].PHOTO_LIST,function(i,item){
+                                htmlArr.push('<img src="' + item + '">');
+                            });
+                            htmlArr.push('</div></div>');
+                        }
+                        if(dropLoad != ''){
+                            $('#evaluate-list-box').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(htmlArr.length){
+                            $("html,body").removeClass("white");
+                            $('#evaluate-list-box').append(htmlArr.join(''));
+                        }else{
+                            $("html,body").addClass("white");
+                            $('#evaluate-list-box').html('<div class="nodata shaidan"><i></i><h2>暂无数据</h2></div>');
+                        }
+                        //查看大图
+                        $(".imglist img").off().Touch(function(){
+                            var imgList = [],imgListObj = $(this).parent().find("img");
+                            for(var i = 0;i < imgListObj.length;i++){
+                                imgList.push(imgListObj.eq(i).attr("src"));
+                            }
+                            T.Storage.set('imageViewerData',{
+                                index:$(this).index(),
+                                imgList:imgList
+                            });
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/imageViewer.html');
+                        });
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            $('#evaluate-list-box').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(data){
+                            tip(data.msg || data.result_msg);
+                        }
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.evaluate.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.evaluate.init();
+        }
+    });
+
+</script>
+</body>
+</html>

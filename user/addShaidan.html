@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" class="white">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>添加晒单</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/buy.css">
+    <link rel="stylesheet" type="text/css" href="../css/imageViewer.css">
+</head>
+<body class="white">
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1 id="titleStr">--</h1>
+    <div id="rightBtn" style="">确定</div>
+</div>
+<div class="mainContent" id="main">
+    <div id="addshaidan-box">
+        <div id="addshaidan-textarea">
+            <textarea id="shaidan-comment" maxlength="300" placeholder="晒出中奖好评及图片，将获得不同的赠币奖励哦，特别好评可获惊喜赠币奖励。"></textarea>
+            <div id="shaidanTips">至少<em>5</em>个字哦</div>
+        </div>
+        <div id="addshaidan-imglist">
+            <div class="imgitem" id="addImg"><img src="../img/usercenter/icon_addimg.png"></div>
+        </div>
+        <div id="addshaidan-star"><h2>商品评价</h2><p><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i></p></div>
+        <form name="formFile" enctype="multipart/form-data" style="position:absolute;bottom:0;opacity:0">
+            <div class="status-img" id="fileLeft">
+                <img src="" class="status-pic" value="p_pic">
+                <input type="file" accept="image/*" class="file" src="" name="fileToUpLoad" value="p_pic" multiple="multiple">
+                <input type="file" name="src" value="2">
+            </div>
+        </form>
+    </div>
+</div>
+<div id="viewer" class="hidden">
+    <div class="navbar">
+        <div class="back_arrow back_home" id="viewBack"></div>
+        <h1 id="viewTitle">1/4</h1>
+        <span id="delete"></span>
+    </div>
+    <div id="viewBox">
+        <div id="imgList"></div>
+    </div>
+    <div id="deleteBox" class="hidden">
+        <h2>要删除这张照片吗？</h2>
+        <div class="deleteBtn" id="deleteOk">删除</div>
+        <div class="deleteBtn" id="deleteCancel">取消</div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/Exif.js"></script>
+<script>
+    var base64Image = function (param) {
+
+        var fileInput = param.file;
+
+        var widthInput = param.width ? param.width : 750;
+
+        var ratioInput = param.ratio ? param.ratio : 0.75;
+
+        var callback = param.callback ? param.callback : null;
+
+        if (!window.FileReader) {
+            alert("请升级浏览器");
+            return;
+        }
+        var file   = fileInput;
+        var reader = new FileReader();
+
+        /*判断图片方向*/
+        var orientation = null;
+        EXIF.getData(file, function () {
+            //EXIF.getAllTags(this);
+            orientation = EXIF.getTag(this, 'Orientation');
+            reader.readAsDataURL(file);
+        });
+
+        reader.onloadstart = function () {
+        };
+        reader.onerror     = function () {
+        };
+        reader.onload = function () {
+            /*创建新的图片JS对象*/
+            fileInput.value="";
+
+            /*创建新的图片JS对象*/
+            var image    = new Image();
+            image.src    = this.result;
+            image.onload = function () {
+                var canvas = document.createElement("canvas");
+                var scale  = image.width / image.height;
+                if (orientation == 6) {
+                    //右转 90
+                    canvas.width  = image.height < widthInput ? image.height : widthInput;
+                    canvas.height = parseInt(canvas.width * scale);
+                    canvas.getContext("2d").rotate(90 * Math.PI / 180);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, 0, -canvas.width, canvas.height, canvas.width);
+                } else if (orientation == 8) {
+                    //左转 90
+                    canvas.width  = image.height < widthInput ? image.height : widthInput;
+                    canvas.height = parseInt(canvas.width * scale);
+                    canvas.getContext("2d").rotate(-90 * Math.PI / 180);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, -canvas.height, 0, canvas.height, canvas.width);
+                } else if (orientation == 3) {
+                    //右转 180
+                    canvas.width  = image.width < widthInput ? image.width : widthInput;
+                    canvas.height = parseInt(canvas.width / scale);
+                    canvas.getContext("2d").translate(canvas.width, 0);
+                    canvas.getContext("2d").scale(-1, 1);
+                    canvas.getContext("2d").translate(0, canvas.height);
+                    canvas.getContext("2d").scale(1, -1);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+                } else {
+                    //正常
+                    canvas.width  = image.width < widthInput ? image.width : widthInput;
+                    canvas.height = parseInt(canvas.width / scale);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+                }
+                var imageUrl = canvas.toDataURL("image/jpeg", ratioInput);
+
+                if (callback) {
+                    callback(imageUrl)
+                }
+            };
+        };
+
+    };
+    /**
+     * 将以base64的图片url数据转换为Blob
+     * @param urlData
+     *            用url方式表示的base64图片数据
+     */
+    function convertBase64UrlToBlob(urlData){
+        var arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    }
+
+    T.addShandai = (function(){
+        var filesArr=[];//文件数组
+        var type=T.Util.getPara('type');//类型
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        var o = {
+            init:function(){
+                o.bindEvent();
+                if(type!='shaidan'){
+                    $('#titleStr').html('添加评价');
+                }else{
+                    $('#titleStr').html('添加晒单');
+                };
+                if(Global.isAndroid){
+                    $ ("input[name='fileToUpLoad']").attr('capture','camera');
+                }
+                $("html").removeClass("noNavbar");
+            },
+            //事件绑定
+            bindEvent:function(){
+                //上传图片
+                $("#addImg").off().Touch(function(){
+                    if(filesArr.length>3){
+                        tip("最多上传3张图片",'error');
+                    }else{
+                        $('.file').trigger("click");
+                    }
+                });
+                //清理缓存
+                var dataURL;
+                $(".file").off().change(function(){
+                    var $file = $(this);
+                    var fileObj = $file[0];
+                    var windowURL = window.URL || window.webkitURL;
+                    if(fileObj && fileObj.files && fileObj.files.length>0){
+                        var imgLength = $("#addshaidan-imglist .imgitem").length - 1;
+                        if(imgLength + fileObj.files.length >= 3){
+                            $("#addImg").hide();
+                        }
+                        for(var i=0;i<fileObj.files.length;i++){
+                            if(imgLength + i > 2){
+                                tip("最多上传3张图片",'error');
+                                continue;
+                            }
+                            var fileItem = fileObj.files[i];
+                            // 过滤掉非图片类型文件
+                            if(!fileItem.type.match('image.*')){
+                                tip("只能上传图片哦",'error');
+                                continue;
+                            }
+                            // 过滤掉重复上传的图片
+                            var tipAA = false;
+                            for(var j=0; j<filesArr.length; j++){
+                                if((filesArr[j].name == fileItem.name) && (filesArr[j].size == fileItem.size) && (filesArr[j].lastModified == fileItem.lastModified)){
+                                    tip("不能上传同样的图片哦",'error');
+                                    tipAA = true;
+                                    break;
+                                }
+                            }
+                            if(!tipAA){
+                                console.log('压缩前'+fileItem.size/1024+'kb');
+                                if(fileItem.size/1024 > 200) { //大于200k，进行压缩上传
+                                    var fileUp = function (fileItem) {
+                                        base64Image({
+                                            width:750,                             /*【选填】宽度默认750，如果图片尺寸大于该宽度，图片将被设置为该宽度*/
+                                            ratio:0.75,                            /*【选填】压缩率默认0.75 */
+                                            file: fileItem,                              /*【必填】对应的上传元素 */
+                                            callback: function (imageUrl) {        /*【必填】处理成功后的回调函数 */
+                                                $('#addshaidan-imglist').prepend('<div class="imgitem"><img src="'+imageUrl+'"></div>');
+                                                $("#viewer #imgList").prepend('<div class="imgitem" data-index="' + $("#viewer #imgList .imgitem").length + '"><div class="imgcell"><img src="'+imageUrl+'"></div></div>');
+                                                var bl = convertBase64UrlToBlob(imageUrl);
+                                                filesArr.push(bl);
+                                                console.log('压缩后'+bl.size/1024+'kb');
+                                                setTimeout(function(){
+                                                    o.initImgScroll(0);
+                                                    o.showShaidanTips();
+                                                },10);
+                                                o.bindImgEvent();
+
+                                            },
+                                        });
+                                    };
+                                    fileUp(fileItem);
+                                }else{
+                                    dataURL = windowURL.createObjectURL(fileItem);
+                                    $('#addshaidan-imglist').prepend('<div class="imgitem"><img src="'+dataURL+'"></div>');
+                                    $("#viewer #imgList").prepend('<div class="imgitem" data-index="' + $("#viewer #imgList .imgitem").length + '"><div class="imgcell"><img src="'+dataURL+'"></div></div>');
+                                    filesArr.push(fileItem);
+                                    setTimeout(function(){
+                                        o.initImgScroll(0);
+                                        o.showShaidanTips();
+                                    },10);
+                                    o.bindImgEvent();
+                                }
+                            }
+                        }
+                    }else{
+                        dataURL = $file.val();
+                    }
+                });
+                //查看图片返回
+                $("#viewBack").off().Touch(function(){
+                    $("#viewer,#deleteBox").addClass("hidden");
+                });
+                //星级评价
+                $("#addshaidan-star  p i").off().Touch(function(){
+                    var starLevel = 0,star = [];
+                    if($(this).index()){
+                        starLevel = $(this).index() + 1;
+                    }else{
+                        starLevel = $(this).is(".star") ? 0 : 1;
+                    }
+                    star.push(T.Util.repeat('<i class="star"></i>',starLevel));
+                    star.push(T.Util.repeat('<i></i>',5 - starLevel));
+                    $(this).parent().html(star.join(""));
+                    o.bindEvent();
+                });
+                //提交晒单
+                $('#rightBtn').off().Touch(function(){
+                    var content = T.Util.trim($('#shaidan-comment').val());
+                    if(T.Util.isEmpty(content) && filesArr.length==0){
+                        if(type == 'shaidan'){
+                            tip("请输入您中奖的感想");
+                        }else{
+                            tip("请输入您评论的内容");
+                        }
+                        return;
+                    }else if(!T.Util.isEmpty(content) && content.length < 5){
+                        tip("最少填写5个字哦~");
+                        return;
+                    }
+                    o.doUpload();
+                });
+                //晒单文本框输入事件
+                $("#shaidan-comment").on("input",function(){
+                    o.showShaidanTips();
+                });
+            },
+            //绑定图片事件
+            bindImgEvent:function () {
+                //查看大图
+                $("#addshaidan-imglist .imgitem").not("#addImg").off().Touch(function(){
+                    $("input,textarea").blur();
+                    o.initImgScroll($(this).index());
+                    $("#viewer").removeClass("hidden");
+                    setTimeout(function(){
+                        $(".navbar").addClass("slideUp");
+                    },600);
+                });
+                //长按删除图片
+                $("#addshaidan-imglist .imgitem").not("#addImg").Touch(function(){
+                    var length = $("#addshaidan-imglist .imgitem").length;
+                    var index = $(this).index();
+                    var fileIndex = length - $(this).index() - 2;
+                    if($(this).find(".delete").length){
+                        $(this).find(".delete").remove();
+                    }else{
+                        $(this).append('<i class="delete"></i>');
+                    }
+                    $("#addshaidan-imglist .imgitem .delete").off().Touch(function(){
+                        filesArr.splice(fileIndex, 1);
+                        $("#viewer #imgList .imgitem").eq(index).remove();
+                        $("#addshaidan-imglist .imgitem").eq(index).remove();
+                        if($("#addshaidan-imglist .imgitem").length < 4){
+                            $("#addImg").show();
+                        }
+                        o.showShaidanTips();
+                    },{stop:true});
+                },{isLongPress:true});
+                //删除图片
+                $("#delete").off().Touch(function(){
+                    $("#deleteBox").removeClass("hidden");
+                });
+                //确认删除图片
+                $("#deleteOk").off().Touch(function(){
+                    // 根据索引删除指定的文件对象
+                    var index = parseInt($("#viewer .imgitem").eq(T.viewerIndex).attr("data-index"));
+                    filesArr.splice(index, 1);
+                    $("#viewer #imgList .imgitem").eq(T.viewerIndex).remove();
+                    $("#addshaidan-imglist .imgitem").eq(T.viewerIndex).remove();
+                    $("#deleteBox").addClass("hidden");
+                    setTimeout(function(){
+                        var len = $("#viewer #imgList .imgitem").length;
+                        if(len){
+                            o.initImgScroll(T.viewerIndex);
+                        }else{
+                            $("#viewer,#deleteBox").addClass("hidden");
+                        }
+                        o.showShaidanTips();
+                        $("#addImg").show();
+                        setTimeout(function(){
+                            tip("已删除","ok");
+                        },300);
+                    },10);
+                });
+                //取消删除图片
+                $("#deleteCancel").off().Touch(function(){
+                    $("#deleteBox").addClass("hidden");
+                });
+            },
+            //显示晒单提示
+            showShaidanTips:function(){
+                var val = $("#shaidan-comment").val();
+                var imgs = $("#addshaidan-imglist .imgitem");
+                var tipInfo = '';
+                if(imgs.length <= 1){//未添加图片
+                    if(val == ''){
+                        tipInfo = '至少<em>5</em>个字哦';
+                    }else if(val.length < 5){
+                        tipInfo = '加油，再写<em>' + (5 - val.length) + '</em>个字就有机会赢得<em>3</em>赠币';
+                    }else if(val.length < 15){
+                        tipInfo = (val.length > 5 ?"加油，":"") + '再加<em>' + (15 - val.length) + '</em>个字，就有机会赢得<em>4</em>赠币';
+                    }else{
+                        tipInfo = '添加图片，就有机会赢得<em>8</em>赠币';
+                    }
+                }else{
+                    if(val.length < 15){
+                        tipInfo = '添加<em>15</em>字评论，就有机会赢得<em>8</em>赠币';
+                    }else{
+                        tipInfo = '评论细腻，拍摄完整，描述优秀，就有机会赢得惊喜赠币奖励哦';
+                    }
+                }
+                $("#shaidanTips").html(tipInfo);
+            },
+            //初始化滑动
+            initImgScroll:function(index){
+                var len = $("#viewer #imgList .imgitem").length;
+                if(index < 0){
+                    index = 0;
+                }else if(index > len - 1){
+                    index = len - 1;
+                }
+                T.viewerIndex = index;
+                $("#viewTitle").text(index + 1 + "/" + len);
+                o.imgScroll(len,index);
+            },
+            //图片滑动
+            imgScroll:function(len,index){
+                //banner滑动
+                var ismove = false;//是否为滑动
+                var hscroll = true,vscrol = true;
+                var start_x = 0,move_x = 0,start_left = 0,move_left = 0;
+                var start_y = 0,move_y = 0,start_top = 0,move_top = 0;
+                var index = index,width = window.innerWidth;
+                var imgbox = $("#imgList").css({"marginLeft":-index * width + "px","width":10 * len + "rem"});
+                imgbox.off().on("touchstart",function(e){
+                    e.preventDefault();
+                    $("#deleteBox").addClass("hidden");
+                    setTimeout(function(){
+                        if(!ismove){
+                            $(".navbar").toggleClass("slideUp");
+                        }
+                    },10);
+
+                    try{
+                        start_x = e.changedTouches[0].clientX;
+                        start_y = e.changedTouches[0].clientY;
+                        start_left = parseInt(imgbox.css('margin-left'));
+                        start_top = parseInt(imgbox.css('padding'));
+                    }catch(e){}
+                });
+                imgbox.on("touchmove",function(e) {
+                    e.preventDefault();
+                    try {
+                        move_x = e.changedTouches[0].clientX;
+                        move_y = e.changedTouches[0].clientY;
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        move_top = parseInt(imgbox.css('padding'));
+                        var ratiox = 0.8 - Math.abs((move_left - start_left) / width);
+                        var ratioy = 0.2 - Math.abs((move_top - start_top) / width);
+                        var curLeft = move_left + 0.8 * ratiox * ratiox * (move_x - start_x);
+                        var curTop = move_top + 5 * ratioy * ratioy * (move_y - start_y);
+                        console.log((curTop) + "px 0",move_y - start_y);
+                        if(Math.abs(move_x - start_x) >= Math.abs(move_y - start_y)){
+                            if(hscroll){
+                                imgbox.css({"margin-left": (curLeft) + "px"}, 500);
+                                vscrol = false;
+                            }
+                        }else{
+                            if(vscrol){
+                                hscroll = false;
+                            }
+                        }
+                        if((move_x - start_x) > 1||(move_y - start_y) > 1){
+                            ismove = true;
+                            $(".navbar").addClass("slideUp");
+                        }else{
+                            ismove = false;
+                            $(".navbar").toggleClass("slideUp");
+                        }
+                    } catch (e) {
+                    }
+                });
+                imgbox.on("touchend",function(e) {
+                    e.preventDefault();
+                    try {
+                        ismove = false;
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        if(move_left > start_left){
+                            index = Math.floor(-move_left / width);
+                        }else{
+                            index = Math.ceil(-move_left / width);
+                        }
+                        if (index < 0) {
+                            index = 0;
+                        } else if (index > len - 1) {
+                            index = len - 1;
+                        }
+                        T.viewerIndex = index;
+                        $("#viewTitle").text((index + 1) + '/' + len);
+                        if(Math.abs(move_x - start_x) > Math.abs(move_y - start_y)){
+                            imgbox.animate({"margin-left": (-index * width) + "px"}, 500);
+                        }else{
+                            $("#mallbanner").animate({"padding":"0"}, 500);
+                        }
+                        hscroll = true,vscrol = true;
+                    } catch (e) {
+                    }
+                });
+            },
+            //上传图片
+            doUpload:function () {
+                tip("正在上传","loading");
+                var formData = new FormData();
+                for(var i=0, f; f=filesArr[i]; i++){
+                    console.log(f.size)
+                    formData.append('files', f,new Date().getTime()+f.type.replace('image/','.'));
+                }
+                var val = T.Util.getPara('orderNo');//评价传订单号
+                /*if(type=='shaidan'){
+                   val = T.Util.getPara('expectId');
+                }*/
+                formData.append('EXPECT_ID', val);
+                formData.append('COMMODITY_ID', T.Util.getPara('id'));
+                formData.append('SHARE_DESC',$('#shaidan-comment').val());
+                formData.append('LEVEL', $('.star').length);
+                //评价的时候是3
+                var submitType=3;
+                if(type=='shaidan'){
+                    submitType=2;
+                }
+                $("textarea").blur();
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                $.ajax({
+                    url:Global.fullHost + '/order/services/servlet/shareOrder?signKey=f95fd9e45de9463186f0984f9b5e0962&type='+submitType,
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    headers:{'Authenticate':T.Storage.get("access_token")},
+                    success: function (data) {
+                        endGetDataFlag = true;
+                        pageLoading.hide();
+                        if(data && data.msg_code=='0'){
+                            var obj = {'type':type,'shaidanNo':val};
+                            T.Storage.set('shaidanSucInfo',obj);
+                            setTimeout(function(){
+                                if(type!='shaidan'){
+                                    tip("评价成功",'ok');
+                                }else{
+                                    tip("晒单成功",'ok');
+                                }
+                            },500);
+                            setTimeout(function(){
+                                T.Util.back();
+                            },3000);
+                        }else{
+                            tip(data.msg||Global.neterror,'error');
+                        }
+                    },
+                    error: function (data) {
+                        endGetDataFlag = true;
+                        pageLoading.hide();
+                        tip(data.msg||Global.neterror,"error");
+                    }
+                });
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.addShandai.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.addShandai.init();
+        }
+    });
+</script>
+</body>
+</html>

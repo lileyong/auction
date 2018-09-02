@@ -1,0 +1,197 @@
+html#zhuli,
+#zhuli body {
+  background: linear-gradient( -15deg,#FE791E,#FC432A);
+  background: -webkit-linear-gradient( -15deg,#FE791E,#FC432A);
+  background: -moz-linear-gradient( -15deg,#FE791E,#FC432A);
+}
+
+/*助力页*/
+
+#zhuliBox {
+  overflow: hidden;
+}
+
+#zhuliBox #bg {
+  position: absolute;
+  width: 100%;
+}
+
+#zhuliContent {
+  position: relative;
+  margin: 5.253333rem 0.426667rem 0.426667rem 0.426667rem;
+  width: 9.146667rem;
+  height: 10.4rem;
+}
+
+#zhuliContent #goodsInfo {
+  height: 5.44rem;
+}
+
+#zhuliContent #invitations {
+  padding-top: 0.746667rem;
+  width: 100%;
+  height: 0.48rem;
+  text-align: center;
+  font-size: 0.4rem;
+  font-weight: bold;
+  color: #FF312F;
+}
+
+#zhuliContent #invitations .quot {
+  font-family: '宋体';
+}
+
+#zhuliContent #goodsName {
+  padding-top: 0.146667rem;
+  height: 0.426667rem;
+  text-align: center;
+  line-height: 0.426667rem;
+  font-size: 0.4rem;
+  font-weight: bold;
+  color: #FF312F;
+}
+
+#zhuliContent img {
+  margin: 0.52rem auto 0 auto;
+  display: block;
+  height: 3.12rem;
+}
+
+#zhuliContent #zhuliResult {
+  margin-top: 0.92rem;
+  width: 100%;
+  text-align: center;
+  line-height: 0.64rem;
+  font-size: 0.533333rem;
+  font-weight: bold;
+  color: #252525;
+}
+
+#zhuliContent #zhuliResult em {
+  margin-left: 0.133333rem;
+  font-weight: bold;
+  color: #fd2b2b;
+}
+
+#zhuliContent p {
+  margin-top: 0.16rem;
+  width: 100%;
+  height: 0.4rem;
+  text-align: center;
+  line-height: 0.4rem;
+  font-size: 0.32rem;
+  color: #605E5E;
+}
+
+#zhuliContent #zhuliBtn {
+  margin: 0.706667rem auto 0 auto;
+  width: 6.053333rem;
+  height: 1.76rem;
+}
+
+#zhuliContent #zhuliBtn.zhuli {
+  background: url(../img/zhuli/zhuliBtn.png) 0 0 / 100% 100% no-repeat;
+}
+
+#zhuliContent #zhuliBtn.auction {
+  background: url(../img/zhuli/goAuction.png) 0 0 / 100% 100% no-repeat;
+}
+
+/*助力注册页*/
+
+#zhuliRegBox {
+  overflow: hidden;
+}
+
+#zhuliRegBox #bg {
+  position: absolute;
+  width: 100%;
+}
+
+#zhuliRegBox #zhuliRegForm {
+  position: relative;
+  margin: 6.733333rem auto 0 auto;
+  padding-top: 0.506667rem;
+  width: 9.146667rem;
+  height: 8.92rem;
+  overflow: hidden;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+#zhuliRegForm .formItem {
+  position: relative;
+  margin: 0.466667rem 0.733333rem 0 0.733333rem;
+  width: 7.68rem;
+  height: 1.28rem;
+  font-size: 0.346667rem;
+}
+
+#zhuliRegForm .formItem input {
+  padding: 0.44rem 0.106667rem 0.44rem 1.053333rem;
+  width: 100%;
+  line-height: 0.4rem;
+  font-size: 0.346667rem;
+  background-color: transparent;
+}
+
+#zhuliRegForm .formItem.messageCode input {
+  width: 4.666667rem;
+}
+
+#zhuliRegForm .formItem input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  font-size: 0.346667rem;
+  color: #E1C6B0;
+}
+
+#zhuliRegForm .formItem input:-moz-placeholder,
+textarea:-moz-placeholder {
+  font-size: 0.346667rem;
+  color: #E1C6B0;
+}
+
+#zhuliRegForm .formItem input::-moz-placeholder,
+textarea::-moz-placeholder {
+  font-size: 0.346667rem;
+  color: #E1C6B0;
+}
+
+#zhuliRegForm .formItem input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  font-size: 0.346667rem;
+  color: #E1C6B0;
+}
+
+#zhuliRegForm .formItem em {
+  position: absolute;
+  right: 0;
+  top: -0.026667rem;
+  width: 2.72rem;
+  height: 1.28rem;
+  text-align: center;
+  line-height: 1.28rem;
+  font-size: 0.346667rem;
+  color: #fff;
+}
+
+#zhuliRegForm .formBtn {
+  margin-top: 0.946667rem;
+  width: 9.146667rem;
+  height: 3.973333rem;
+  overflow: hidden;
+}
+
+#zhuliRegForm .formBtn #receive {
+  margin: 1.026667rem 1.333333rem 0 1.36rem;
+  display: block;
+  width: 6.453333rem;
+  height: 1.28rem;
+}
+
+#zhuliRegForm .formBtn #download {
+  margin-top: 0.8rem;
+  display: block;
+  width: 100%;
+  height: 0.546667rem;
+}

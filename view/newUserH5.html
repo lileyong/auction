@@ -1,0 +1,596 @@
+<script>
+    $("title").text("商品推荐");
+    $("html").addClass("noNavbar");
+</script>
+<style>
+    /*商品推荐头部样式*/
+
+    #newUserH5Box {
+        overflow: hidden;
+    }
+
+    #newUserH5Head {
+        position: fixed;
+        z-index: 101;
+        width: 10rem;
+        background-color: #fff;
+        border-bottom: 0.013333rem solid #f5f5f5;
+    }
+
+    #newUserH5Head #zhuliStatus {
+        width: 100%;
+        height:0;
+        text-align: center;
+        background-color: #F2ECEA;
+        font-size: 0.4rem;
+        color: #444;
+        overflow: hidden;
+        transition: all 0.3s ease-out;
+        -webkit-transition: all 0.3s ease-out;
+    }
+
+    .showTip #newUserH5Head #zhuliStatus {
+        height: 1.373333rem;
+        padding-top: .2rem;
+    }
+
+    .showTip #newUserH5Head #zhuliStatus.singleLine {
+        padding-top:0;
+        line-height: 1.373333rem;
+    }
+
+    #zhuliStatus em {
+        color: #fd2b2b;
+    }
+
+    #zhuliStatus #closeTip {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 1.34rem;
+        height: 1.373333rem;
+        background: url(../img/zhuli/close.png) 0.22rem 0.44rem / 0.48rem 0.48rem no-repeat;
+        overflow: hidden;
+    }
+
+    #newUserH5Head #userInfo {
+        position: relative;
+        height: 1.333333rem;
+        background-color: #fff;
+    }
+
+    #newUserH5Head img {
+        position: absolute;
+        left: 0.32rem;
+        top: 0.133333rem;
+        display: inline-block;
+        width: 1.066667rem;
+        height: 1.066667rem;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    #newUserH5Head h2 {
+        padding-left: 1.666667rem;
+        line-height: 0.48rem;
+        font-size: 0.32rem;
+        color: #666;
+    }
+
+    #newUserH5Head h2#userName {
+        padding-top: 0.186667rem;
+    }
+
+    #newUserH5Head h2#userId {
+        padding-bottom: 0.186667rem;
+    }
+
+    #newUserH5Head p {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 50%;
+        height: 100%;
+        text-align: left;
+        padding-left: 0.333333rem;
+        line-height: 1.333333rem;
+        font-size: 0.32rem;
+        color: #333;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+
+    #newUserH5Head p em {
+        margin-left: 0.466667rem;
+        color: #f72f2f;
+    }
+
+    #newUserFoot {
+        position: fixed;
+        bottom: 0;
+        width: 10rem;
+        height: 1.6rem;
+        background-color: #fff;
+    }
+
+    #newUserFoot #download {
+        margin: 0.266667rem auto;
+        width: 9.066667rem;
+        height: 1.066667rem;
+        text-align: center;
+        line-height: 1.066667rem;
+        font-size: 0.453333rem;
+        color: #fff;
+        border-radius: 0.08rem;
+        background-color: #f72f2f;
+    }
+    /*APP版新手推荐样式*/
+    #newgoods-box {
+        overflow: hidden;
+    }
+    #newgoods-tab {
+        position: fixed;
+        z-index:99;
+        width: 10rem;
+        height: 1.066667rem;
+        background-color: #fff;
+        border: 0.013333rem solid #f5f5f5;
+    }
+    #newgoods-tab .tabitem {
+        float: left;
+        width: 33.33%;
+        height: 100%;
+        text-align: center;
+        line-height: 1.066667rem;
+        font-size: 0.373333rem;
+        color: #666666;
+    }
+    #newgoods-tab .tabitem.on {
+        color: #f72f2f;
+    }
+    #newgoods-tab .pointer {
+        position: absolute;
+        left: calc(16.67% - 0.533333rem);
+        bottom: 0.013333rem;
+        display: inline-block;
+        width: 1.066667rem;
+        height: 0.08rem;
+        border-radius: 0.04rem;
+        background-color: #f72f2f;
+    }
+    #newgoods-content {
+        margin-top: 1.08rem;
+    }
+    #newgoods-content img.banner{
+        display:block;
+        width:100%;
+    }
+    .newGoodsBox{overflow:hidden;}
+    #xstj .shopList,#rmhh .shopList {
+        position: relative;
+        width: 100%;
+        height: 3.466667rem;
+        background-color: #fff;
+        margin-bottom: 0.133333rem;
+        overflow: hidden;
+        text-align: left;
+    }
+    #xstj .shopList .counter,#rmhh .shopList .counter {
+        position: absolute;
+        left: 0.453333rem;
+        top: 0;
+        padding-top: 0.12rem;
+        display: inline-block;
+        background: url('../img/sprite.png') no-repeat 0 -11.146667rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.533333rem;
+        height: 0.8rem;
+        text-align: center;
+        line-height: 0.253333rem;
+        font-size: 0.213333rem;
+        color: #fff;
+        font-style: normal;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+    #xstj .shopList img,#rmhh .shopList img {
+        position: absolute;
+        left: 1.52rem;
+        top: 0.4rem;
+        width: 2.666667rem;
+        height: 2.666667rem;
+    }
+    #xstj .shopList h2,#rmhh .shopList h2{
+        margin-top: 0.266667rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size: 0.373333rem;
+        color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 4.5rem;
+    }
+    p.desc {
+        padding-left: 5.053333rem;
+        line-height: 0.426667rem;
+        font-size: 0.293333rem;
+        color: #999;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    p.goodprice{
+        margin-top: 0.08rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size: 0.32rem;
+        color: #f72f2f;
+    }
+    p.goodprice em{
+        font-size: 0.426667rem;
+    }
+    p.normalprice{
+        padding-left: 5.053333rem;
+        line-height: 0.373333rem;
+        font-size: 0.2933334rem;
+        color: #999;
+    }
+    p.normalprice del {
+        margin-left: 0.213333rem;
+    }
+    p.preline{
+        margin-top:0.0933334rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size:0.32rem;
+        color:#666;
+    }
+    p.prenow{
+        margin-top:0.0933334rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size:0.3733334rem;
+        color:#333;
+    }
+    p.prenow em{
+        color:#f72f2f;
+    }
+    .newGoodsBox .shopList.over:after{
+        top:1.273333rem;
+        left: 1.68rem;
+    }
+    .newGoodsBox .shopAuctionBox {
+        position: relative;
+        width: 4.28rem;
+        border: 1px solid #f84b4b;
+        border-radius: 0.333333rem;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+    .newGoodsBox .shopAuctionBox span {
+        padding-left: 0.2rem;
+        line-height: 0.666667rem;
+        font-size: 0.373333rem;
+        color: #f72f2f;
+    }
+    .newGoodsBox .shopAuctionBox em {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: inline-block;
+        width: 2.4rem;
+        height: 100%;
+        text-align: center;
+        line-height: 0.666667rem;
+        border-radius: 0.333333rem;
+        background-color: #f72f2f;
+        font-size: 0.373333rem;
+        color: #fff;
+    }
+    .newGoodsBox .shopYuYueBox,.newGoodsBox .shopStopBox,.newGoodsBox .shopOverBox,.newGoodsBox .shopAuctionBox{ margin-left: 5.053333rem;
+        margin-top: 0.36rem;
+        height: 0.666667rem;
+        line-height: 0.666667rem;
+    }
+    .newGoodsBox .shopYuyue,.newGoodsBox .shopStop{height: 0.666667rem;line-height: 0.666667rem;border-radius: .666667rem;margin-top:0;display: inline-block;text-align: center;}
+    .newGoodsBox .shopYuYueBox{
+        margin-top:0.2266667rem;
+    }
+    .shopList.over .yuYueInfoBox,
+    .shopList.stop .yuYueInfoBox,
+    .shopList.auction .yuYueInfoBox{display: none;}
+    .shopList.yuYue .yuYueInfoBox{display: block;}
+
+    .shopList.over .otherInfoBox,
+    .shopList.stop .otherInfoBox,
+    .shopList.auction .otherInfoBox{display: block;}
+    .shopList.yuYue .otherInfoBox{display: none;}
+
+    /*H5版新手推荐样式*/
+    #newUserH5Box .newGoodsBox .shopAuctionBox{margin-top:0.2666667rem;}
+    #newGoodsBox{margin-top: 1.346667rem;}
+    .showTip #newUserH5Box #newGoodsBox {margin-top: 2.72rem;}
+    #newUserH5Box #xstj .shopList{height:3.7333333rem;}
+    #newUserH5Box #xstj .shopList h2{margin-top:0.16rem;}
+    #newUserH5Box #xstj .shopList.yuYue{height:3.4666667rem;}
+    #newUserH5Box #xstj .shopList.yuYue h2{margin-top:0.266667rem}
+    #newUserH5Box #xstj .shopList p.avgprice{padding-left: 5.053333rem;height:0.4rem;line-height: 0.4rem;font-size: 0.2933334rem;color: #999;}
+    #newUserH5Box #xstj .shopList p.normalprice{height:0.4rem;line-height: 0.4rem;}
+    #newUserFoot {position: fixed;bottom: 0;width: 10rem;height: 1.6rem;background-color: #fff;}
+    #newUserFoot #download {margin: 0.266667rem auto;width: 9.066667rem;height: 1.066667rem;text-align: center;line-height: 1.066667rem;font-size: 0.453333rem;color: #fff;border-radius: 0.08rem;background-color: #f72f2f;}
+</style>
+<script>
+    if(T.Util.getPara('result')){
+        $("html").addClass("showTip");
+    }else{
+        $("html").removeClass("showTip");
+    }
+</script>
+<div class="content noNavbar" id="content">
+    <div id="newUserH5Box">
+        <div id="newUserH5Head">
+            <div id="zhuliStatus"><!--成功为好友助力<em>1</em>次，快来竞拍商品吧--><span id="closeTip"></span></div>
+            <div id="userInfo">
+                <img id="userPhoto" src="../img/usercenter/photo.png">
+                <h2 id="userName">--</h2>
+                <h2 id="userId">ID:--</h2>
+                <p id="balance">账户余额：<em>--.--</em></p>
+            </div>
+        </div>
+        <div id="newGoodsBox"><div id="xstj" class="newGoodsBox"></div></div>
+    </div>
+</div>
+<script>
+    T.newUserH5 = (function(){
+        var dropLoad = '';//下拉刷新
+        var pageIndex = 0;
+        var pageSize = 10;
+        var hasMore = false;
+        var reqEndFlag = true;
+        var o = {
+            init:function(){
+                o.initPage();
+                o.getAuctionRecord();//获取竞拍记录
+                o.getNewGoods();//获取新手专区商品
+                o.bindEvent();//事件绑定
+                if(T.Util.isEmpty(T.Storage.get('newUserTeachConfrim',1))){
+                    confirm({
+                        html:'新手教程大揭秘，教您如何正确抢购！',
+                        cancelText:'我是老司机,去抢购',cancelFun:function () {
+                            T.Storage.set('newUserTeachConfrim',1,1);
+                        },okText:'我是新手,去学习',okFun:function () {
+                            T.Storage.set('newUserTeachConfrim',1,1);
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/newUserTeach.html');
+                        }
+                    });
+                }
+            },
+            //初始化页面
+            initPage:function(){
+                var result = T.Util.getPara("result");
+                var from = T.Util.getPara("pageFrom");
+                if(from == 'zhuli'){
+                    if(!T.Util.isEmpty(result)){
+                        if(result=='-1'){
+                            str = '您已助力过了,不可重复助力哦<br>快来竞拍商品吧';
+                        } else if(result=='-2'){
+                            str = '好友当前竞拍期次已结束<br>您也来竞拍商品玩玩吧';
+                        }else if(result=='-3'){
+                            str = '无法为自己助力哦<br>快来竞拍商品吧';
+                        }else if(result=='-4'){
+                            str = '每人只有1次助力机会,您已帮其他<br>好友助力过啦,快来竞拍商品吧';
+                        }else if(result=='-5'){
+                            str = '本期商品助力达到上限,下次早点来<br>为好友助力哦,快来竞拍商品吧';
+                        }else if(result=='-6'){
+                            str = '助力失败<br>您比好友更早使用平台,无法为好友助力哦';
+                        }else{
+                            str = '成功为好友助力<em>'+result+'</em>次<br>快来竞拍商品吧';
+                        }
+                        $('#zhuliStatus').html(str+'<span id="closeTip"></span>');
+                    }
+                }else if(from == 'invite'){
+                    if(!T.Util.isEmpty(result)){
+                        if(result=='1'){
+                            str = '领取成功,快来竞拍商品吧！';
+                        } else if(result=='2'){
+                            str = '你已领取过啦，快来竞拍商品吧！';
+                        }
+                        $('#zhuliStatus').addClass("singleLine").html(str+'<span id="closeTip"></span>');
+                    }
+                }
+                var userInfo = T.Storage.get('userinfo');
+                if(userInfo){
+                    $("#userPhoto").attr("src",userInfo.userPic);
+                    $("#userName").html(userInfo.nickName);
+                    $("#userId").html("ID:"+userInfo.userId);
+                    $("#balance em").html((userInfo.moneyList[2]+userInfo.moneyList[3]).toFixed(2)+"币");
+                }
+                T.Util.initAppDownload();//初始化下载APP
+            },
+            bindEvent:function(){
+                //绑定下滑加载更多
+                $(window).off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && reqEndFlag){
+                        if(hasMore){
+                            o.getNewGoods(true);
+                        }
+                    }
+                });
+                //绑定下拉刷新
+                $('#newUserBox').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getNewGoods();
+                    },
+                    threshold : 50
+                });
+                //下载APP
+                $("#download").off().Touch(function(){
+                    T.Util.appDownload();
+                });
+                //关闭提示
+                $("#closeTip").off().Touch(function(){
+                    $("html").removeClass("showTip");
+                    $("#newGoodsBox").animate({"margin-top":$("#userInfo").height()+"px"},300);
+                });
+            },
+            //获取新手专区商品
+            getNewGoods:function(fromMore){
+                if(!reqEndFlag){
+                    return false;
+                }
+                reqEndFlag = false;
+                //tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/world/newProduct.json?page=' + pageIndex + '&limit=' + pageSize + '&code=4',//code：4 新手推荐 6 热门好货 5 本周新品
+                    callback:function(json){
+                        pageLoading.hide();
+                        reqEndFlag = true;
+                        var data = json.res_data.value.INFO;
+                        if(json.res_data.value.ISEND==2){//还有更多
+                            pageIndex++;
+                            hasMore = true;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showNewGoods(data,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        reqEndFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".shopList").length){
+                                $("#content").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染新手专区商品
+            showNewGoods:function(data,fromMore){
+                var htmlArr = [];
+                var messArr=[],d=data;
+                var djsTime='';
+                for(var i=0;i<d.length;i++){
+                    var shopStateClass = '';
+                    if(d[i].EXPECT_STATUS=='80'){//预约类型
+                        shopStateClass = 'yuYue';
+                    }else if(d[i].EXPECT_STATUS=='100'){//正在拍类型
+                        shopStateClass = 'auction';
+                        addTimer('#'+d[i].COMMODITY_ID,Math.ceil(d[i].SURPLUS_TIME/1000));
+                    }else if(d[i].EXPECT_STATUS=='120'||d[i].EXPECT_STATUS=='90'){//暂停类型 90为预约暂停
+                        shopStateClass = 'stop';
+                    }else{//over类型
+                        shopStateClass = 'over';
+                    }
+                    htmlArr.push('<li class="shopList '+shopStateClass+'" data-id="'+d[i].COMMODITY_ID+'" data-no="'+d[i].EXPECT_NO+'" data-expect_id="'+d[i].EXPECT_ID+'"><img class="lozad" src="../img/goods/lazy_load.png" data-src="' + d[i].COMMODITY_LOGO + '" onerror="T.Util.showDefaultPic(this)">');
+                    htmlArr.push('<h2>' + d[i].COMMODITY_TITLE + '</h2><p class="desc">' + (d[i].PRODUCT_NOTE ||"&nbsp")+ '</p>');
+                    htmlArr.push('<div class="yuYueInfoBox"><p class="preline">满<em>' + d[i].BESPEAK_MIN_NUM + '</em>人开拍</p><p class="prenow">已预约<em>' + d[i].BESPEAK_NUM + '</em>人</p></div>');
+                    htmlArr.push('<div class="otherInfoBox"><p class="goodprice">竞拍价:￥<em class="AUCTION_PRICE">' + (d[i].AUCTION_PRICE*1).toFixed(2) + '</em></p><p class="avgprice">平均成交价:<span>￥' + ((d[i].AVG_PRICE||0)*1).toFixed(2) + '</span></p><p class="normalprice">市场价:<del>￥' + (d[i].MARKET_PRICE*1).toFixed(2) + '</del></p></div>');
+
+                    htmlArr.push('<div class="shopYuYueBox"><div class="shopYuyue" data-isVisitor="'+d[i].IS_VISITOR+'">'+(d[i].IS_VISITOR?"已预约":"预约竞拍")+'</div></div></div>');
+
+                    htmlArr.push('<div class="shopAuctionBox"><span class="endtime" type-djs="1" data-djs="'+d[i].COUNT_DOWN+'" id="'+d[i].COMMODITY_ID+'"><cite>--</cite>:<cite>--</cite>:<cite>--</cite></span><em>参与竞拍</em></div>');
+
+                    htmlArr.push('<div class="shopStopBox"><div class="shopStop"><span>暂停竞拍</span></div></div>');
+
+                    htmlArr.push('<div class="shopOverBox"><div class="shopStop"><span>'+(d[i].AUCTION_USER_NAME?"已成交":"已结束")+'</span></div></p>');
+                    htmlArr.push('</li>');
+
+                    messArr.push('auction/commodity/'+d[i].COMMODITY_ID);
+                }
+                setTimeout(function () {
+                    T.Util.mqtt(messArr);
+                },100);
+                if(htmlArr.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? $("#xstj").append(htmlArr.join("")) : $("#xstj").html(htmlArr.join(""));
+                }else{
+                    $("html,body").addClass("white");
+                    $("#xstj").html('<div class="nodata"><i></i><h2>暂无数据</h2><div class="btn">立即去竞拍</div></div>');
+                    $(".nodata .btn").off().Touch(function(){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                    });
+                }
+                $("#newGoodsBox").css("margin-top",$("#newUserH5Head").height());
+                lozad().observe();
+                T.Util.shopListClick();
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            },
+            //获取竞拍记录
+            getAuctionRecord:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/product/myAuction.json?page=1&limit=10&type=2',//type 0:全部 1：正在拍 2：我拍中 3：未拍中 4：待付款
+                    callback:function(json){
+                        var data = json.res_data.value.INFO;
+                        var availCount = 0;//已拍中未失效未付款订单数量
+                        var payCount = 0;//已付款订单数量
+                        $.each(data,function(i,item){
+                            var d = data[i];
+                            if(d.BARGAIN_STATUS!=-150 && d.BARGAIN_STATUS!=300 && d.BARGAIN_STATUS!=200 && d.BARGAIN_STATUS!=-200 && d.BARGAIN_STATUS!=400){//失效
+                                availCount += 1;
+                            }else if(d.O_TYPE&&d.O_TYPE==2){//已付款
+                                payCount += 1;
+                            }
+                        });
+                        if(availCount||payCount){
+                            showFloat({
+                                className:'relative',
+                                dom:$("#newGoodsBox"),
+                                html:'<i></i><h2>您有' + (payCount?payCount+"件已付款的商品":availCount + "件已拍中的商品")+ '</h2>',
+                                time:'forever',
+                                activeFun:function(){
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsRecord.html&type=overOk&isH5Auction=1');
+                                }
+                            });
+                        }
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+
+                    }
+                })
+            },
+        }
+
+        return {
+            init:o.init,
+            getAuctionRecord:o.getAuctionRecord
+        }
+    })();
+    $(document).ready(function () {
+        T.newUserH5.init();
+        window.onpageshow = function(){
+            T.newUserH5.getAuctionRecord();
+        }
+    });
+</script>
+
+

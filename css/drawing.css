@@ -1,0 +1,536 @@
+/*提现首页样式*/
+
+.drawing-head {
+  width: 100%;
+  height: 1.85rem;
+  border-bottom: 0.013333rem solid #f72f2f;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.drawing-head h2 {
+  margin-top: 0.28rem;
+  text-align: center;
+  line-height: 0.45rem;
+  font-size: 0.32rem;
+  color: #666;
+}
+
+.drawing-head p {
+  text-align: center;
+  line-height: 0.93rem;
+  font-size: 0.64rem;
+  color: #f72f2f;
+}
+
+#drawing-type {
+  padding-top: 0.266667rem;
+}
+
+#drawing-type .drawing-type {
+  position: relative;
+  margin: 0.666667rem auto 0 auto;
+  width: 8.293333rem;
+  height: 1.733333rem;
+  border: 0.013333rem solid #d9d9d9;
+  border-radius: 0.08rem;
+  background-color: #fff;
+}
+
+#drawing-type .drawing-type:before {
+  content: '';
+  position: absolute;
+  left: 0.666667rem;
+  top: 0;
+  display: inline-block;
+  width: 0.773333rem;
+  height: 100%;
+}
+
+#drawing-type .drawing-type.card:before {
+  background: url(../img/usercenter/card58.png) center center / 0.773333rem 0.773333rem no-repeat;
+}
+
+#drawing-type .drawing-type.wechat:before {
+  background: url(../img/usercenter/wechat58.png) center center / 0.773333rem 0.773333rem no-repeat;
+}
+
+#drawing-type .drawing-type h2 {
+  padding-left: 1.813333rem;
+  line-height: 1.733333rem;
+  font-size: 0.4rem;
+  color: #666;
+}
+
+#drawing-type .drawing-type.bind h2 {
+  padding-top: 0.36rem;
+  height: 0.56rem;
+  line-height: 0.56rem;
+}
+
+#drawing-type .drawing-type.bind p {
+  height: 0.48rem;
+  line-height: 0.48rem;
+}
+
+#drawing-type .drawing-type p {
+  padding-left: 1.813333rem;
+  font-size: 0.266667rem;
+  color: #999;
+}
+
+#drawing-type .drawing-type p em {
+  color: #0964e1;
+}
+
+/*提现至银行卡页样式*/
+
+#exchange .exchange-main {
+  margin: 0.53rem 0.45rem;
+  height: 3.44rem;
+  border: 0.013333rem solid #dfdfdf;
+  border-radius: 0.16rem;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+#exchange .exchange-main h2 {
+  font-size: 0.4rem;
+  color: #333;
+  padding-left: 0.43rem;
+  line-height: 1.48rem;
+}
+
+#exchange .exchange-main h2 em {
+  position: relative;
+  top: -0.026667rem;
+  margin-left: 0.24rem;
+  font-size: 0.293333rem;
+  color: #999;
+}
+
+#exchange .exchange-main input {
+  margin-top: 0.56rem;
+  margin-left: 0.43rem;
+  width: calc(100% - 0.83rem);
+  height: 0.88rem;
+  line-height: 0.88rem;
+  font-size: 0.64rem;
+  outline: none;
+  border: none;
+  border-bottom: 0.013333rem solid #dfdfdf;
+}
+
+#exchange #exchangeRule {
+  margin: 0 0.45rem;
+}
+
+#exchange #exchangeRule h2 {
+  position: relative;
+  height: 0.88rem;
+  text-align: center;
+  line-height: 0.8rem;
+  font-size: 0.373333rem;
+  color: #666;
+}
+
+#exchange #exchangeRule h2:before {
+  position: absolute;
+  left: 0;
+  top: 0.426667rem;
+  content: '';
+  width: 3.6rem;
+  height: 0.013333rem;
+  background-color: #dfdfdf;
+}
+
+#exchange #exchangeRule h2:after {
+  position: absolute;
+  right: 0;
+  top: 0.426667rem;
+  content: '';
+  width: 3.6rem;
+  height: 0.013333rem;
+  background-color: #dfdfdf;
+}
+
+#exchange #exchangeRule p {
+  padding-bottom: 0.106667rem;
+  line-height: 0.48rem;
+  font-size: 0.32rem;
+  color: #999;
+}
+
+#exchange #exchange-submit {
+  position: absolute;
+  bottom: 0;
+  margin: 1.33rem 0.45rem;
+  width: 9.09rem;
+  height: 1.07rem;
+  text-align: center;
+  line-height: 1.07rem;
+  font-size: 0.4rem;
+  color: #fff;
+  background-color: #ee332b;
+  border-radius: 0.08rem;
+}
+
+#drawing .drawing-main {
+  margin: 0.41rem 0.45rem;
+  height: 8.533333rem;
+  border: 0.013333rem solid #dfdfdf;
+  background-color: #fff;
+  border-radius: 0.16rem;
+}
+
+#drawing .drawingbank {
+  position: relative;
+  margin: 0 0.41rem;
+  height: 1.6rem;
+  border-bottom: 0.013333rem solid #dfdfdf;
+}
+
+#drawing .drawingbank:after {
+  position: absolute;
+  right: 0;
+  top: 0.46rem;
+  content: '';
+  display: inline-block;
+  width: 0.17rem;
+  height: 0.69rem;
+  background: url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;
+}
+
+#drawing .drawingbank h2 {
+  position: relative;
+  font-size: 0.37rem;
+  line-height: 1.4rem;
+  color: #666;
+}
+
+#drawing .drawingbank h2 .bankname {
+  position: absolute;
+  left: 2.24rem;
+  color: #008aff;
+}
+
+#drawing .drawingbank p {
+  position: relative;
+  top: -0.4rem;
+  padding-left: 2.24rem;
+  font-size: 0.29rem;
+  color: #999;
+}
+
+#drawing .drawing-amount {
+  margin: 0 0.41rem;
+  padding-bottom: 0.16rem;
+  border-bottom: 0.013333rem solid #dfdfdf;
+}
+
+#drawing .drawing-amount h2 {
+  line-height: 1.47rem;
+  font-size: 0.37rem;
+  color: #666;
+}
+
+#drawing .drawing-amount .yuan {
+  position: absolute;
+  margin-top: 0.16rem;
+  line-height: 1.6rem;
+  font-size: 0.8rem;
+}
+
+#drawing .drawing-amount #money {
+  padding: 0.133333rem 0.08rem 0.133333rem 0.8133334rem;
+  margin-top: 0.2rem;
+  width: 100%;
+  height: 1.6rem;
+  line-height: 1.333333rem;
+  font-size: 1.3066667rem;
+}
+
+#drawing .drawing-amount input.writing {
+  font-size: 0.9733333rem;
+}
+
+#drawing .drawing-amount input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  font-size: 0.32rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+}
+
+#drawing .drawing-amount input:-moz-placeholder,
+textarea:-moz-placeholder {
+  font-size: 0.32rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+}
+
+#drawing .drawing-amount input::-moz-placeholder,
+textarea::-moz-placeholder {
+  font-size: 0.32rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+}
+
+#drawing .drawing-amount input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  font-size: 0.32rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+}
+
+#drawing  #feeTips {
+  margin: 0 0.4rem;
+  padding-top: 0.08rem;
+  line-height: 0.933333rem;
+  font-size: 0.2933334rem;
+  color: #999;
+}
+
+#drawing #feeTips em {
+  position: relative;
+  line-height: 0.56rem;
+  font-size: 0.2933334rem;
+  color: #f72f2f;
+}
+
+#drawingForm.drawing-main .formItem {
+  margin: 0 0.4rem 0.266667rem 0.4rem;
+}
+
+#drawingForm.drawing-main .formItem input {
+  width: 6.4rem;
+}
+
+#drawing #drawing-submit {
+  margin: 0.67rem 0.45rem 0 0.45rem;
+  width: calc(100% - 0.91rem);
+  height: 1.07rem;
+  text-align: center;
+  line-height: 1.07rem;
+  font-size: 0.4rem;
+  color: #fff;
+  background-color: #ee332b;
+  border-radius: 0.08rem;
+}
+
+#drawing #drawing-submit.disabled {
+  background-color: #999;
+}
+
+#drawing .drawing-text {
+  text-align: center;
+  line-height: 0.72rem;
+  font-size: 0.29rem;
+  color: #999;
+}
+
+#addcard #supportbank {
+  padding: 0.306667rem 0.453333rem;
+  line-height: 0.453333rem;
+  font-size: 0.2933333rem;
+  color: #999;
+}
+
+#addbankcard {
+  position: relative;
+  margin-top: 0.33rem;
+  height: 1.33rem;
+  border-top: 0.013333rem solid #dfdfdf;
+  border-bottom: 0.013333rem solid #dfdfdf;
+  background-color: #fff;
+}
+
+#addbankcard h2 {
+  padding-left: 1.12rem;
+  line-height: 1.33rem;
+  font-size: 0.4rem;
+  color: #333;
+}
+
+#addbankcard:before {
+  content: '';
+  position: absolute;
+  left: 0.53rem;
+  top: 0.47rem;
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  background: url(../img/usercenter/icon_plus.png) 0 0 / 100% 100% no-repeat;
+}
+
+#addbankcard:after {
+  position: absolute;
+  right: 0.45rem;
+  top: 0.32rem;
+  content: '';
+  display: inline-block;
+  width: 0.17rem;
+  height: 0.69rem;
+  background: url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;
+}
+
+/*提现至微信页样式*/
+
+#drawingForm {
+  padding-top: 0.133333rem;
+}
+
+#drawingForm .formItem {
+  position: relative;
+  margin: 0.4rem 0.453333rem 0 0.453333rem;
+  height: 0.866667rem;
+  font-size: 0.346667rem;
+}
+
+.mobile #drawingForm .formItem.tel {
+  display: block!important;
+}
+
+.mobile #drawingForm .formItem.message {
+  display: block!important;
+}
+
+#drawingForm .formItem label {
+  float: left;
+  display: inline-block;
+  width: 1.853333rem;
+  height: 0.866667rem;
+  text-align: justify;
+  line-height: 0.866667rem;
+  font-size: 0.346667rem;
+  color: #666;
+}
+
+#drawingForm .formItem label span.space3 {
+  letter-spacing: 0.12rem;
+}
+
+#drawingForm .formItem input {
+  width: 7.24rem;
+  height: 0.866667rem;
+  padding: 0.2rem 2.346667rem 0.2rem 0.266667rem;
+  border: 0.013333rem solid #dadada;
+  border-radius: 0.08rem;
+}
+
+#drawingForm .formItem em {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-block;
+  width: 2.08rem;
+  height: 0.866667rem;
+  text-align: center;
+  line-height: 0.84rem;
+  font-size: 0.32rem;
+  color: #666;
+  background-color: #f6f6f6;
+  border: 0.013333rem solid #d9d9d9;
+  border-radius: 0.08rem 0.08rem 0 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+#drawingForm .formBtn {
+  margin: 0.4rem 0.453333rem 0 0.453333rem;
+  height: 1.066667rem;
+  text-align: center;
+  line-height: 1.066667rem;
+  border-radius: 0.053333rem;
+  background-color: #f72f2f;
+  font-size: 0.453333rem;
+  color: #fff;
+}
+
+#drawingTip {
+  margin: 0 0.453333rem;
+}
+
+#drawingTip h2 {
+  padding-top: 0.093333rem;
+  line-height: 0.64rem;
+  font-size: 0.293333rem;
+  color: #999;
+}
+
+#drawingTip p {
+  line-height: 0.426667rem;
+  font-size: 0.293333rem;
+  color: #999;
+}
+
+#drawing-result .result-head {
+  position: relative;
+  width: 100%;
+  height: 4.453333rem;
+  border: 0.013333rem solid #d9d9d9;
+}
+
+#drawing-result .result-head i {
+  margin: 0.733333rem auto 0 auto;
+  display: block;
+  width: 1.2rem;
+  height: 1.2rem;
+  background: url(../img/usercenter/drawingOk.png) 0 0 / 100% 100% no-repeat;
+}
+
+#drawing-result .result-head h2 {
+  margin-top: 0.533333rem;
+  height: 0.533333rem;
+  text-align: center;
+  line-height: 0.533333rem;
+  font-size: 0.4rem;
+  color: #333;
+}
+
+#drawing-result .result-head p {
+  margin-top: 0.133333rem;
+  height: 0.533333rem;
+  text-align: center;
+  line-height: 0.533333rem;
+  font-size: 0.32rem;
+  color: #999;
+}
+
+#drawing-result .result-main {
+  width: 100%;
+  height: 1.44rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 0.013333rem solid #d9d9d9;
+}
+
+#drawing-result .result-main h2 {
+  padding-left: 0.453333rem;
+  height: 0.72rem;
+  line-height: 0.72rem;
+  font-size: 0.373333rem;
+  color: #333;
+}
+
+#drawing-result .result-main h2 em {
+  color: #fd2b2b;
+}
+
+#drawing-result .result-foot p {
+  padding: 0.133333rem 0.453333rem;
+  line-height: 0.506667rem;
+  font-size: 0.293333rem;
+  color: #999;
+}
+
+#drawing-result .result-foot em {
+  margin: 0.533333rem 0.453333rem;
+  display: block;
+  height: 1.066667rem;
+  text-align: center;
+  line-height: 1.066667rem;
+  background-color: #f72f2f;
+  font-size: 0.453333rem;
+  color: #fff;
+  border-radius: 0.053333rem;
+}

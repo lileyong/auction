@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>新建收货地址</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+    <link rel="stylesheet" type="text/css" href="../css/iosSelect.css">
+</head>
+<body>
+<div class="navbar absolute">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1 id="navtitle">新建收货地址</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="setUserMobile">为了更好为你服务，请完善您的账户信息</div>
+    <div id="editaddress-box">
+        <div class="editaddress-item"><h2>收货人</h2><input type="text" id="name" placeholder="请输入收货人" maxlength="15"><i class="clear"></i></div>
+        <div class="editaddress-item"><h2>手机号码</h2><input type="tel" id='tel' placeholder="请输入手机号码" maxlength="11"><i class="clear"></i></div>
+        <div class="editaddress-item arrow-right" id="area"><h2>省,市,区</h2><p class="area"></p></div>
+        <div class="editaddress-item address"><textarea placeholder="请填写详细地址，不少于2个字" id="address" maxlength="50"></textarea></div>
+        <div id="editaddress-submit">保存</div>
+        <div id="delete-submit">删除</div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/areaData_v2.js"></script>
+<script type="text/javascript" src="../js/iosSelect.js"></script>
+<script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script>
+    var backFrom ='';
+    T.editAddress = (function(){
+        var endGetDataFlag = true;
+        var orderNo = T.Util.getPara('orderNo');//订单好 从已付款记录过来添加地址
+        var check = {
+            name:function(val){
+                if(val == ''){
+                    tip('请输入收货人姓名！');
+                }else if(val.length<2){
+                    tip('姓名请输入2~15个字符！');
+                }else{
+                    return true;
+                }
+            },
+            tel:function(val){
+                var userInfo = T.Storage.get('userinfo');
+                if(val == ''){
+                    tip('请输入11位手机号码！');
+                }else if(userInfo && val == userInfo.userMobile){//本机号码
+                    return true;
+                }else if(!/^1\d{10}$/.test(val)){//手机号码正则校验
+                    tip('请输入11位手机号码！');
+                }else{
+                    return true;
+                }
+            },
+            area:function (val) {
+                if(val == ''){
+                    tip('请选择地区！');
+                }else{
+                    return true;
+                }
+            },
+            address:function (val) {
+                if(val == ''){
+                    tip('请输入详细地址！');
+                }else if(val.length<2){
+                    tip('请输入2~50个字符！');
+                }else {
+                    return true;
+                }
+            }
+        };
+
+        var o = {
+            //程序入口
+            init:function(){
+                var userinfo = T.Storage.get('userinfo');
+                if(!T.Util.isEmpty(userinfo) && T.Util.isEmpty(userinfo.userMobile) && !T.Util.isEmpty(orderNo)){
+                    if(backFrom=='setMobile'&&T.isNative){T.Util.back();return;}
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,//
+                        reqUrl:'/commodity/services/product/isNewCommodity.json?orderNo='+orderNo,
+                        callback:function(data){
+
+                        },
+                        errorCallback:function(data){//强制完善用户信息
+                            if(data.msg_code=='-15'){
+                                alert('为保障账户安全，请完善帐户信息。',function () {
+                                    backFrom = 'setMobile';
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setMobile.html');
+                                });
+                            }else{
+                                tip(data.msg);
+                            }
+                        }
+                    });
+                    $('#setUserMobile').show();
+                    $('#setUserMobile').off().Touch(function () {
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setMobile.html');
+                    });
+                }else{
+                    $('#setUserMobile').hide();
+                }
+                var id = T.Util.getPara('id');
+                if(id){
+                    $("title,#navtitle").text("编辑收货地址");
+                }else{
+                    $("title,#navtitle").text("新建收货地址");
+                }
+                var infoObj = T.Storage.getAndRemove('editAddressInfo');
+                if(infoObj){//如果id不为空 是过来编辑的 要赋值
+                    infoObj.userName && $('#name').val(infoObj.userName);
+                    infoObj.userAddr && $('#address').val(infoObj.userAddr);
+                    infoObj.userPhone && $('#tel').val(infoObj.userPhone);
+                    if(infoObj.areaCode && infoObj.areaCode.split('#')[0]!='null'){
+                        infoObj.area && $('.area').html(infoObj.area);
+                        $('.area').attr('data-province-code', infoObj.areaCode.split('#')[0]);
+                        $('.area').attr('data-city-code', infoObj.areaCode.split('#')[1]);
+                        $('.area').attr('data-district-code', infoObj.areaCode.split('#')[2]);
+                    }
+                }else{
+                    var userInfo = T.Storage.get("userinfo");
+                    if(userInfo && userInfo.realName){
+                        $("#name").val(userInfo.realName);
+                    }
+                    if(userInfo && userInfo.userMobile){
+                        $("#tel").val(userInfo.userMobile);
+                    }
+                    try{
+                        if(returnCitySN){
+                            var area = T.Util.trim(returnCitySN["cname"]);
+                            var provinces = "",city = "",county = "";
+                            //获取省份
+                            if(/省/.test(area)){
+                                provinces = area.slice(0,area.indexOf("省") + 1);
+                            }else if(/自治区/.test(area)){
+                                provinces = area.slice(0,area.indexOf("自治区") + 3);
+                            }else if(/北京/.test(area)||/天津/.test(area)||/上海/.test(area)||/重庆/.test(area)){
+                                provinces = area.slice(0,3);
+                            }
+                            //获取市
+                            if(provinces){
+                                if(/北京/.test(area)||/天津/.test(area)||/上海/.test(area)||/重庆/.test(area)){
+                                    city = area.slice(3,6);
+                                }else if(/市/.test(area)){
+                                    city = area.slice(provinces.length,area.indexOf("市") + 1);
+                                }
+                            }
+                            //获取县、区
+                            if(provinces && city){
+                                county = area.slice(provinces.length + city.length,area.length);
+                            }
+                            //设置省市区
+                            $("#area .area").text(provinces + " " + city + " " + county);
+                            //设置省市区代码
+                            if(provinces && iosProvinces){
+                                $("#area .area").attr("data-province-code",o.getCityCode(provinces,iosProvinces));
+                            }
+                            if(city && iosCitys){
+                                $("#area .area").attr("data-city-code",o.getCityCode(city,iosCitys));
+                            }
+                            if(county && iosCountys){
+                                $("#area .area").attr("data-district-code",o.getCityCode(county,iosCountys));
+                            }
+                        }
+                    }catch(e){
+                        console.log("获取定位失败");
+                    }
+                }
+                o.bindEvent();
+            },
+            //事件绑定
+            bindEvent:function(){
+                //选择地址
+                $('#area').off().Touch(function (el) {
+                    var infoObj = T.Storage.getAndRemove('editAddressInfo')||{};
+                    if($("#name").val()){
+                        infoObj["userName"] = $("#name").val();
+                    }
+                    if($("#tel").val()){
+                        infoObj["userPhone"] = $("#tel").val();
+                    }
+                    T.Storage.set('editAddressInfo',infoObj);
+                    var city = $("#area .area").text().match(/([^省\s]+?市)+?/);
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/baiduMap.html'+(city?"?city="+city[0]:""));
+                });
+                //编辑地址
+                $('#editaddress-submit').off().Touch(function () {
+                    var userInfo = T.Storage.get('userinfo');
+                    var userName = $('#name').val().trim();
+                    var userPhone = $('#tel').val().trim();
+                    var area = $('.area').html().trim();
+                    var areacode = $('.area').attr('data-province-code')+'#'+$('.area').attr('data-city-code')+'#'+$('.area').attr('data-district-code');
+                    var userAddr = $('#address').val().trim();
+                    if(!check.name(userName))return;
+                    if(!check.tel(userPhone))return;
+                    if(!check.area(area))return;
+                    if(!check.address(userAddr))return;
+                    var url = '/user/services/user/userAddress.json';
+                    var reqData = {
+                        data:{
+                            'userName':userName,
+                            'userPhone':userPhone,
+                            'area':area,
+                            'areacode':areacode,
+                            'userAddr':userAddr,
+                            'isDefault':(userInfo && userInfo.userMobile == userPhone) ? "1" : "0"
+                        }
+                    };
+                    if(!T.Util.isEmpty(T.Util.getPara('id'))){
+                        reqData.data.addrId = T.Util.getPara('id');
+                    }
+                    if(!endGetDataFlag){
+                        return false;
+                    }
+                    endGetDataFlag = false;
+                    T.Util.xmlHttpRequest({
+                        type:'post',
+                        reqData:reqData,
+                        reqUrl:url,
+                        callback:function(data){
+                            if(T.Util.getPara('type')=='select'){//从选择地址过来 需要设置本地设置地址信息
+                                var obj={
+                                    'ADDR_ID':data.res_data.value,
+                                    "AREA":area,
+                                    "AREA_CODE":areacode,
+                                    "USER_ADDR":userAddr,
+                                    "USER_NAME":userName,
+                                    "USER_PHONE":userPhone
+                                };
+                                T.Storage.set('selectAddressInfo',obj)
+                            }
+                            tip('保存成功','ok');
+                            if(!T.Util.isEmpty(orderNo)){//存在订单号需要调用关联订单号地址接口
+                                T.Util.xmlHttpRequest({
+                                    type:'get',
+                                    errorType:1,//
+                                    reqUrl:'/order/services/order/addOrderInfo.json?orderNo='+orderNo+'&addId='+data.res_data.value,
+                                    callback:function(data){
+                                        T.Storage.set('orderAddAddressOK',orderNo);//设置已关联标记 在订单记录里面更新状态
+                                        T.Util.back();//关联成功之后返回
+                                    },
+                                    errorCallback:function(){
+                                    }
+                                })
+                            }else{
+                                setTimeout(function(){
+                                    endGetDataFlag = true;
+                                    var from = T.Util.getParaSearch('from');
+                                    if(from == 'buy'){
+                                        T.Util.back({num:2});
+                                    }else{
+                                        T.Util.back();
+                                    }
+                                },1500);
+                            }
+                        },
+                        errorCallback:function(){
+                            endGetDataFlag = true;
+                        }
+                    })
+                });
+                //删除收获地址
+                $("#delete-submit").off().Touch(function(el){
+                    confirm({html:'确认删除此收货地址？',okFun:function(){
+                        o.editAddress(T.Util.getPara('id'),'isDelete',function () {
+                            T.Util.back();
+                        });
+                    }})
+                });
+                $("input").on("input",function(){
+                    if($(this).val().length > 0){
+                        $(this).parent().addClass("writing");
+                    }else{
+                        $(this).parent().removeClass("writing");
+                    }
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+            },
+            //编辑收货地址
+            editAddress:function (addrId,type,callback) {
+                var url = '/user/services/user/userAddress.json';
+                var reqData = {
+                    data:{
+                        'addrId':addrId,
+                    }
+                };
+                if(type =='isDefault'){//设为默认
+                    reqData.data.isDefault='1';
+                }
+                if(type =='isDelete'){//删除
+                    reqData.data.isDelete='1';
+                }
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        tip(type =='isDefault'?'设置成功':'删除成功','ok');
+                        callback();
+                    },
+                    errorCallback:function(){}
+                })
+            },
+            //根据城市名获取城市代码
+            getCityCode:function(cityName,data){
+                for(var i = 0;i < data.length;i++){
+                    if(data[i].value == cityName){
+                        return data[i].id;
+                    }
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.editAddress.init();
+            }, function () {//webview再次打开回调函数
+                T.editAddress.init();
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            window.onpageshow = function(){
+                T.editAddress.init();
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>新手指南</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        html,
+        body {
+            background: #fbf0b0 url(../img/activity/guide/guidewg.png) 0 -0.093333rem / 100% auto repeat-y;
+        }
+
+        #guide-box {
+            overflow: hidden;
+        }
+
+        #guide-box img {
+            position: absolute;
+            width: 100%;
+            display: block;
+        }
+
+        #banner {
+            position: relative;
+            margin: 5.533333rem auto 0 auto;
+            width: 9.44rem;
+            height: 5.773333rem;
+            overflow: hidden;
+        }
+
+        #banner #imgList {
+            margin: 0.573333rem 0.573333rem 0.613333rem 0.546667rem;
+            width: 8.32rem;
+            height: 4.586667rem;
+            overflow: hidden;
+        }
+
+        #banner #imgList #imgListWrap {
+            width: 200%;
+            overflow: hidden;
+        }
+
+        #banner #imgList .imgitem {
+            position: relative;
+            float: left;
+            width: 8.32rem;
+            height: 4.586667rem;
+        }
+
+        #banner #imgList .imgitem img {
+            margin: 0 0.08rem;
+            width: 8.16rem;
+            height: 4.586667rem;
+        }
+
+        #banner #indicator {
+            position: relative;
+            top: -0.44rem;
+            height: 0.173333rem;
+        }
+
+        #banner #indicator span {
+            margin: auto;
+            display: block;
+            width: 0.506667rem;
+            height: 0.173333rem;
+            overflow: hidden;
+        }
+
+        #banner #indicator span em {
+            float: left;
+            margin-right: 0.16rem;
+            display: inline-block;
+            width: 0.173333rem;
+            height: 0.173333rem;
+            border-radius: 0.086667rem;
+            background-color: #b2b2b2;
+        }
+
+        #banner #indicator span em:last-child {
+            margin-right: 0;
+        }
+
+        #banner #indicator span em.on {
+            background-color: #272727;
+        }
+
+        #banner #arrow em {
+            position: absolute;
+            top: 0;
+            width: 0.56rem;
+            height: 100%;
+        }
+
+        #banner #arrow em#arrowLeft {
+            left: 0.08rem;
+        }
+
+        #banner #arrow em#arrowRight {
+            right: 0.08rem;
+        }
+
+        #welfare {
+            position: relative;
+            margin: 1.746667rem 0.386667rem 0 0.4rem;
+            width: 9.213333rem;
+            height: 4.186667rem;
+        }
+
+        #welfare em {
+            float: left;
+            width: 4.213333rem;
+            height: 100%;
+        }
+
+        #welfare em:last-child {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>新手指南</h1>
+</div>
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <div id="guide-box">
+            <img src="../img/activity/guide/guidebg.png" id="bg">
+            <div id="banner">
+                <div id="imgList"><div id="imgListWrap">
+                    <div class="imgitem" id="esoterica"><img src="../img/activity/guide/guideban1.png"></div>
+                    <div class="imgitem" id="manual"><img src="../img/activity/guide/guideban2.png"></div>
+                </div></div>
+                <div id="indicator"><span><em class="on"></em><em></em></span></div>
+                <div id="arrow"><em id="arrowLeft"></em><em id="arrowRight"></em></div>
+            </div>
+            <div id="welfare"><em id="sign"></em><em id="recharge"></em></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.guide = (function(){
+
+        var o = {
+            init:function(){
+                o.initImgScroll(0);
+                o.bindEvent();
+                //banner内每个页面的PV/UV（banner_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"banner",
+                    "conductCode": "banner_fwl",
+                    "comductDesc": "banner内每个页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //事件绑定
+            bindEvent:function() {
+                //竞拍秘籍
+                $("#esoterica").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/esoterica.html');
+                });
+                //操作指南
+                $("#manual").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/manual.html');
+                });
+                //签到
+                $("#sign").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/sign.html');
+                });
+                //充值送
+                $("#recharge").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/recharge.html');
+                });
+                //滑动banner
+                $("#arrow em").off().Touch(function(){
+                    if($("#indicator em").eq(0).is(".on")){
+                        o.initImgScroll(1);
+                    }else{
+                        o.initImgScroll(0);
+                    }
+                });
+            },
+            //获取放大图片张数
+            getLargeLen:function(index){
+                var largerLen = 0,preLargerLen  = 0;
+                var imgList = $("#imgList .imgitem");
+                for(var i = 0;i < imgList.length;i++){
+                    if(imgList.eq(i).find("img").is(".larger")){
+                        largerLen += 1;
+                    }
+                }
+                for(var i = 0;i < index;i++){
+                    if(imgList.eq(i).find("img").is(".larger")){
+                        preLargerLen += 1;
+                    }
+                }
+                return [largerLen,preLargerLen];
+            },
+            //初始化滑动
+            initImgScroll:function(index,larger){
+                var len = $("#imgList .imgitem").length;
+                if(index < 0){
+                    index = 0;
+                }else if(index > len - 1){
+                    index = len - 1;
+                }
+                $("#indicator em").eq(index).addClass("on").siblings().removeClass("on");
+                T.viewerIndex = index;
+                o.imgScroll(len,index,larger);
+            },
+            //图片滑动
+            imgScroll:function(len,index,larger){
+                //banner滑动
+                var ismove = false;//是否为滑动
+                var hscroll = true,vscrol = true;
+                var start_x = 0,move_x = 0,start_left = 0,move_left = 0;
+                var start_y = 0,move_y = 0,start_top = 0,move_top = 0;
+                var index = index,width = $("#imgList").width();
+                var largerLen = o.getLargeLen(index)[0],preLargerLen = o.getLargeLen(index)[1];
+                var imgbox = $("#imgListWrap").animate({"marginLeft":-index * width - ((0.5*preLargerLen + (larger?0.25:0))*width) + "px","width":10 * len + (5*largerLen) + "rem"});
+
+                imgbox.off().on("touchstart",function(e){
+                    $("#deleteBox").addClass("hidden");
+                    setTimeout(function(){
+                        if(!ismove){
+                            $(".navbar").toggleClass("slideUp");
+                        }
+                    },10);
+
+                    try{
+                        start_x = e.changedTouches[0].clientX;
+                        start_y = e.changedTouches[0].clientY;
+                        start_left = parseInt(imgbox.css('margin-left'));
+                        start_top = parseInt(imgbox.css('padding'));
+                    }catch(e){}
+                });
+                imgbox.on("touchmove",function(e) {
+                    try {
+                        move_x = e.changedTouches[0].clientX;
+                        move_y = e.changedTouches[0].clientY;
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        move_top = parseInt(imgbox.css('padding'));
+                        var ratiox = 0.6 - Math.abs((move_left - start_left) / width);
+                        var ratioy = 0.2 - Math.abs((move_top - start_top) / width);
+                        var curLeft = move_left + 0.6 * ratiox * ratiox * (move_x - start_x);
+                        var curTop = move_top + 5 * ratioy * ratioy * (move_y - start_y);
+                        if(Math.abs(move_x - start_x) >= Math.abs(move_y - start_y)){
+                            if(hscroll){
+                                imgbox.css({"margin-left": curLeft + "px"}, 500);
+                                vscrol = false;
+                            }
+                        }else{
+                            if(vscrol){
+                                hscroll = false;
+                            }
+                        }
+                        if((move_x - start_x) > 1||(move_y - start_y) > 1){
+                            ismove = true;
+                            $(".navbar").addClass("slideUp");
+                        }else{
+                            ismove = false;
+                            $(".navbar").toggleClass("slideUp");
+                        }
+                    } catch (e) {
+                    }
+                });
+                imgbox.on("touchend",function(e) {
+                    try {
+                        ismove = false;
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        if(move_left > start_left){//右滑
+                            index = Math.floor(-(move_left + (0.5*preLargerLen*width)) / width);
+                        }else{
+                            index = Math.ceil(-(move_left + (0.5*(larger?(preLargerLen + 1):preLargerLen)*width)) / width);
+                        }
+                        if (index < 0) {
+                            index = 0;
+                        } else if (index > len - 1) {
+                            index = len - 1;
+                        }
+                        T.viewerIndex = index;
+                        $("#indicator em").eq(index).addClass("on").siblings().removeClass("on");
+                        largerLen = o.getLargeLen(index)[0],preLargerLen = o.getLargeLen(index)[1];
+                        larger = $('.imgitem[data-index="' + T.viewerIndex + '"]').find("img").is(".larger");
+                        $("#navTitle").text((index + 1) + '/' + len);
+                        if(Math.abs(move_x - start_x) > Math.abs(move_y - start_y)){
+                            e.preventDefault();
+                            if(move_x - start_x > 0){//右滑
+                                imgbox.animate({"margin-left": (-(index * width + (0.5*preLargerLen*width))) + "px"}, 500);
+                            }else{//左滑
+                                imgbox.animate({"margin-left": (-(index * width + (0.5*(larger?(preLargerLen + 1):preLargerLen)*width))) + "px"}, 500);
+                            }
+                        }else{
+                            $("#mallbanner").animate({"padding":"0"}, 500);
+                        }
+                        hscroll = true,vscrol = true;
+                    } catch (e) {
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.guide.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.guide.init();
+        }
+    });
+</script>
+</body>
+</html>

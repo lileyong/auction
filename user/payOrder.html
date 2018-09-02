@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>已付款订单</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        .record-item{width:100%;height:4.27rem;background-color:#fff;overflow:hidden;margin-bottom:0.13rem;}
+        .record-item .record-info{position:relative;margin:0 0.45rem;height:3.2rem;border-bottom:1px solid #dfdfdf;overflow:hidden;}
+        .record-item .record-info img{position:absolute;top:0.6rem;width:2rem;height:2rem;}
+        .record-item .record-info h2{font-size:0.37rem;color:#333;padding-left:2.33rem;line-height:0.62rem;}
+        .record-item .record-info h2.market-price{margin-top:0.71rem;}
+        .record-item .record-info h2 em{color:#666;}
+        .record-item .record-info h2 span{font-size:0.2666667rem;color:#999;}
+        .record-item .record-info h2.save_ratio{position:absolute;right:0.2rem;top:0.5333333rem;padding:0;text-align:center;line-height:0.3733333rem;background: url('../img/sprite.png') no-repeat -6.613333rem -3.306667rem;
+            background-size: 13.226667rem 11.946667rem;
+            width: 1.6rem;
+            height: 1.6rem;overflow:hidden;}
+        .record-item .record-info h2.save_ratio em{display:block;line-height:0.3733333rem;font-size:0.32rem;color:#ff4a4a;}
+        .record-item .record-info h2.save_ratio em:first-child{margin-top:0.3733333rem;}
+        .recore-footer{overflow:hidden;}
+        .recore-footer .record-status{float:left;padding-left:0.45rem;line-height:1.07rem;font-size:0.35rem;color:#f72f2f;}
+        .recore-footer .record-status em{margin-left:0.27rem;}
+        .recore-footer .record-status.doing{color:#f72f2f;}
+        .recore-footer .record-status.overNo{color:#f72f2f;}
+        .recore-footer .record-status.overOk{color:#f72f2f}
+        .recore-footer .record-btn{float:right;margin:0.2rem 0.4rem 0.2rem 0;display:inline-block;width:2.13rem;height:0.67rem;text-align:center;line-height:0.67rem;border:1px solid #9a9a9a;border-radius:0.33rem;font-size:0.35rem;color:#666666;box-sizing: border-box;-webkit-box-sizing: border-box;}
+        .recore-footer .record-btn:nth-child(2){color:#f72f2f;border-color:#f72f2f;}
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>已付款订单</h1>
+</div>
+<div class="mainContent" id="main">
+    <ul class="record-list" id="overOk"></ul>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script>
+    T.payOrder = (function(){
+        var dropLoad = '';
+        var pageIndex = 1;//分页索引
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        var o = {
+            //程序入口
+            init:function(){
+                var access_token = T.Storage.get('access_token');
+                if(!access_token){
+                    T.Util.login();
+                    return;
+                }
+                o.loadCache();//加载缓存
+                o.getPayOrder();//获取往期成交记录
+                o.bindEvent();//事件绑定
+            },
+            //加载网页缓存
+            loadCache:function(){
+                var payOrder = T.Storage.get('payOrder');
+                if(payOrder){
+                    $(".record-list").html(payOrder);
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                $(window).off().scroll(o.loadMoreData);//绑定下滑加载更多
+                $('#main').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getPayOrder();
+                    },
+                    threshold : 50
+                });
+            },
+            //绑定最新成交事件
+            bindLatestDealEvent:function(){
+                //参与竞拍
+                $(".auction-submit").off().Touch(function(el){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).attr('data-id')+'&expectNo='+$(el).attr('data-expect-no'));
+                });
+            },
+            //计算节省比例
+            getSaveRatio:function(item){
+                if(item.AUCTION_PRICE && item.PRODUCT_PRICE){
+                    return (100 - item.AUCTION_PRICE / item.PRODUCT_PRICE * 100).toFixed(2)
+                }else{
+                    return '0.00';
+                }
+            },
+            getPayOrder:function(){
+                tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/order/services/order/payOrder.json?page=' + pageIndex + '&limit=10',//
+                    callback:function(data){
+                        setTimeout(function () {
+                            pageLoading.hide();
+                        },1);
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO,htmlArr=[];
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        for(var i=0;i<d.length;i++){
+                             var fhStr = '<h2 class="record-status overNo">待发货</h2>';
+                             var wuliuStr='';
+                             if(d[i].ORDER_STATUS&&d[i].ORDER_STATUS==10){//已付款 已发货
+                                 fhStr ='<h2 class="record-status overOK">已发货</h2>';
+                                 wuliuStr = '<em class="record-btn wuliu" ORDER_NO="'+d[i].ORDER_NO+'" IS_ENTITY="'+d[i].IS_ENTITY+'">查看详情</em>';
+                             }
+                            var shaidanStr = '<em class="record-btn pingjia">去评价</em>';
+                             if(d[i].AUCTION_PRICE&&d[i].AUCTION_PRICE>0){
+                                 shaidanStr = '<em class="record-btn shaidan">去晒单</em>'
+                             }
+                            if(d[i].IS_SHARE&&d[i].IS_SHARE==1){//已经晒过单
+                                shaidanStr='';
+                            }
+                            if(d[i].AUCTION_PRICE&&d[i].AUCTION_PRICE>0){
+                                htmlArr.push('<li class="record-item">\
+                                <div class="record-info">\
+                                <img src="'+d[i].COMMODITY_LOGO+'">\
+                                <h2 class="market-price">竞拍价：<em>￥'+d[i].AUCTION_PRICE+'</em></h2>\
+                            <h2 class="auction-price">数量：<em>'+d[i].COUNT+'件</em></h2>\
+                            <h2 class="lead-people">已付款：<em>¥'+(d[i].ORDER_MONEY-d[i].REBATE_MONEY)+'</em><span>（含手续费¥'+d[i].POUNDAGE_PRICE+'）</span></h2>\
+                            <h2 class="save_ratio"><em>省</em><em>'+o.getSaveRatio(d[i])+'%</em></h2>\
+                                </div>\
+                                <div class="recore-footer" data-id="'+d[i].COMMODITY_ID+'" data-EXPECT_ID="'+d[i].EXPECT_ID+'">'+fhStr+'<em class="record-btn auction">继续竞拍</em>'+shaidanStr+wuliuStr+'</div>\
+                                </li>');
+                            }else{
+                                htmlArr.push('<li class="record-item">\
+                                <div class="record-info">\
+                                <img src="'+d[i].COMMODITY_LOGO+'">\
+                                <h2 class="market-price">价格：<em>￥'+d[i].PRODUCT_PRICE+'</em></h2>\
+                            <h2 class="auction-price">数量：<em>'+d[i].COUNT+'件</em></h2>\
+                            <h2 class="auction-price">优惠：<em>¥'+d[i].REBATE_MONEY+'</em></h2>\
+                            <h2 class="lead-people">已付款：<em>¥'+(d[i].ORDER_MONEY-d[i].REBATE_MONEY)+'</em><span>（含运费¥'+d[i].TRANSPORT_PRICE+'）</span></h2>\
+                                </div>\
+                                <div class="recore-footer" data-id="'+d[i].COMMODITY_ID+'"  data-ORDER_NO="'+d[i].ORDER_NO+'">'+fhStr+'<em class="record-btn gobuy">继续购买</em>'+shaidanStr+wuliuStr+'</div>\
+                                </li>');
+                            }
+
+                        }
+                        if(dropLoad != ''){
+                            $('#overOk').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(htmlArr.length){
+                            $("html,body").removeClass("white");
+                            $('#overOk').append(htmlArr.join(''));
+                        }else{
+                            $("html,body").addClass("white");
+                            $('#overOk').html('<li class="nodata order"><i></i><h2>暂无订单哦~</h2></li>');
+                        }
+                        T.Storage.get('payOrder',$("#overOk").html());
+                        $(".shaidan").off().Touch(function(el){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/addShaidan.html?id='+$(el).parent().attr('data-id')+'&expectId='+$(el).parent().attr('data-EXPECT_ID')+'&type=shaidan');
+                        });
+                        $(".pingjia").off().Touch(function(el){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/addShaidan.html?id='+$(el).parent().attr('data-id')+'&orderNo='+$(el).parent().attr('data-ORDER_NO')+'&type=pingjia');
+                        });
+                        $(".auction").off().Touch(function(el){//继续竞拍
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).parent().attr('data-id')+'&expectNo=1&isNext=1');
+                        });
+                        $(".gobuy").off().Touch(function(el){//继续购买
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+$(el).parent().attr('data-id'));
+                        });
+                        $('.wuliu').off().Touch(function(el){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/queryExpress.html?ORDER_NO='+$(el).attr('ORDER_NO')+'&IS_ENTITY='+$(el).attr('IS_ENTITY'));
+                        });
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".record-item").length){
+                                $("#overOk").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //滑到底部加载更多
+            loadMoreData:function(){
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(!hasMore)return;//没有更多 不请求数据
+                    o.getPayOrder();
+                }
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+$(document).ready(function () {
+    if (T.isNative) {
+        T.appToH5.init(function () {//初始化事件回调函数
+            T.payOrder.init();
+        }, function () {//webview再次打开回调函数
+            if($('.record-item').length==0){//token失效触发了登陆 第一次没拉接口 要重新拉接口
+                //再次回来还是么有token 直接回退一级
+                if(T.Util.isEmpty(T.Storage.get('userinfo'))){
+                    T.Util.back();
+                    return;
+                }
+                T.payOrder.init();
+            }else{
+                var shaidanSucInfo = T.Storage.get('shaidanSucInfo');
+                if (!T.Util.isEmpty(shaidanSucInfo)) {//晒完的回来检察是否晒单成功 成功的话 隐藏对应按钮
+                    if (shaidanSucInfo.type == 'shaidan') {//嗮单回来
+                        $('[data-expect_id="' + shaidanSucInfo.shaidanNo + '"]').find('.shaidan').hide();
+                    } else {//评价回来
+                        $('[data-ORDER_NO="' + shaidanSucInfo.shaidanNo + '"]').find('.pingjia').hide();
+                    }
+                    T.Storage.remove('shaidanSucInfo');
+                }
+            }
+        }, function () {//webview消失第一视角回调函数
+
+        }, function () {//app退到系统后台回调函数
+
+        }, function () {//app退到系统后台后重新回到app触发的函数
+
+        });
+    } else {
+        T.payOrder.init();
+    }
+});
+</script>
+</body>
+</html>

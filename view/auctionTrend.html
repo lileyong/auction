@@ -1,0 +1,642 @@
+<link type="text/css" rel="stylesheet" href="../css/auctionTrend.css">
+<style>
+    #auctionGoods {
+        float: none;
+        position: relative;
+        width: 100%;
+        height: 2.666667rem;
+        border: none;
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    #auctionGoods #goodsImg {
+        position: absolute;
+        left: 0.453333rem;
+        top: 0.373333rem;
+        width: 1.92rem;
+        height: 1.92rem;
+    }
+
+    #auctionGoods #goodsDesc {
+        padding: 0.4rem 0.613333rem 0 2.56rem;
+        height: 0.96rem;
+        text-align: left;
+        line-height: 0.48rem;
+        font-size: 0.346667rem;
+        color: #666666;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #auctionGoods #goodsPrice ,#goodsState{
+        height: 1.306667rem;
+        padding-left: 2.56rem;
+        text-align: left;
+        line-height: 1.306667rem;
+        font-size: 0.4rem;
+        color: #333333;
+    }
+
+    #auctionGoods #goodsPrice span {
+        text-align: left;
+        font-size: 0.32rem;
+        color: #333333;
+        letter-spacing: 0;
+        border: none;
+    }
+
+    #auctionGoods #goodsPrice span em {
+        font-size: 0.32rem;
+        color: #333333;
+        letter-spacing: 0;
+    }
+
+    #auctionGoods #goodsPrice span em:last-child {
+        font-size: 0.4rem;
+    }
+
+    #auctionGoods #goodsPrice del {
+        margin-left: 0.4rem;
+        font-size: 0.32rem;
+        color: #999999;
+        letter-spacing: 0;
+    }
+
+    #auctionData {
+        margin-top: 0.266667rem;
+        width: 100%;
+        height: 6.426667rem;
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    #auctionData #trendData {
+        width: 100%;
+        height: 5.066667rem;
+        background: url(../img/goods/trenddata_bg.png) center center / 9.12rem 4.293333rem  no-repeat;
+        overflow: hidden;
+    }
+
+    #auctionData #trendData .trendDataItem {
+        float: left;
+        width: 50%;
+        height: 2.533333rem;
+    }
+
+    #auctionData #trendData .trendDataItem h2 {
+        margin-top: 0.333333rem;
+        padding-left: 1.04rem;
+        line-height: 0.533333rem;
+        font-size: 0.373333rem;
+        color: #999999;
+    }
+
+    #auctionData #trendData .trendDataItem p {
+        padding-left: 1.04rem;
+        line-height: 0.746667rem;
+        font-size: 0.533333rem;
+        color: #f72f2f;
+    }
+
+    #auctionData #trendData .trendDataItem p.nodata {
+        margin-top: 0.186667rem;
+        height: 0.533333rem;
+        line-height: 0.533333rem;
+        font-size: 0.3733333rem;
+    }
+
+    #auctionData #trendData .trendDataItem p em {
+        font-size: 0.373333rem;
+    }
+
+    #auctionTrend {
+        margin-top: 0.266667rem;
+        width: 100%;
+        height: 7.546667rem;
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    #auctionTrend #trendChartBox {
+        position: relative;
+        width: 100%;
+        height: 6.186667rem;
+        overflow: hidden;
+    }
+
+    #auctionTrend #trendChartBox.chart {
+        background: url(../img/goods/trend_bg.png) center center / 100% 100%  no-repeat;
+    }
+
+    #auctionTrend #trendChartBox #xScale {
+        display: none;
+        position: absolute;
+        left: 0;
+        bottom: 0.56rem;
+        width: 100%;
+        height: 0.453333rem;
+    }
+
+    #auctionTrend #trendChartBox.chart #xScale {
+        display: block;
+    }
+
+    #auctionTrend #trendChartBox #xScale em {
+        position: absolute;
+        display: inline-block;
+        width: 1.04rem;
+        height: 0.453333rem;
+        text-align: center;
+        line-height: 0.453333rem;
+        font-size: 0.32rem;
+        color: #999999;
+        white-space: nowrap;
+    }
+
+    #auctionTrend #trendChartBox #xScale em:nth-child(1) {
+        left: 0.626667rem;
+    }
+
+    #auctionTrend #trendChartBox #xScale em:nth-child(2) {
+        left: 2.226667rem;
+    }
+
+    #auctionTrend #trendChartBox #xScale em:nth-child(3) {
+        left: 3.826667rem;
+    }
+
+    #auctionTrend #trendChartBox #xScale em:nth-child(4) {
+        left: 5.426667rem;
+    }
+
+    #auctionTrend #trendChartBox #xScale em:nth-child(5) {
+        left: 7.026667rem;
+    }
+
+    #auctionTrend #trendChartBox #xScale em:nth-child(6) {
+        left: 8.626667rem;
+    }
+
+    #auctionTrend #trendChartBox #yScale {
+        position: absolute;
+        left: 0.453333rem;
+        top: 0;
+        width: 0.586667rem;
+        height: 100%;
+    }
+
+    #auctionTrend #trendChartBox #yScale em {
+        position: absolute;
+        right: 0;
+        display: inline-block;
+        height: 0.453333rem;
+        text-align: center;
+        line-height: 0.453333rem;
+        font-size: 0.32rem;
+        color: #999999;
+    }
+
+    #auctionTrend #trendChartBox #yScale em:nth-child(1) {
+        bottom: 0.973333rem;
+    }
+
+    #auctionTrend #trendChartBox #yScale em:nth-child(2) {
+        bottom: 1.8rem;
+    }
+
+    #auctionTrend #trendChartBox #yScale em:nth-child(3) {
+        bottom: 2.626667rem;
+    }
+
+    #auctionTrend #trendChartBox #yScale em:nth-child(4) {
+        bottom: 3.453333rem;
+    }
+
+    #auctionTrend #trendChartBox #yScale em:nth-child(5) {
+        bottom: 4.28rem;
+    }
+
+    #auctionTrend #trendChartBox #yScale em:nth-child(6) {
+        bottom: 5.106667rem;
+    }
+
+    #auctionTrend #trendChartBox .mark {
+        position: absolute;
+        width: 1.546667rem;
+        height: 0.773333rem;
+    }
+
+    #auctionTrend #trendChartBox .mark i {
+        position: absolute;
+        left: 0.653333rem;
+        display: inline-block;
+        background: #fff;
+        border: 0.066667rem solid #f72f2f;
+        width: 0.106667rem;
+        height: 0.106667rem;
+        border-radius: 100%;
+    }
+
+    #auctionTrend #trendChartBox .mark p {
+        position: absolute;
+        width: 100%;
+        height: 0.426667rem;
+        text-align: center;
+        line-height: 0.426667rem;
+        font-size: 0.293333rem;
+        color: #f72f2f;
+        white-space: nowrap;
+    }
+
+    #auctionTrend #trendChartBox #minValPoint i {
+        top: 0;
+    }
+
+    #auctionTrend #trendChartBox #minValPoint p {
+        bottom: 0;
+    }
+
+    #auctionTrend #trendChartBox #maxValPoint i {
+        bottom: 0;
+    }
+
+    #auctionTrend #trendChartBox #maxValPoint p {
+        top: 0;
+    }
+
+    #auctionHistory {
+        margin-top: 0.266667rem;
+        width: 100%;
+        min-height: 3.973333rem;
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    .trendTitle {
+        position: relative;
+        width: 100%;
+        height: 1.333333rem;
+        border-bottom: 0.026667rem solid #f5f5f5;
+    }
+
+    .trendTitle h2 {
+        padding-left: 1.28rem;
+        height: 1.333333rem;
+        line-height: 1.333333rem;
+        font-size: 0.4rem;
+        color: #666666;
+    }
+
+    .trendTitle i {
+        position: absolute;
+        left: 0.453333rem;
+        top: 0.346667rem;
+        display: inline-block;
+        width: 0.64rem;
+        height: 0.64rem;
+        background-color: #999;
+    }
+
+    /*成交走势页*/
+    #latestdeal .historydeal-item {height: 2.613333rem;}
+    #latestdeal .historydeal-item img {top: 0.986667rem;width: 1.173333rem;height: 1.173333rem;}
+    #latestdeal .historydeal-item .auction-time {margin: 0.4rem auto 0.133333rem auto;height: 0.453333rem;line-height: 0.453333rem;}
+    #latestdeal .historydeal-item .auction-detail {height: 0.56rem;line-height: 0.56rem;}
+    #latestdeal .historydeal-item .save-ratio {height: 100%;}
+    #latestdeal .historydeal-item .save-ratio span {margin-top: 1.013333rem;display: block;width: 100%;height: 0.746667rem;line-height: 0.746667rem;font-size: 0.533333rem;color: #333;}
+    #latestdeal .historydeal-item .save-ratio em {margin-top: -0.133333rem;display: block;width: 100%;height: 0.453333rem;line-height: 0.453333rem;font-size: 0.32rem;color: #666;}
+</style>
+<div class="content" id="content">
+    <div id="auctionTrendBox">
+        <div id="auctionGoods">
+            <img id="goodsImg" src="http://jp.ruirun123.cn/info/c16fbdd64c624c13981b9b763618d708.png">
+            <p id="goodsDesc"><!--Beats Solo3 Wireless 头戴式 蓝牙无线耳机手机耳机 游戏耳机 - 红色MP162...--></p>
+            <p id="goodsPrice"><span>竞拍价<em>￥</em><em>199.00</em></span><del>市场价¥1458.00</del></p>
+            <p id="goodsState" class="hide">预约中</p>
+        </div>
+        <div id="auctionData">
+            <div class="trendTitle"><i style="background:url(../img/goods/trend_data.png) 0 0 / 100% 100% no-repeat;"></i><h2>历史成交数据</h2></div>
+            <div id="trendData">
+                <div class="trendDataItem" id="avgPrice"><h2>平均成交价</h2><p></p></div>
+                <div class="trendDataItem" id="avgNum"><h2>平均成交次数</h2><p></p></div>
+                <div class="trendDataItem" id="priceIncrease"><h2>价格环比上月</h2><p></p></div>
+                <div class="trendDataItem" id="numIncrease"><h2>次数环比上月</h2><p></p></div>
+            </div>
+        </div>
+        <div id="auctionTrend">
+            <div class="trendTitle"><i style="background:url(../img/goods/trend_line.png) 0 0 / 100% 100% no-repeat;"></i><h2>成交走势</h2></div>
+            <div id="trendChartBox">
+                <div id="xScale"><em>第1次</em><em>第10次</em><em>第20次</em><em>第30次</em><em>第40次</em><em>第50次</em></div>
+                <div id="yScale"><em></em><em></em><em></em><em></em><em></em><em></em></div>
+                <div id="minValPoint" class="mark"></div>
+                <div id="maxValPoint" class="mark"></div>
+                <svg id="trendChartSvg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0,0,750,464">
+                    <defs>
+                        <linearGradient x1="86" y1="374" x2="86" y2="64" id="fillColor">
+                            <stop stop-color="rgba(253,174,174,0)" offset="0"/>
+                            <stop stop-color="rgba(253,174,174,1)" offset="1"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="nodata" style="display:none;"><i></i><h2>暂无数据记录</h2></div>
+            </div>
+        </div>
+        <div id="auctionHistory">
+            <div class="trendTitle"><i style="background:url(../img/goods/trend_history.png) 0 0 / 100% 100% no-repeat;"></i><h2>往期成交</h2></div>
+            <div id="latestdeal"></div>
+        </div>
+        <div class="goAuctionBtn">立即竞拍</div>
+    </div>
+</div>
+<script>
+    T.auctionTrend = (function(){
+        var dropLoad = '';
+        var pageIndex = 0;
+        var pageSize = 10;
+        var hasMore = false;
+        var reqEndFlag = true;
+        var commodityId = T.Util.getPara('COMMODITY_ID');
+
+        var o = {
+            init:function(){
+                o.initGoodsInfo();
+                o.getAuctionTrend();
+                o.getHistoryAuction();
+                o.bindEvent();
+                //各个商品成交走势页面的PV/UV（wdsc_cjyfwl001，数字为商品id）
+                T.Util.setUserBehaviorList({
+                    "busId":T.Util.getPara("COMMODITY_ID"),
+                    "conductCode": "wdsc_cjyfwl"+T.Util.getPara("COMMODITY_ID"),
+                    "comductDesc": "各个商品成交走势页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            bindEvent:function(){
+                $('.goAuctionBtn').off().Touch(function () {
+                    //各个商品成交走势页面底部“立即竞拍”的点击量（wdsc_cjydjl001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId":T.Util.getPara("COMMODITY_ID"),
+                        "conductCode": "wdsc_cjydjl"+T.Util.getPara("COMMODITY_ID"),
+                        "comductDesc": "各个商品成交走势页面底部“立即竞拍”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id=' + commodityId + '&isNext=1');
+                });
+                //滑动加载
+                $(window).off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && reqEndFlag){
+                        if(hasMore){
+                           // o.getHistoryAuction(true); 产品说只需要加载10条
+                        }
+                    }
+                });
+                //绑定下拉刷新
+                $('#auctionTrendBox').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getAuctionTrend();
+                        o.getHistoryAuction();
+                    },
+                    threshold : 50
+                });
+            },
+            //日期格式化
+            timeFormat:function(time){
+                if(typeof time == 'string'){
+                    return new Date(time.replace(/-/g,'/')).format("yyyy-MM-dd hh:mm");
+                }else if(typeof time == 'number'){
+                    return new Date(time).format("yyyy-MM-dd hh:mm");
+                }else{
+                    return '--:--';
+                }
+            },
+            //计算节省比例
+            getSaveRatio:function(item){
+                if(item.BARGAIN_MONEY && item.MARKET_PRICE){
+                    return (100 - item.BARGAIN_MONEY / item.MARKET_PRICE * 100).toFixed(2)
+                }else{
+                    return '0.00';
+                }
+            },
+            //初始化商品信息
+            initGoodsInfo:function(){
+                var htmlArr = [];
+                htmlArr.push('<img id="goodsImg" src="' + T.Util.getPara("COMMODITY_LOGO") + '">');
+                htmlArr.push('<p id="goodsDesc">' + (T.Util.getPara("PRODUCT_NOTE")||T.Util.getPara("COMMODITY_TITLE")) + '</p>');
+                htmlArr.push('<p id="goodsPrice"><span>竞拍价<em>￥</em><em class="AUCTION_PRICE">' + T.Util.getPara("AUCTION_PRICE") + '</em></span><del>市场价¥' + T.Util.getPara("MARKET_PRICE") + '</del></p>');
+                htmlArr.push('<p id="goodsState" class="hide">预约中</p>');
+                $("#auctionGoods").html(htmlArr.join("")).attr("data-id",T.Util.getPara("COMMODITY_ID"));
+                //订阅商品信息
+                var messArr = [];
+                messArr.push('auction/commodity/'+commodityId);
+                T.Util.mqtt(messArr);
+            },
+            //获取成交走势
+            getAuctionTrend:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/template/GET_EXPECT_INFO.json?commodityId='+commodityId,
+                    callback:function(data){
+                        var d= data.res_data[0];
+                        if(d.expectStatus!=100){
+                            var state = d.expectStatus==80?'预约中': d.expectStatus==90?'暂停预约': d.expectStatus==120?'暂停竞拍':'已成交';
+                            $('#goodsState').html(state);
+                            $('#goodsPrice').hide();
+                            $('#goodsState').show();
+                        }else{
+                            $('.AUCTION_PRICE').html(d.auctionPrice.toFixed(2));
+                            $('#goodsPrice').show();
+                            $('#goodsState').hide();
+                        }
+                    },
+                    errorCallback: function (data) {
+                        tip(data.msg || data.result_msg);
+                    }
+                });
+                //坐标参数
+                var startX = 86,startY = 90,scaleW = 600,scaleH = 310;
+                var xMinScale = 0,xMaxScale = 50,yMinScale = 0,yMaxScale = 100;
+                var minValIndex = 0,maxValIndex = 0;//最大、最小值索引
+                var d = "M 686 374 L 86 374";
+                //获取坐标位置
+                function getPoint(index,price){
+                    var x = startX + index * scaleW / xMaxScale;
+                    var y = 464 - (startY + (price - yMinScale) * scaleH /(yMaxScale - yMinScale));
+                    return [x,y];
+                }
+                //获取坐标路径
+                function getScalePath(index,price){
+                    var point = getPoint(index,price);
+                    var x = point[0],y = point[1];
+                    d = d.replace(/M\s.*\s374\sL\s86\s374/,"M " + x + " 374 L 86 374");
+                    d += " " + x + " " + y;
+                    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute('d',d);
+                    path.setAttribute('fill',"url(#fillColor)");
+                    path.setAttribute('stroke',"#f72f2f");
+                    path.setAttribute('stroke-width',"2");
+                    return path;
+                }
+
+                T.Util.xmlHttpRequest({
+                    type: 'get',
+                    errorType: '1',
+                    reqUrl: '/commodity/services/product/favorite/stat.json?commodityId='+commodityId,
+                    callback: function (data) {
+                        /*渲染商品信息剩余部分*/
+                        var COMMODITY_INFO = data.res_data.value.COMMODITY_INFO||{};
+                        $("#goodsDesc").html(COMMODITY_INFO.COMMODITY_TITLE||COMMODITY_INFO.COMMODITY_NAME);
+                        $("#goodsPrice del").html("市场价¥" + Number(COMMODITY_INFO.MARKET_PRICE).toFixed(2));
+                        /*渲染历史成交数据*/
+                        var monthList = data.res_data.value.MONTH_LIST;
+                        if(monthList.length>0){
+                            var curMonth = new Date().getMonth() + 1;
+                            if(curMonth == parseInt(monthList[0].MONTH_EXPECT.slice(-2))){
+                                var avgPrice = monthList[0] ? monthList[0]["AVG_PRICE"] : 0,lastMonthAvgPrice = monthList[1] ? monthList[1]["AVG_PRICE"] : 0;
+                                var priceIncrease = lastMonthAvgPrice ? (avgPrice - lastMonthAvgPrice)/lastMonthAvgPrice : 0;
+                                var avgNum = monthList[0] ? monthList[0]["AVG_NUM"] : 0,lastMonthAvgNum = monthList[1] ? monthList[1]["AVG_NUM"] : 0;
+                                var numIncrease = lastMonthAvgNum ? (avgNum - lastMonthAvgNum)/lastMonthAvgNum : 0;
+                                $("#avgPrice p").html("<em>￥</em>" + Number(monthList[0]["AVG_PRICE"]).toFixed(2));
+                                $("#avgNum p").html(parseInt(monthList[0]["AVG_NUM"]) + "<em>次/天</em>");
+                                if(monthList.length > 1){
+                                    $("#priceIncrease p").html("<em>" + (priceIncrease >= 0 ? "上升":"下降") + "</em>" + Math.abs(priceIncrease).toFixed(2) + "<em>%</em>");
+                                    $("#numIncrease p").html("<em>" + (numIncrease >= 0 ? "上升":"下降") + "</em>" + Math.abs(numIncrease).toFixed(2) + "<em>%</em>");
+                                }else{
+                                    $("#priceIncrease p").addClass("nodata").text("暂无数据");
+                                    $("#numIncrease p").addClass("nodata").text("暂无数据");
+                                }
+                            }else{
+                                $(".trendDataItem p").addClass("nodata").text("暂无数据");
+                            }
+                        }else{
+                            $(".trendDataItem p").addClass("nodata").text("暂无数据");
+                        }
+                        /*渲染成交走势图*/
+                        var d = data.res_data.value.EXPORT_LIST;
+                        //计算数据最小/最大值
+                        if(d.length){
+                            $("#trendChartBox").addClass("chart");
+                            var maxPrice = 0,minPrice=d[0].AUCTION_PRICE;
+                            for(var i=0; i<d.length; i++){
+                                if(d[i].AUCTION_PRICE >= maxPrice){
+                                    maxValIndex = i;
+                                }
+                                if(d[i].AUCTION_PRICE < minPrice){
+                                    minValIndex = i;
+                                }
+                                maxPrice = d[i].AUCTION_PRICE < maxPrice ? maxPrice : d[i].AUCTION_PRICE;
+                                minPrice = d[i].AUCTION_PRICE > minPrice ? minPrice : d[i].AUCTION_PRICE;
+                            }
+                            //计算纵坐标最小/最大刻度
+                            yMinScale = Math.floor(Math.floor(minPrice - 0.1 * (maxPrice - minPrice)) / 10) * 10;
+                            yMaxScale = Math.ceil(Math.ceil(maxPrice + 0.1 * (maxPrice - minPrice)) / 10) * 10;
+                            if(minPrice == maxPrice){
+                                yMaxScale = yMaxScale + 5;
+                                yMinScale = yMinScale - 5;
+                            }
+                            yMinScale = yMinScale < 0 ? 0 : yMinScale;
+                            //绘制y轴刻度
+                            for(var i = 0;i < 6;i++){
+                                $("#auctionTrend #trendChartBox #yScale em").eq(i).text(yMinScale + i * (yMaxScale - yMinScale)/5);
+                            }
+                            //标注最大值、最小值
+                            var minValPoint = getPoint(minValIndex,d[minValIndex].AUCTION_PRICE);
+                            var maxValPoint = getPoint(maxValIndex,d[maxValIndex].AUCTION_PRICE);
+                            $("#minValPoint").attr("style",("left:" + ((minValPoint[0] - 58)/75) + "rem;top:" + ((minValPoint[1] - 9)/75) + "rem")).html('<i></i><p>最低' + Number(minPrice).toFixed(2) + '</p>');
+                            $("#maxValPoint").attr("style",("left:" + ((maxValPoint[0] - 58)/75) + "rem;top:" + ((maxValPoint[1] - 49)/75) + "rem")).html('<i></i><p>最高' + Number(maxPrice).toFixed(2) + '</p>');
+                            //动态绘制成交走势
+                            var index = 0;
+                            clearInterval(Global.drawCurvTimer);
+                            Global.drawCurvTimer = setInterval(function(){
+                                $("#trendChartSvg").find("path").remove();
+                                $("#trendChartSvg").append(getScalePath(index,d[index].AUCTION_PRICE));
+                                index += 1;
+                                if(index >= d.length){
+                                    clearInterval(Global.drawCurvTimer);
+                                }
+                            },10);
+                        }else{
+                            $(".nodata").show().siblings().hide();
+                        }
+                    },
+                    errorCallback: function (data) {
+                        tip(data.msg || data.result_msg);
+                    }
+                });
+            },
+            //获取往期成交数据
+            getHistoryAuction:function(fromMore){
+                reqEndFlag = false;
+                if(!fromMore){
+                    pageIndex = 0;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/order/pastDone.json?commodityId=' + commodityId+'&page=' + pageIndex + '&limit=' + pageSize,//type 0:全部 1：正在拍 2：我拍中 3：未拍中 4：待付款
+                    callback:function(data){
+                        reqEndFlag = true;
+                        var d = data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND=='2'){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showHistoryAuction(d,fromMore);
+                    },
+                    errorCallback:function(data){
+                        reqEndFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                    }
+                });
+            },
+            //渲染往期成交记录
+            showHistoryAuction:function(data,fromMore){
+                var html = [];
+                $.each(data,function(i,item){
+                    html.push('<div class="historydeal-item"><img class="userphoto lozad" src="../img/goods/lazy_load.png" data-src="' + item.USER_PIC + '">');
+                    html.push('<h2 class="auction-time">' + o.timeFormat(item.BARGAIN_TIME) + '</h2><h2 class="auction-detail">成交人：<em>' + (item.NICK_NAME||item.USER_MOBILE) + '</em></h2>');
+                    html.push('<h2 class="auction-detail">成交价：<em class="price">￥' + (item.BARGAIN_MONEY ? item.BARGAIN_MONEY.toFixed(2) : "0.00") + '</em></h2><h2 class="save-ratio' + (item.BARGAIN_MONEY >= item.MARKET_PRICE ? " hide":"") + '"><span>' + o.getSaveRatio(item) + '%</span><em>节省</em></h2></div>');
+                });
+                if(html.length){
+                    fromMore ? $("#latestdeal").append(html.join("")) : $("#latestdeal").html(html.join(""));
+                }else{
+                    if(!fromMore){
+                        $("#latestdeal").html('<div class="nodata auction"><i></i><h2>暂无数据</h2></div>');
+                    }
+                }
+                $(".detail-item").eq(2).css("min-height","inherit");
+                lozad().observe();
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.auctionTrend.init();
+    });
+</script>
+
+

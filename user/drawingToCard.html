@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>提现</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/drawing.css">
+</head>
+<body>
+<div class="navbar absolute">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>提现</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="drawing-box">
+        <div class="drawing-head"><h2>可兑换金额</h2><p>￥<span id="allMoney">--</span></p></div>
+        <div id="drawing" style="display:none;">
+            <div class="drawing-main" id="drawingForm">
+                <div class="drawingbank" id="selectBankCard"><h2>到账银行卡<em class="bankname">工商银行（5631）</em></h2></div>
+                <div class="drawing-amount">
+                    <h2>提现金额</h2>
+                    <em class="yuan">￥</em><input type="number" placeholder="请输入提现金额" id="money" onKeypress="return T.Util.numReg($(this).val(),String.fromCharCode(event.keyCode))">
+                </div>
+                <p id="feeTips">提现金额小于￥100.00，扣除￥1.00手续费</p>
+                <div class="formItem tel"><label for="tel"><span class="space3">手机号</span>：</label><input type="text" placeholder="请输入手机号码" id="tel"></div>
+                <div class="formItem message"><label for="message"><span class="space3">验证码</span>：</label><input type="number" placeholder="请输入验证码" id="message"><em id="getMessage">获取验证码</em></div>
+            </div>
+            <div id="drawing-submit">确认提款</div>
+            <div class="drawing-text hide">余额《10元，默认全部提款；余额>10元，可分批提款</div>
+        </div>
+        <div id="exchange" style="display:none;">
+            <div class="exchange-main"><h2>兑换拍币<em id="exchangeRatio">(兑换比例 1：1)</em></h2><input type="number" placeholder="至少兑换1拍币" id="convertMoney" onKeypress="return T.Util.numReg($(this).val(),String.fromCharCode(event.keyCode))"></div>
+            <div id="exchangeRule">
+                <h2><em>兑换规则</em></h2>
+                <p>1.根据平台兑换比例1：1，可使账户内可提现金额兑换成拍币。</p>
+                <p>2.拍币可用于所有商品的竞拍出价，以及支付购买商品。</p>
+                <p>3.兑换后的拍币会立即到账，兑换成功后可在账户明细中查看。</p>
+            </div>
+            <div id="exchange-submit">立即兑换</div>
+        </div>
+        <div id="addcard" style="display:none;">
+            <div id="addbankcard"><h2>添加银行卡</h2></div>
+            <p id="supportbank"></p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.drawing = (function(){
+        var cardTypeId = '';
+        var page = T.Util.getParaHash('page');
+        var allMoney=T.Util.getParaHash('money');
+        var hasDefaultCard = false;//是否有默认的银行卡
+        var endGetDataFlag = true;//接口是否请求完毕
+        var isGetMessage = false;//是否获取验证码
+        var check = {
+            message:function(val){
+                if(!isGetMessage){
+                    tip('请获取验证码');
+                }else if(!val){
+                    tip('请输入验证码');
+                }else if(!/^[0-9]{6}$/.test(val)){
+                    tip('请输入正确的验证码');
+                    $("#messageCode").val('');
+                }else{
+                    return true;
+                }
+            }
+        };
+
+        var o = {
+            //程序入口
+            init:function(){
+                o.initPage();
+                o.bindEvent();
+            },
+            //初始化页面
+            initPage:function(){
+                $('#allMoney').html(allMoney);
+                T.User.getUInfo(function(){
+                    var userinfo = T.Storage.get('userinfo');
+                    allMoney = userinfo.moneyList[0]||0;
+                    $('#allMoney').html(allMoney);
+                });
+                if(page == 'drawing'||!page){
+                    $(".navbar h1").text("提现");
+                    $(".drawing-head h2").text("可提取余额");
+                    var userInfo = T.Storage.get('userinfo')||{};//用户信息
+                    if(userInfo.userMobile){
+                        $("#tel").val(userInfo.userMobile).attr("readonly","readonly");
+                    }
+                    var bankCardList = T.Storage.get('bankCardList')||[];
+                    o.initDraw(o.bankCardFilter(bankCardList));
+                    o.getBankCardList(function(bankCardList){
+                        o.initDraw(o.bankCardFilter(bankCardList),true);
+                    });
+                }else{
+                    $(".navbar h1").text("兑换");
+                    $(".drawing-head h2").text("可兑换余额");
+                    if(allMoney > 1){
+                        $("#convertMoney").val(Math.floor(allMoney));
+                    }
+                    $("#drawing").hide();
+                    $("#exchange").show();
+                }
+            },
+            //银行卡过滤
+            bankCardFilter:function(bankCardList){
+                var availBankCard = [];
+                hasDefaultCard = false;
+                for(var i = 0;i < bankCardList.length;i++){
+                    //过滤不支持的银行卡
+                    if(parseInt(bankCardList[i].IS_VALIDATE) == 1){
+                        availBankCard.push(bankCardList[i]);
+                    }
+                    //判断是否有默认的银行卡
+                    if(parseInt(bankCardList[i].IS_DEFAULT) == 1 && parseInt(bankCardList[i].IS_VALIDATE) == 1){
+                        hasDefaultCard = true;
+                    }
+                }
+                return availBankCard;
+            },
+            //初始化提现
+            initDraw:function(data){
+                if(data.length){
+                    $("#drawing").show();
+                    $("#exchange,#addcard").hide();
+                    var select_id = T.Util.getPara('select_id');
+                    if(hasDefaultCard){
+                        for(var i=0;i<data.length;i++){
+                            if(data[i].IS_DEFAULT=='1'){
+                                cardTypeId =data[i].ID;
+                                $("#bankname").text(data[i].BANK_CNAME);
+                                $('.bankname').html(data[i].BANK_CNAME+'（'+data[i].CARD_NO+')');
+                            }
+                        }
+                    }else{
+                        cardTypeId =data[0].ID;
+                        $("#bankname").text(data[0].BANK_CNAME);
+                        $('.bankname').html(data[0].BANK_CNAME+'（'+data[0].CARD_NO+')');
+                    }
+                    //渲染选中的银行卡
+                    var select_id = parseInt(T.Storage.getAndRemove('selectedCard'));
+                    if(select_id){
+                        for(var i=0;i<data.length;i++){
+                            if(data[i].ID == select_id){
+                                cardTypeId =data[i].ID;
+                                $("#bankname").text(data[i].BANK_CNAME);
+                                $('.bankname').html(data[i].BANK_CNAME+'（尾号'+data[i].CARD_NO+')');
+                            }
+                        }
+                    }
+                    //账户余额小于两元时提现按钮置灰
+                    if(allMoney <= 1){
+                        $("#drawing-submit").addClass("disabled");
+                    }
+                }else{
+                    o.loadJS();
+                    $("#drawing,#exchange").hide();
+                    $("#addcard").show();
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //选择银行卡
+                $("#selectBankCard").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/selectBankCard.html?select_id=' + cardTypeId);
+                });
+                //添加银行卡
+                $("#addbankcard").off().Touch(function(){
+                    var userInfo = T.Storage.get('userinfo');//用户信息
+                    if(userInfo.realName && userInfo.idCard){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/addBankCard.html');
+                    }else{
+                        confirm({html:"请先进行实名认证",okFun:function(){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/identityInfo.html');
+                        },cancelFun:function(){
+
+                        }});
+                    }
+                });
+                //兑换
+                $('#exchange-submit').off().Touch(function(){
+                    o.convert();
+                });
+                //获取验证码
+                $("#getMessage").off().Touch(function(el){
+                    if($(el).hasClass('no')){return};
+                    o.getMessageCode($("#tel").val(),"CASH_OUT",function(){
+                        $('#getMessage').addClass('no');
+                    });
+                });
+                //提现
+                $('#drawing-submit').off().Touch(function(){
+                    o.preCashout();
+                });
+                //提现文本框输入
+                $("input#money").on("input",function(){
+                    var money = $(this).val();
+                    var allMoney = parseFloat(T.Util.getParaHash('money'));
+                    //移除非数字与金额校正
+                    if(!T.money) T.money = "";
+                    if(money.length > T.money.length){
+                        //移除非数字
+                        if(!money.slice(-1).match(/[0-9.]/)){
+                            $(this).val(T.money);
+                            return false;
+                        }
+                        //限制输入两位小数
+                        if((String(money).match(/\./g) && String(money).match(/\./g).length >= 2)){
+                            $(this).val(T.money);
+                            return false;
+                        }else if(String(money).match(/\d\.\d{3}/)){
+                            $(this).val(T.money);
+                            return false;
+                        }
+                        //金额校正
+                        if(parseFloat(money) > allMoney){
+                            $(this).val(allMoney.toFixed(2));
+                        }else if(allMoney > 1 && allMoney <= 2){
+                            $(this).val(allMoney.toFixed(2));
+                        }
+                    }
+                    T.money = money = $(this).val();
+                    //按钮置灰控制
+                    if(money){
+                        if(allMoney <= 1){
+                            $("#drawing-submit").addClass("disabled");
+                        }else if(allMoney > 1 && allMoney <= 2){
+                            $("#drawing-submit").removeClass("disabled");
+                        }else if(allMoney > 2 && parseFloat(money) < 1){
+                            $("#drawing-submit").addClass("disabled");
+                        }else{
+                            $("#drawing-submit").removeClass("disabled");
+                        }
+                    }else{
+                        $("#drawing-submit").removeClass("disabled");
+                    }
+                    //提现手续费
+                    money = parseFloat(money);
+                    if(money){
+                        //提现手续费
+                        if(money >= 100){
+                            $("#feeTips").html("实际到账￥<em>" + money.toFixed(2) + '</em>');
+                        }else{
+                            if(money + 1 > allMoney){
+                                $("#feeTips").html("实际到账￥<em>" + Math.max(money - 1,0).toFixed(2) + '</em>，扣除￥<em>1.00</em>手续费');
+                            }else{
+                                $("#feeTips").html("实际到账￥<em>" + money.toFixed(2) + '</em>，扣除￥<em>1.00</em>手续费');
+                            }
+                        }
+                    }else{
+                        $("#feeTips").html('提现金额小于￥100.00，扣除￥1.00手续费');
+                    }
+                });
+            },
+            //加载JS资源
+            loadJS:function(){
+                //获取支持银行列表
+                $.getScript(Global.fullHost + '/res/native/bankCard/bankIssuing.js?' + Math.random(),function(){
+                    var supportbank = o.getSupportBank();
+                    $("#supportbank").html("温馨提示：目前提现银行卡暂时只支持" + supportbank);
+                },function () {
+                    tip(Global.neterror);
+                });
+            },
+            //获取支持的银行列表
+            getSupportBank:function(){
+                if(!bankContrast){
+                    tip(Global.neterror);
+                    return false;
+                }
+                var supportbank = [];
+                for(var p in bankContrast){
+                    if(bankContrast[p][1] == '1'){
+                        if($.inArray(bankContrast[p][0],["中国银行","农业银行","建设银行","工商银行","招商银行"]) > -1){
+                            supportbank.push('<b>' + bankContrast[p][0] + '</b>');
+                        }else{
+                            supportbank.push(bankContrast[p][0]);
+                        }
+                    }
+                }
+                return supportbank;
+            },
+            //获取银行卡列表
+            getBankCardList:function (callback) {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/bankCardList.json',
+                    callback:function(json){
+                        var data =json.res_data.value.INFO;
+                        callback && callback(data);
+                        T.Storage.set('bankCardList',data);
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            //倒计时
+            countDown:function () {//倒计时
+                var timeVal = 60;
+                T.messageTimer = setInterval(function(){
+                    timeVal--;
+                    $('#getMessage').html(timeVal + '秒后重发');
+                    if(timeVal == 0){
+                        isGetMessage = false;
+                        $('#getMessage').html('获取验证码').removeClass('no');
+                        clearInterval(T.messageTimer);
+                    }
+                },1000);
+            },
+            //获取验证码
+            getMessageCode:function (telNum,type,callback) {
+                var url = '/user/services/user/sendCode.json';
+                var reqData = {
+                    "userAcct":telNum,
+                    "event":type
+                };
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    authError:1,
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        isGetMessage = true;
+                        tip('验证码已发送','ok');
+                        o.countDown();
+                        callback(data);
+                        return;
+                    },
+                    errorCallback:function(){
+                        setTimeout(function () {
+                            endGetDataFlag = true;
+                        },1000)
+                    }
+                })
+            },
+            //提现
+            preCashout:function () {//提现
+                var userinfo = T.Storage.get('userinfo');
+                //按钮置灰不可点击
+                if($("#drawing-submit").is(".disabled")) return false;
+                if(T.Util.isEmpty($('#money').val())||$('#money').val()<0){
+                    tip('请输入需要提现的金额');
+                    return;
+                }
+                if(parseFloat($('#money').val())>parseFloat($('#allMoney').html())){
+                    tip('可提现金额不足');
+                    return;
+                }
+                if(!check.message($('#message').val()))return;
+                if(!endGetDataFlag){return;}
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/delegate/preCashout.json?cashType=1&cardTypeId='+cardTypeId+'&money='+$('#money').val()+'&mobile='+$("#tel").val()+'&code='+$("#message").val(),
+                    callback:function(data){
+                        //endGetDataFlag = true;
+                        var money = $('#money').val();
+                        if(money >= 100){
+                            $('#allMoney').html(($('#allMoney').html()-$('#money').val()).toFixed(2));
+                        }else{
+                            $('#allMoney').html((Math.max($('#allMoney').html()-$('#money').val() - 1,0)).toFixed(2));
+                        }
+                        alert('<h2>提现申请已提交</h2><p>预计一个工作到账，实际依银行到账时间为准</p>',function(){
+                            T.Util.back();
+                        },'我知道了');
+                    },
+                    errorCallback:function(){
+                        endGetDataFlag = true;
+                    }
+                });
+            },
+            //兑换
+            convert:function () {//兑换
+                if(T.Util.isEmpty($('#convertMoney').val())||$('#convertMoney').val()<0){
+                    tip('请输入需要兑换的金额','error');
+                    return;
+                }
+                if(parseFloat($('#convertMoney').val())>parseFloat($('#allMoney').html())){
+                    tip('可兑换金额不足','error');
+                    return;
+                }
+                if(!endGetDataFlag){return;};
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/delegate/convert.json?money='+$('#convertMoney').val(),
+                    callback:function(data){
+                        $('#allMoney').html(($('#allMoney').html()-$('#convertMoney').val()).toFixed(2));
+                        alert('<h2>已成功兑换拍币</h2><p>现在去竞拍，赚取更多</p>',function(){
+                            T.Util.back();
+                        },'我知道了');
+                    },
+                    errorCallback:function(){
+                        endGetDataFlag = true;
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.drawing.init();
+            },function () {//webview再次打开回调函数
+                T.drawing.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            window.onpageshow = function(event) {
+                T.drawing.init();
+            }
+        }
+    });
+</script>
+</body>
+</html>

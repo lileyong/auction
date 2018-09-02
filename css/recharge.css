@@ -1,0 +1,33 @@
+/*充值页样式*/
+#recharge-box{overflow:hidden;}
+#recharge-account{width:100%;height:1.32rem;background-color:#fff;border-bottom:1px solid #ee332b;overflow:hidden;}
+#recharge-account h2{margin-top:0.13rem;padding-left:0.45rem;line-height:0.53rem;font-size:0.32rem;color:#666;}
+#recharge-account h2 em{font-size:0.35rem;color:#333;}
+#recharge-account p{padding-left:0.45rem;line-height:0.53rem;font-size:0.32rem;color:#999;}
+#recharge-account p em{font-size:0.35rem;color:#ee332b;}
+#recharge-amount #recharge-title{position:relative;padding:0.22rem 0 0.22rem 0.67rem;line-height:0.56rem;font-size:0.35rem;color:#666;}
+#recharge-amount #recharge-title:before{content:'';position:absolute;left:0.45rem;top:0.45rem;display:inline-block;width:0.11rem;height:0.11rem;background-color:#ee332b;border-radius:50%;}
+#recharge-amount #recharge-title #advert{margin-left:0.2666667rem;color:#ee332b;}
+#recharge-amount #recharge-input{position:relative;margin:0 0.45rem;width:calc(100% - 0.9rem);height:1.15rem;font-size:0.48rem;}
+#recharge-amount #recharge-input input{width:100%;height:100%;padding:0 0.16rem;border:1px solid #d9d9d9;border-radius:0.08rem;font-size:0.48rem;color:#ee332b;}
+#recharge-amount #recharge-input.writing .clear{content:'';position: absolute;right:0;top:0;display:inline-block;width:1.3rem;height:1.15rem;background: url(../img/usercenter/icon_cha.png) center center / 0.4rem 0.4rem no-repeat;}
+#recharge-quick{margin:0.4rem 0 -0.27rem 0.45rem;overflow:hidden;}
+#recharge-quick em{position:relative;float:left;margin-right:0.27rem;margin-bottom:0.27rem;width:2.85rem;height:1rem;text-align:center;line-height:1rem;font-size:0.4rem;color:#ee332b;background-color:#fff;border:1px solid #d9d9d9;border-radius:0.08rem;box-sizing:border-box;-webkit-box-sizing:border-box;}
+#recharge-quick em span{position:absolute;right:0.1333333rem;top:-0.02666667rem;display:inline-block;width:0.96rem;height:0.2933334rem;text-align:center;line-height:0.2933334rem;font-size:0.24rem;color:#fff;background:url(../img/usercenter/recharge_flag.png) 0 0 / 100% 100% no-repeat;white-space:nowrap;}
+@media all and (max-width:720px) {
+    #recharge-quick em span{font-size:0.2133334rem;}
+}
+#recharge-quick em.on{border:2px solid #ee332b;}
+#recharge-quick em.on:after{content:'';position:absolute;right:0;bottom:0;display:inline-block;width:0.3333334rem;height:0.3333334rem;background:url(../img/usercenter/recharge_select.png) 0 0 / 100% 100% no-repeat;}
+#recharge-amount #recharge-total{padding-left:0.45rem;line-height:1.12rem;font-size:0.37rem;}
+#recharge-amount #recharge-total em{font-weight:bold;color:#ee332b;}
+#payinfo {margin-top: 0.533333rem;margin-bottom: 0.266667rem;}
+#payinfo .payitem {padding: 0 0.453333rem;height: 0.92rem;background-color: #fff;border-bottom: 1px solid #e7e7e7;line-height: 0.906667rem;font-size: 0.373333rem;color: #666;}
+#payinfo .payitem em {float: right;color: #333;}
+#payinfo .payitem em#pay-money {color: #fd2b2b;}
+#recharge-list{background-color:#fff;border-top:1px solid #dbdbdb;border-top:1px solid #dbdbdb;overflow:hidden;}
+.recharge-item{position:relative;margin-left:1.32rem;height:1.32rem;line-height:1.32rem;font-size:0.4rem;color:#333;border-bottom:1px solid #dbdbdb;}
+.recharge-item i{position:absolute;left:-0.87rem;top:0rem;content:'';display:inline-block;width:1.32rem;height:1.32rem;}
+.recharge-item:after{position:absolute;right:0.45rem;top:0.32rem;content:'';display:inline-block;width:0.17rem;height:0.69rem;background:url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;}
+#recharge-text{margin:0.18rem 0.45rem;}
+#recharge-text p{line-height:0.53rem;font-size:0.32rem;color:#ccc;}

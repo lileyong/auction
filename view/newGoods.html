@@ -1,0 +1,447 @@
+<style>
+    #newgoods-box {
+        overflow: hidden;
+    }
+    #newgoods-tab {
+        position: fixed;
+        z-index:99;
+        width: 10rem;
+        height: 1.066667rem;
+        background-color: #fff;
+        border: 0.013333rem solid #f5f5f5;
+    }
+    #newgoods-tab .tabitem {
+        float: left;
+        width: 33.33%;
+        height: 100%;
+        text-align: center;
+        line-height: 1.066667rem;
+        font-size: 0.373333rem;
+        color: #666666;
+    }
+    #newgoods-tab .tabitem.on {
+        color: #f72f2f;
+    }
+    #newgoods-tab.oldUser .tabitem { width: 50%;}
+    #newgoods-tab .pointer {
+        position: absolute;
+        left: calc(16.67% - 0.533333rem);
+        bottom: 0.013333rem;
+        display: inline-block;
+        width: 1.066667rem;
+        height: 0.08rem;
+        border-radius: 0.04rem;
+        background-color: #f72f2f;
+    }
+    #newgoods-tab.oldUser .pointer { left: 1rem; width: 3rem;}
+    #newgoods-content {
+        margin-top: 1.08rem;
+    }
+    #newgoods-content img.banner{
+        display:block;
+        width:100%;
+    }
+    .newGoodsBox{overflow:hidden;}
+    #xstj .shopList,#rmhh .shopList {
+        position: relative;
+        width: 100%;
+        height: 3.466667rem;
+        background-color: #fff;
+        margin-bottom: 0.133333rem;
+        overflow: hidden;
+        text-align: left;
+    }
+    #xstj .shopList .counter,#rmhh .shopList .counter {
+        position: absolute;
+        left: 0.453333rem;
+        top: 0;
+        padding-top: 0.12rem;
+        display: inline-block;
+        background: url('../img/sprite.png') no-repeat 0 -11.146667rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.533333rem;
+        height: 0.8rem;
+        text-align: center;
+        line-height: 0.253333rem;
+        font-size: 0.213333rem;
+        color: #fff;
+        font-style: normal;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+    #xstj .shopList img,#rmhh .shopList img {
+        position: absolute;
+        left: 1.52rem;
+        top: 0.4rem;
+        width: 2.666667rem;
+        height: 2.666667rem;
+    }
+    #xstj .shopList h2,#rmhh .shopList h2{
+        margin-top: 0.266667rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size: 0.373333rem;
+        color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 4.5rem;
+    }
+    p.desc {
+        padding-left: 5.053333rem;
+        line-height: 0.426667rem;
+        font-size: 0.293333rem;
+        color: #999;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    p.goodprice{
+        margin-top: 0.08rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size: 0.32rem;
+        color: #f72f2f;
+    }
+    p.goodprice em{
+        font-size: 0.426667rem;
+    }
+    p.normalprice{
+        padding-left: 5.053333rem;
+        line-height: 0.373333rem;
+        font-size: 0.2933334rem;
+        color: #999;
+    }
+    p.normalprice del {
+        margin-left: 0.213333rem;
+    }
+    p.preline{
+        margin-top:0.0933334rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size:0.32rem;
+        color:#666;
+    }
+    p.prenow{
+        margin-top:0.0933334rem;
+        padding-left: 5.053333rem;
+        line-height: 0.48rem;
+        font-size:0.3733334rem;
+        color:#333;
+    }
+    p.prenow em{
+        color:#f72f2f;
+    }
+    .newGoodsBox .shopList.over:after{
+        top:1.273333rem;
+        left: 1.68rem;
+    }
+    .newGoodsBox .shopAuctionBox {
+        position: relative;
+        width: 4.28rem;
+        border: 1px solid #f84b4b;
+        border-radius: 0.333333rem;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+    .newGoodsBox .shopAuctionBox span {
+        padding-left: 0.2rem;
+        line-height: 0.666667rem;
+        font-size: 0.373333rem;
+        color: #f72f2f;
+    }
+    .newGoodsBox .shopAuctionBox em {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: inline-block;
+        width: 2.4rem;
+        height: 100%;
+        text-align: center;
+        line-height: 0.666667rem;
+        border-radius: 0.333333rem;
+        background-color: #f72f2f;
+        font-size: 0.373333rem;
+        color: #fff;
+    }
+    .newGoodsBox .shopYuYueBox,.newGoodsBox .shopStopBox,.newGoodsBox .shopOverBox,.newGoodsBox .shopAuctionBox{ margin-left: 5.053333rem;
+        margin-top: 0.36rem;
+        height: 0.666667rem;
+        line-height: 0.666667rem;
+    }
+    .newGoodsBox .shopYuyue,.newGoodsBox .shopStop{height: 0.666667rem;line-height: 0.666667rem;border-radius: .666667rem;margin-top:0;display: inline-block;text-align: center;}
+    .newGoodsBox .shopYuYueBox{
+        margin-top:0.2266667rem;
+    }
+    .shopList.over .yuYueInfoBox,
+    .shopList.stop .yuYueInfoBox,
+    .shopList.auction .yuYueInfoBox{display: none;}
+    .shopList.yuYue .yuYueInfoBox{display: block;}
+
+    .shopList.over .otherInfoBox,
+    .shopList.stop .otherInfoBox,
+    .shopList.auction .otherInfoBox{display: block;}
+    .shopList.yuYue .otherInfoBox{display: none;}
+</style>
+<div class="content" id="content">
+    <div id="newgoods-box">
+        <div id="newgoods-tab">
+            <div class="tabitem on" data-type="xstj">新手推荐</div>
+            <div class="tabitem" data-type="rmhh">热品好货</div>
+            <div class="tabitem" data-type="bzxp">本周新品</div>
+            <span class="pointer"></span>
+        </div>
+        <div id="newgoods-content">
+            <div class="newgoods-content" >
+                <img class="banner" src="../img/goods/icon_xstj.png">
+                <div id="xstj" class="newGoodsBox"></div>
+            </div>
+            <div class="newgoods-content" style="display:none;">
+                <img class="banner" src="../img/goods/icon_rphh.png">
+                <div id="rmhh" class="newGoodsBox"></div>
+            </div>
+            <ul class="newgoods-content" style="display:none;">
+                <img class="banner" src="../img/goods/icon_bzxp.png">
+                <div id="bzxp"></div>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    T.newGoods = (function(){
+        var dropLoad = '';//下拉刷新
+        var pageSize = 10;//请求条目
+        var endGetDataFlag = true;//接口是否请求完毕
+        var nowtab = 'xstj';//当前tab
+        var tabList = {'xstj':0,'rmhh':1,'bzxp':2};//tab列表
+        var dataType = [4,6,5];
+        var pageIndex = [1,1,1];//分页索引
+        var hasMore = [false,false,false];//是否加载更多
+        var isLoad = [false,false,false];//是否加载
+
+        var o = {
+            init:function(){
+                o.loadCache();
+                o.initPage();
+                o.bindEvent();
+            },
+            initPage:function(){
+                if(T.Storage.get('userinfo')&&T.Storage.get('userinfo').isSuccessAuction==1){//老用户
+                    $('[data-type="xstj"]').hide();
+                    $('#newgoods-tab').addClass('oldUser');
+                }else{
+                    $('[data-type="xstj"]').show();
+                    $('#newgoods-tab').removeClass('oldUser');
+                }
+                var type = T.Util.getParaHash('type');
+                if(type){
+                    o.tabSwitch(type);
+                    o.getNewGoods(type);
+                }
+                //页面的PV/UV（xptd_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"新品天地",
+                    "conductCode": "xptd_fwl",
+                    "comductDesc": "页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            loadCache:function(){
+                var newGoods = T.Storage.get('newGoods');
+                if(newGoods){
+                    $("#newgoods-content").html(newGoods);
+                }
+            },
+            bindEvent:function(){
+                $(window).off().scroll(o.loadMoreData);//绑定下滑加载更多
+                $('#newgoods-content').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex[tabList[nowtab]] = 1;
+                        o.getNewGoods(nowtab);
+                    },
+                    threshold : 50
+                });
+                $("#newgoods-tab .tabitem").off().Touch(function(el){
+                    if($(el).hasClass("on")){return;}
+                    var type = $(el).attr("data-type");
+                    o.tabSwitch(type);
+                    o.getNewGoods(type);
+                });
+            },
+            //tab切换
+            tabSwitch:function(type){
+                nowtab = type;
+                var index = tabList[type];
+                $("#newgoods-tab .tabitem").eq(index).addClass("on").siblings().removeClass("on");
+                if(T.Storage.get('userinfo')&&T.Storage.get('userinfo').isSuccessAuction==1){
+                    $(".pointer").animate({"left":(5 * (index-1) + 1) + "rem"});
+                }else{
+                    $(".pointer").animate({"left":(3.333333 * index + 1.133333) + "rem"});
+                }
+                if(type=='xstj'){
+                    $('#rmhh').html('');
+                    $('#bzxp').html('');
+                }else if(type=='rmhh'){
+                    $('#xstj').html('');
+                    $('#bzxp').html('');
+                }else{
+                    $('#xstj').html('');
+                    $('#rmhh').html('');
+                }
+                $(".newgoods-content").eq(index).show().siblings().hide();
+                pageIndex = [1,1,1];
+                if($(".newgoods-content").eq(index).find(".nodata").length){
+                    $("html,body").addClass("white");
+                }else{
+                    $("html,body").removeClass("white");
+                }
+            },
+            //加载更多数据
+            loadMoreData:function(){
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(hasMore[tabList[nowtab]]){
+                        o.getNewGoods(nowtab,true);
+                    }
+                }
+            },
+            //获取新品天地
+            getNewGoods:function(type,fromMore){
+                var index = tabList[type];
+                endGetDataFlag = false;
+                tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/world/newProduct.json?page=' + pageIndex[index] + '&limit=' + pageSize + '&code=' + dataType[index],//code：4 新手推荐 6 热门好货 5 本周新品
+                    callback:function(json){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        isLoad[index] = true;
+                        var data = json.res_data.value.INFO;
+                        if(json.res_data.value.ISEND==2){//还有更多
+                            pageIndex[index]++;
+                            hasMore[index] = true;
+                        }else{
+                            hasMore[index] = false;
+                        }
+                        o.showNewGoods(data,type,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".shopList").length){
+                                $('#' + type).parent().html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染新品天地
+            showNewGoods:function(data,type,fromMore){
+                var html = [];
+                if(type == 'xstj'||type == 'rmhh'){
+                    var messArr=[],d=data;
+                    var djsTime='';
+                    for(var i=0;i<d.length;i++){
+                        var shopStateClass = '';
+                        if(d[i].EXPECT_STATUS=='80'){//预约类型
+                            shopStateClass = 'yuYue';
+                        }else if(d[i].EXPECT_STATUS=='100'){//正在拍类型
+                            shopStateClass = 'auction';
+                            addTimer('#'+d[i].COMMODITY_ID,Math.ceil(d[i].SURPLUS_TIME/1000));
+                        }else if(d[i].EXPECT_STATUS=='120'||d[i].EXPECT_STATUS=='90'){//暂停类型 90为预约暂停
+                            shopStateClass = 'stop';
+                        }else{//over类型
+                            shopStateClass = 'over';
+                        }
+                        var str="<i class='counter'>NO.<br>" + d[i].RN + "</i>";
+                        if(type == 'rmhh'){str="<i class='counter'>好货<br>不贵</i>";}
+                        html.push('<li class="shopList '+shopStateClass+'" data-id="'+d[i].COMMODITY_ID+'" data-no="'+d[i].EXPECT_NO+'" data-expect_id="'+d[i].EXPECT_ID+'">'+str+'<img class="lozad" src="../img/goods/lazy_load.png" data-src="' + d[i].COMMODITY_LOGO + '" onerror="T.Util.showDefaultPic(this)">');
+                        html.push('<h2>' + d[i].COMMODITY_TITLE + '</h2><p class="desc">' + (d[i].PRODUCT_NOTE ||"&nbsp")+ '</p>');
+                        html.push('<div class="yuYueInfoBox"><p class="preline">满<em>' + d[i].BESPEAK_MIN_NUM + '</em>人开拍</p><p class="prenow">已预约<em>' + d[i].BESPEAK_NUM + '</em>人</p></div>');
+                        html.push('<div class="otherInfoBox"><p class="goodprice">竞拍价:￥<em class="AUCTION_PRICE">' + (d[i].AUCTION_PRICE*1).toFixed(2) + '</em></p><p class="normalprice">市场价:<del>￥' + (d[i].MARKET_PRICE*1).toFixed(2) + '</del></p></div>');
+
+                        html.push('<div class="shopYuYueBox"><div class="shopYuyue" data-isVisitor="'+d[i].IS_VISITOR+'">'+(d[i].IS_VISITOR?"已预约":"预约竞拍")+'</div></div></div>');
+
+                        html.push('<div class="shopAuctionBox"><span class="endtime" type-djs="1" data-djs="'+d[i].COUNT_DOWN+'" id="'+d[i].COMMODITY_ID+'"><cite>--</cite>:<cite>--</cite>:<cite>--</cite></span><em>参与竞拍</em></div>');
+
+                        html.push('<div class="shopStopBox"><div class="shopStop"><span>暂停竞拍</span></div></div>');
+
+                        html.push('<div class="shopOverBox"><div class="shopStop"><span>'+(d[i].AUCTION_USER_NAME?"已成交":"已结束")+'</span></div></p>');
+                        html.push('</li>');
+
+                        messArr.push('auction/commodity/'+d[i].COMMODITY_ID);
+                    }
+                    setTimeout(function () {
+                        T.Util.mqtt(messArr);
+                    },100);
+                }else{
+                    html = T.Util.doShopListHtml(data);
+                }
+                if(html.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? $('#' + type).append(html.join("")) : $('#' + type).html(html.join(""));
+                }else{
+                    $("html,body").addClass("white");
+                    $('#' + type).html('<div class="nodata"><i></i><h2>暂无数据</h2><div class="btn">立即去竞拍</div></div>');
+                    $(".nodata .btn").off().Touch(function(){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                    });
+                }
+                T.Util.shopListClick();
+                $('.shopList img,.yuYueInfoBox,.otherInfoBox').off().Touch(function (el) {
+                    //各个商品“参与竞拍”或“预约竞拍”的点击量（xptd_jpdjl001、xptd_yydjl001）
+                    T.Util.setUserBehaviorList({
+                        "busId":"新品天地",
+                        "conductCode": "xptd_yydjl"+$(el).data("id"),
+                        "comductDesc": "各个商品“参与竞拍”或“预约竞拍”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    if($(el).parent().hasClass("auction")||$(el).parent().hasClass("yuYue")){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).parent().attr("data-id")+'&isNext=1&expectNo='+$(el).parent().attr("data-no"));
+                    }else if($(el).parent().hasClass("over")){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).parent().attr("data-id")+'&expectNo='+$(el).parent().attr("data-no"));
+                    }
+                },{noRepeat:1});
+                lozad().observe();
+                if($("#newgoods-content").length>0){
+                    T.Storage.set('newGoods',$("#newgoods-content").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true" '));
+                }
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.newGoods.init();
+    });
+</script>
+
+

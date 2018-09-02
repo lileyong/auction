@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>邀请收益</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+    <link rel="stylesheet" type="text/css" href="../css/invite.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>邀请收益</h1>
+</div>
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <div id="incomeBox">
+            <div id="income">
+                <div class="inviteItem"><h2><span id="inviteNum">-</span><em>人</em></h2><p>成功邀请</p></div>
+                <div class="inviteItem"><h2><span id="profit">-.--</span><em>赠币</em></h2><p>累计收益</p></div>
+            </div>
+            <div id="accountdetail-box"></div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.invite = (function(){
+        var dropLoad = '';//下拉刷新
+        var pageSize = 10;//分页条目
+        var pageIndex = 1;//分页索引
+        var hasMore = false;//是否加载更多
+        var endGetDataFlag = true;//是否请求完毕
+
+        var o = {
+            init:function(){
+                o.getInviteInfo();//获取邀请信息
+                o.getInviteDetail();//获取邀请账户明细
+                o.bindEvent();//事件绑定
+            },
+            //事件绑定
+            bindEvent:function(){
+                $(window).off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                        if(hasMore){
+                            o.getInviteDetail(true);
+                        }
+                    }
+                });//绑定下滑加载更多
+                $('#incomeBox').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getInviteDetail();
+                    },
+                    threshold : 50
+                });
+            },
+            //获取邀请信息
+            getInviteInfo:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/commodity/services/invite/info.json",
+                    callback:function(json){
+                        var value = json.res_data.value;
+                        o.showInviteInfo(value);
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //渲染邀请信息
+            showInviteInfo:function(value) {
+                //邀请数据统计
+                $("#profit").text(parseInt(value.PROFIT_MONEY||0));
+                $("#inviteNum").text(value.INVITE_NUM||0);
+                $("#payNum").text(value.PAY_NUM||0);
+            },
+            //获取邀请账户明细
+            getInviteDetail:function(fromMore){
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/user/services/user/acctItems.json?page='+pageIndex+'&limit=' + pageSize + '&type=INVITE',
+                    callback:function(json){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var data = json.res_data.value.INFO;
+                        if(json.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showInviteDetail(data,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $("#accountdetail-box").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染邀请账户明细
+            showInviteDetail:function(data,fromMore){
+                var htmlArr=[];
+                for(var i=0,j=data.length;i<j;i++){
+                    var cls ='';
+                    if(data[i].CHANGE_VALUE>0){cls='red'}
+                    var eventName = '';
+                    try{
+                        eventName = JSON.parse(data[i].EVENT_NAME)["remake"];
+                    }catch(e){
+                        eventName = data[i].EVENT_NAME;
+                    }
+                    var biStr = '币';
+                    if((Global.isAudit && Global.isAudit == '1')||eventName.indexOf("提现")>-1){
+                        biStr = '元';
+                    }
+                    htmlArr.push('<div class="accountdetail-item">\
+                                <div class="left"><h2>'+new Date(data[i].CRT_TIME).format('MM-dd')+'</h2></div>\
+                                <div class="right"><h2>'+eventName+'</h2><p class="time">'+new Date(data[i].CRT_TIME).format('hh:mm')+'</p><p class="money '+cls+'">'+T.Util.numFormat(data[i].CHANGE_VALUE)+biStr+'</p></div>\
+                            </div>');
+                }
+                if(htmlArr.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? $("#accountdetail-box").append(htmlArr.join('')) : $("#accountdetail-box").html(htmlArr.join(''));
+                }else{
+                    $("html,body").addClass("white");
+                    $("#accountdetail-box").html('<div class="nodata invite"><i></i><h2>邀请最能体现友情，立邀好友一起玩</h2></div>');
+                }
+                T.Storage.set('accountDetail',$("#accountdetail-box").html());
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.invite.init();
+            },function () {//webview再次打开回调函数
+                T.invite.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.invite.init();
+        }
+    });
+</script>
+</body>
+</html>

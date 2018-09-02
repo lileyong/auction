@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>设置订单信息</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+    <style>
+        #setUserMobile{height: 1rem;text-align:center;line-height:1rem;font-size: .4rem;margin-top:-0.4rem;background: #f6d768;color: #666;display: none;}
+        .pwdfind-item input{padding-left:0;}
+        #telTip{color: #999;display: none;margin-left: 0.45rem;margin-top: 0.2rem;}
+        input:disabled{opacity: 1;color: #333;background: #fff;}
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>设置订单信息</h1>
+    <div id="rightBtn">确认</div>
+</div>
+<div class="mainContent" id="main">
+    <div id="setUserMobile">为了更好为你服务，请完善您的账户信息</div>
+    <div id="pwdfind-box">
+        <div class="pwdfind-item"><div class="pwdfind-wrapper" id="contentBox"></div><i class="clear"></i></div>
+    </div>
+    <div id="telTip">该手机号码为您注册时绑定的手机号码</div>
+    <div class="submitOk" id="setOrderInfo">确认</div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    var backFrom ='';
+    T.setOrderInfo = (function(){
+        function checkQQ(qq){
+            if(T.Util.isEmpty(qq)) { //输入不能为空
+                tip('请输入QQ号码');
+                return false;
+            }
+            if (!(/^[1-9]\d{4,10}$/.test(qq))) {
+                tip('请输入正确QQ号码');
+                return false;
+            }
+
+            return true;
+        }
+        function checkPhone(tel){
+            if(T.Util.isEmpty(tel)) { //输入不能为空
+                tip('请输入手机号码');
+                return false;
+            }else if(userInfo && userInfo.userMobile == tel){
+                return true;
+            }else if(!(/^1[34578]\d{9}$/.test(tel))){
+                tip('请输入正确的手机号码');
+                return false;
+            }else{
+                return true;
+            }
+        }
+        function checkEmail(email){
+            var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+            if(T.Util.isEmpty(email)){ //输入不能为空
+                tip('请输入邮箱地址');
+                return false;
+            }else if(!reg.test(email)){ //正则验证不通过，格式不对
+                tip('请输入正确的邮箱地址');
+                return false;
+            }else{
+                return true;
+            }
+        }
+        var orderNo = T.Util.getPara('orderNo');//订单好 从已付款记录过来添加地址
+        var prompt = T.Util.getPara('prompt');//1:手机  2:QQ  3:会员  4:邮箱'
+        var userInfo = T.Storage.get('userinfo');
+
+        var o = {
+            init:function(){
+                var userinfo = T.Storage.get('userinfo');
+                if(!T.Util.isEmpty(userinfo) && T.Util.isEmpty(userinfo.userMobile)){
+                    if(backFrom=='setMobile'&&T.isNative){T.Util.back();return;}
+                    $('#setUserMobile').show();
+                    $('#setUserMobile').off().Touch(function () {
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setMobile.html');
+                    });
+                }else{
+                    $('#setUserMobile').hide();
+                }
+                if(prompt=='1'){
+                    if(userInfo && userInfo.userMobile){
+                        $('#contentBox').html('<input id="orderPhone" type="tel"  maxlength="11" placeholder="请输入手机号码" value="'+userInfo.userMobile+'">');
+                        $('#telTip').show();
+                    }else{
+                        $('#contentBox').html('<input id="orderPhone" type="tel"  maxlength="11" placeholder="请输入手机号码">');
+                    }
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,//
+                        reqUrl:'/commodity/services/product/isNewCommodity.json?orderNo='+orderNo,
+                        callback:function(data){
+                            //IS_NEW_COMMODITY  1：是新手商品
+                            var d = data.res_data.value.IS_NEW_COMMODITY;
+                            if(d==1){//新手商品
+                                if(userInfo && userInfo.userMobile){
+                                    $('#orderPhone').attr('disabled','disabled');
+                                }
+                            }
+                        },
+                        errorCallback:function(data){
+                            if(data.msg_code=='-15'){//强制完善用户信息
+                                alert('为保障账户安全，请完善帐户信息。',function () {
+                                    backFrom = 'setMobile';
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setMobile.html');
+                                });
+                            }else{
+                                tip(data.msg);
+                            }
+                        }
+                    });
+                }else if(prompt=='2'){
+                    $('#contentBox').html('<input id="orderPhone" type="tel"  maxlength="11" placeholder="请输QQ号码">');
+                }else if(prompt=='4'){
+                    $('#contentBox').html('<input id="orderPhone" type="email"  maxlength="30" placeholder="请输入邮箱地址">');
+                }else{
+                    $('#contentBox').html('<input id="orderPhone" type="text"  maxlength="20" placeholder="请输入会员号">');
+                }
+                o.initPage();
+                o.bindEvent();
+            },
+            initPage:function(){
+                var access_token = T.Storage.get('access_token');
+                if(!access_token){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                }
+            },
+            bindEvent:function(){
+                //重置返回
+                $("#back").off().Touch(function(){
+                        T.Util.back();
+                });
+                //文本框输入事件
+                $("input").on("input",function(){
+                    if($(this).val().length > 0){
+                        $(this).parent().addClass("writing");
+                    }else{
+                        $(this).parent().removeClass("writing");
+                    }
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+                //提交信息
+                $("#rightBtn,#setOrderInfo").off().Touch(function(){
+                    var val = $('#orderPhone').val();
+                    //1:手机  2:QQ  3:会员  4:邮箱'
+                    if(prompt=='1'){
+                        if(!checkPhone(val)){return};
+                    }else if(prompt=='2'){
+                        if(!checkQQ(val)){return};
+                    }else if(prompt=='4'){
+                        if(!checkEmail(val)){return};
+                    }else{
+                        if(T.Util.isEmpty(val)){tip('请输入会员号');return;}
+                    }
+                    if(!T.Util.isEmpty(orderNo)){//存在订单号需要调用关联订单号地址接口
+                        T.Util.xmlHttpRequest({
+                            type:'get',
+                            errorType:1,//
+                            reqUrl:'/order/services/order/addOrderInfo.json?orderNo='+orderNo+'&addId='+val,
+                            callback:function(data){
+                                T.Storage.set('orderAddAddressOK',orderNo);//设置已关联标记 在订单记录里面更新状态
+                                T.Util.back();//关联成功之后返回
+                            },
+                            errorCallback:function(data){
+                                tip(data.msg);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.setOrderInfo.init();
+            }, function () {//webview再次打开回调函数
+                T.setOrderInfo.init();
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.setOrderInfo.init();
+        }
+    });
+</script>
+</body>
+</html>

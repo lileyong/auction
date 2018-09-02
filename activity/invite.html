@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#ffde00;">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>邀请有礼</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/invite.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>邀请有礼</h1>
+</div>
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <div id="rule"></div>
+        <div id="inviteBox" style="display: none;">
+            <div id="inviteHead"><img class="bg" src="../img/activity/invite/bg1.jpg"></div>
+            <div id="inviteStrategy">
+                <img class="bg" src="../img/activity/invite/bg2.jpg">
+                <em id="inviteBtn"></em>
+            </div>
+            <div id="inviteCount">
+                <div id="inviteTab" class="tab">
+                    <div class="tabItem on">排行榜</div>
+                    <div class="tabItem">我的邀请</div>
+                    <div class="tabPointer"></div>
+                </div>
+                <div id="inviteContent">
+                    <div class="tabContent" id="rankList"><div class="nodata"><h2>加载中..</h2></div></div>
+                    <div class="tabContent" id="incomeList" style="display: none;">
+                        <div id="myIncome"><img src="../img/usercenter/photo.png" id="userPhoto"></img><p>成功邀请<em id="inviteNum">-.--</em>人</p><p>累计收益<em id="profit">-.--</em>赠币</p></div>
+                        <div id="invitePeople"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.invite = (function(){
+        var inviteCode = '';//邀请码
+        var inviteInfo = null;//邀请信息
+        var auctionInfo = null;//正在竞拍的商品
+        var dropLoad = '';
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//请求条目
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        var o = {
+            init:function(){
+                o.initPage();//初始化页面
+                o.getInviteInfo();//获取邀请信息
+                o.getInviteRank();//获取邀请排行榜
+                o.getInvitePeople();//获取被邀请人
+                o.bindEvent();//事件绑定
+                //banner内每个页面的PV/UV（banner_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"banner",
+                    "conductCode": "banner_fwl",
+                    "comductDesc": "banner内每个页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            initPage:function(){
+                var userInfo = T.Storage.get('userinfo')||{};
+                if(T.Util.getPara('userId')){
+                    if(userInfo && userInfo.userId == T.Util.getPara('userId')){
+                        $("#inviteBox").show();
+                    }else{
+                        T.Util.openWindow(Global.fullHost + '/auction/activity/inviteRedPacket.html?userId='+T.Util.getPara('userId')+'&userPic='+T.Util.getPara('userPic')+ '&inviteCode=' + T.Util.getPara('inviteCode'));
+                    }
+                }else{
+                    $("#inviteBox").show();
+                }
+                $("#userPhoto").attr("src",userInfo.userPic);
+            },
+            //事件绑定
+            bindEvent:function(){
+                //下拉刷新
+                $('#inviteBox').off().dropload({
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.init();
+                    },
+                    threshold : 50
+                });
+                //绑定下滑加载更多
+                $("#inviteBox").scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(this).children().eq(0).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                        if(hasMore){
+                            o.getInvitePeople(true);
+                        }
+                    }
+                });
+                //跳转规则页
+                $("#rule").off().Touch(function(ev){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/inviteRule.html');
+                });
+                //点击进入邀请收益页
+                $("#incomeList").off().Touch(function(){
+                    if(T.Storage.get('access_token')){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/inviteIncome.html');
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                    }
+                });
+                //邀请
+                $("#inviteBtn").off().Touch(function(){
+                    //“点击邀请好友”的点击量（banner_yqlj）
+                    T.Util.setUserBehaviorList({
+                        "busId":"邀请有礼",
+                        "conductCode": "banner_yqlj",
+                        "comductDesc": "“点击邀请好友”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    //如果未登录，则跳登录页
+                    if(!T.Storage.get('access_token')){
+                        return T.Util.login();
+                    }
+                    if(T.Util.isEmpty(inviteCode)){
+                        return tip("邀请码获取中，请稍后..");
+                    }
+                    var userInfo = T.Storage.get('userinfo')||{};
+                    var appName = T.Util.getAppInfo("appName");
+                    if(Global.isWechat||Global.isQQ||Global.isWeibo){
+                        confirm({className:'openInBrowser shareTips',html:'<img src="../img/activity/invite/shareTips.png">'});
+                        setTimeout(function(){
+                            $(".box-content").off().Touch(function(){
+                                $("#confirmBox,#mask").remove();
+                            });
+                        },0);
+                    }else{
+                        T.Util.thirdShare({
+                            "type":"native",
+                            "title":'老铁，送你68元赠币，可以竞拍正版商品！',
+                            "description":'竞拍购物，有趣好玩，比官方便宜！',
+                            "icon":T.Util.getAppLogo(),
+                            "url":Global.fullHost + '/auction/activity/inviteRedPacket.html?userId='+userInfo.userId+'&userPic='+userInfo.userPic+ '&inviteCode=' + inviteCode
+                        },function(result){
+
+                        });
+                    }
+                });
+                //tab切换
+                $("#inviteTab .tabItem").off().Touch(function(){
+                    var index = $(this).index();
+                    $(this).addClass("on").siblings().removeClass("on");
+                    $(".tabPointer").animate({"left":(353 * index + 107)/75 + "rem"});
+                    $(".tabContent").eq(index).show().siblings().hide();
+                });
+                //代拍
+                $(".invite-dpBtn").off().Touch(function(){
+                    //如果未登录，则跳登录页
+                    if(!T.Storage.get('access_token')){
+                        return T.Util.login();
+                    }
+                    if(auctionInfo){
+                        o.ebay(auctionInfo);
+                    }else{
+                        o.getAuctionRecord(function(){
+                            o.ebay(auctionInfo);
+                        });
+                    }
+                });
+                //我的邀请人
+                $("#myInvitor").off().Touch(function(){
+                    //如果未登录，则跳登录页
+                    if(!T.Storage.get('access_token')){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                        return false;
+                    }
+                    if(inviteInfo){
+                        o.showInvitor();
+                    }else{
+                        o.getInviteInfo(function(){
+                            o.showInvitor();
+                        });
+                    }
+                });
+            },
+            //获取邀请信息
+            getInviteInfo:function(callback){
+                if(!T.Storage.get('access_token')){
+                    return false;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/commodity/services/invite/info.json",
+                    callback:function(json){
+                        inviteInfo = json.res_data.value;
+                        o.showInviteInfo(inviteInfo);
+                        callback && callback();
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //渲染邀请信息
+            showInviteInfo:function(value){
+                //邀请码
+                inviteCode = value.INVITE_CODE;
+                $("#inviteCode").text(inviteCode);
+                //邀请数据统计
+                $("#profit").text(parseInt(value.PROFIT_MONEY||0));
+                $("#inviteNum").text(value.INVITE_NUM||0);
+                $("#payNum").text(value.PAY_NUM||0);
+                //渲染邀请进度条
+                var initNum = value.INVITE_NUM||0;
+                var index = 0;
+                var progressWidth = 0;
+                var inviteProfit = 0;
+                if(initNum >= 20){
+                    index = 5;
+                    progressWidth = initNum > 20 ? 591 : 536;
+                    inviteProfit = 40;
+                }else if(initNum >= 12){
+                    index = 4;
+                    progressWidth = 376 + (160 / 8) * (initNum - 12);
+                    inviteProfit = 20;
+                }else if(initNum >= 8){
+                    index = 3;
+                    progressWidth = 233 + (143 / 4) * (initNum - 8);
+                    inviteProfit = 10;
+                }else if(initNum >= 5){
+                    index = 2;
+                    progressWidth = 128 + (105 / 3) * (initNum - 5);
+                    inviteProfit = 4;
+                }else if(initNum >= 2){
+                    index = 1;
+                    progressWidth = 42 + (86 / 3) * (initNum - 2);
+                    inviteProfit = 1;
+                }else{
+                    index = 0;
+                    progressWidth = (42 / 2) * initNum;
+                    inviteProfit = 0;
+                }
+                $("#inviteTotal em").text(inviteProfit);
+                var i = 1;
+                clearInterval(Global.progressTimer);
+                Global.progressTimer = setInterval(function(){
+                    $("#progressBar").css("width",i / 75 + "rem");
+                    $("#progressPointer").css("left",i / 75 + "rem");
+                    if(i >= progressWidth){
+                        clearInterval(Global.progressTimer);
+                        if(index){
+                            $("#pointer em").eq(index - 1).addClass("on").siblings().removeClass("on");
+                            $("#numBar em").eq(index - 1).addClass("on").siblings().removeClass("on");
+                            $("#profitBar em").eq(index - 1).addClass("on").siblings().removeClass("on");
+                        }
+                    }
+                    i += ((progressWidth - i) > 5 ? 5 : 1);
+                },5);
+            },
+            //邀请
+            invite:function(inviteCode){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/commodity/services/invite/add.json?code=" + inviteCode,
+                    callback:function(json){
+                        tip('已建立对应关系','ok');
+                        o.getInviteInfo();//获取邀请信息
+                        $("#confirmBox,#mask").remove();//移除弹层
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //获取邀请排行榜
+            getInviteRank:function(fromMore){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/commodity/services/invite/rank.json",
+                    callback:function(json){
+                        var data = json.res_data.value.INFO;
+                        o.showInviteRank(data,fromMore);
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //渲染邀请排行榜
+            showInviteRank:function(data,fromMore){
+                var htmlArr = [];
+                for(var i = 0;i < data.length;i++){
+                    var rankClass = i < 3 && !fromMore ? " firstThree" : ' normal';
+                    htmlArr.push('<div class="rankItem' + rankClass + '"><em class="count">' + data[i].RN + '</em><div class="photo"><img src="' + data[i].PIC + '"></div><h2>' + data[i].NICK_NAME + '</h2><p>邀请<em>' + data[i].COU + '</em>名好友</p><div class="total">累计得' + data[i].PROFIT + '赠币</div></div>');
+                }
+                if(data.length){
+                    fromMore ? $("#rankList").eq(0).append(htmlArr.join("")) : $("#rankList").eq(0).html(htmlArr.join(""));
+                }else{
+                    $("#rankList").html('<div class="nodata"><h2>暂无排行榜信息</h2></div>');
+                }
+
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            },
+            //获取被邀请人
+            getInvitePeople:function(fromMore){
+                if(!T.Storage.get('access_token')){
+                    return false;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    authError:1,
+                    reqUrl:'/commodity/services/invite/inviteList.json?page=' + pageIndex + '&limit=100',
+                    callback:function(json){
+                        var data = json.res_data.value.INFO;
+                        if(json.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        var htmlArr = [];
+                        for(var i = 0;i < data.length;i++){
+                            htmlArr.push('<img src="' + data[i].PIC+'">');
+                        }
+                        fromMore ? $("#invitePeople").append(htmlArr.join("")) : $("#invitePeople").html(htmlArr.join(""));
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.invite.init();
+            },function () {//webview再次打开回调函数
+                T.invite.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.invite.init();
+        }
+    });
+</script>
+</body>
+</html>

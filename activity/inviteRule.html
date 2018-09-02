@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#fffbf2;">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>规则说明</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/invite.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>规则说明</h1>
+</div>
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <div id="inviteRuleBox">
+            <div id="rule1">
+                <img class="bg" src="../img/activity/invite/rule1.jpg">
+                <div id="inviteStrategy">
+                    <div id="inviteTotal">已得<em>-.--</em>赠币</div>
+                    <div id="inviteProgress">
+                        <div id="progress">
+                            <em id="progressBar"></em>
+                            <div id="pointer"><em class="pointer"></em><em class="pointer"></em><em class="pointer"></em><em class="pointer"></em><em class="pointer"></em></div>
+                        </div>
+                        <div id="numBar"><em>2人</em><em>5人</em><em>8人</em><em>12人</em><em>20人</em></div>
+                        <div id="profitBar"><em>赠1币</em><em>赠3币</em><em>赠6币</em><em>赠10币</em><em>赠20币</em></div>
+                    </div>
+                </div>
+            </div>
+            <div id="rule2"><img class="bg" src="../img/activity/invite/rule2.jpg"></div>
+            <div id="rule3"><img class="bg" src="../img/activity/invite/rule3.jpg"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.invite = (function(){
+        var inviteCode = '';//邀请码
+        var inviteInfo = null;//邀请信息
+        var auctionInfo = null;//正在竞拍的商品
+
+        var o = {
+            init:function(){
+                o.getInviteInfo();//获取邀请信息
+                o.bindEvent();//事件绑定
+            },
+            //事件绑定
+            bindEvent:function(){
+                //返回
+                $('#back').Touch(function () {
+                    T.Util.back();
+                });
+                //显示规则
+                $("#showRule").off().Touch(function(){
+                    $("#showRule").hide();
+                    $("#rule").addClass("show");
+                    T.Util.preventDefault();
+                });
+                //收起规则
+                $("#ruleUp").off().Touch(function(){
+                    $("#showRule").show();
+                    $("#rule").removeClass("show");
+                    T.Util.unPreventDefault();
+                });
+                //点击空白区域收起规则
+                $("#rule").bind("touchstart",function(ev){
+                    if($(ev.target).is("#rule")){
+                        $("#showRule").show();
+                        $("#rule").removeClass("show");
+                        T.Util.unPreventDefault();
+                    }
+                });
+                //复制邀请码
+                $("#inviteCode").off().Touch(function(){
+                    var inviteCode = $(this).text();
+                    T.Util.copyToClipboard(inviteCode);
+                });
+                //点击进入邀请收益页
+                $("#rightBtn").off().Touch(function(){
+                    if(T.Storage.get('access_token')){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/inviteIncome.html');
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                    }
+                });
+                //邀请
+                $("#inviteBtn").off().Touch(function(){
+                    //如果未登录，则跳登录页
+                    if(!T.Storage.get('access_token')){
+                        return T.Util.login();
+                    }
+                    if(T.Util.isEmpty(inviteCode)){
+                        return tip("邀请码获取中，请稍后..");
+                    }
+                    var userInfo = T.Storage.get('userinfo');
+                    var nickName = userInfo.nickName||userInfo.userMobile;
+                    var appName = T.Util.getAppInfo("appName");
+                    T.Util.thirdShare({
+                        "type":"native",
+                        "title":'只要10秒，1元拥有iPhoneX',
+                        "description":'拍出惊喜，买到实惠，比官方优惠70%拥有它。',
+                        "icon":T.Util.getAppLogo(),
+                        "url":Global.fullHost + '/auction/activity/inviteReg.html?userName=' + (Global.isiOS ? encodeURIComponent(encodeURIComponent(nickName)) : nickName) + '&inviteCode=' + inviteCode + "&channelCode=" + (Global.isiOS ? 'iosh5':'adh5') + '&appInfo=' + Base64.encode(JSON.stringify(T.Util.getAppInfo())).replace(/\=/g,"_")
+                    },function(result){
+
+                    });
+                });
+                //代拍
+                $(".invite-dpBtn").off().Touch(function(){
+                    //如果未登录，则跳登录页
+                    if(!T.Storage.get('access_token')){
+                        return T.Util.login();
+                    }
+                    if(auctionInfo){
+                        o.ebay(auctionInfo);
+                    }else{
+                        o.getAuctionRecord(function(){
+                            o.ebay(auctionInfo);
+                        });
+                    }
+                });
+                //我的邀请人
+                $("#myInvitor").off().Touch(function(){
+                    //如果未登录，则跳登录页
+                    if(!T.Storage.get('access_token')){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                        return false;
+                    }
+                    if(inviteInfo){
+                        o.showInvitor();
+                    }else{
+                        o.getInviteInfo(function(){
+                            o.showInvitor();
+                        });
+                    }
+                });
+            },
+            //获取邀请信息
+            getInviteInfo:function(callback){
+                if(!T.Storage.get('access_token')){
+                    return false;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/commodity/services/invite/info.json",
+                    callback:function(json){
+                        inviteInfo = json.res_data.value;
+                        o.showInviteInfo(inviteInfo);
+                        callback && callback();
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //渲染邀请信息
+            showInviteInfo:function(value){
+                //邀请码
+                inviteCode = value.INVITE_CODE;
+                $("#inviteCode").text(inviteCode);
+                //邀请数据统计
+                $("#profit").text(Number(value.PROFIT_MONEY||0).toFixed(2));
+                $("#inviteNum").text(value.INVITE_NUM||0);
+                $("#payNum").text(value.PAY_NUM||0);
+                //渲染邀请进度条
+                var initNum = value.INVITE_NUM||0;
+                var index = 0;
+                var progressWidth = 0;
+                var inviteProfit = 0;
+                if(initNum >= 20){
+                    index = 5;
+                    progressWidth = initNum > 20 ? 591 : 536;
+                    inviteProfit = 40;
+                }else if(initNum >= 12){
+                    index = 4;
+                    progressWidth = 376 + (160 / 8) * (initNum - 12);
+                    inviteProfit = 20;
+                }else if(initNum >= 8){
+                    index = 3;
+                    progressWidth = 233 + (143 / 4) * (initNum - 8);
+                    inviteProfit = 10;
+                }else if(initNum >= 5){
+                    index = 2;
+                    progressWidth = 128 + (105 / 3) * (initNum - 5);
+                    inviteProfit = 4;
+                }else if(initNum >= 2){
+                    index = 1;
+                    progressWidth = 42 + (86 / 3) * (initNum - 2);
+                    inviteProfit = 1;
+                }else{
+                    index = 0;
+                    progressWidth = (42 / 2) * initNum;
+                    inviteProfit = 0;
+                }
+                $("#inviteTotal em").text(inviteProfit);
+                var i = 1;
+                clearInterval(Global.progressTimer);
+                Global.progressTimer = setInterval(function(){
+                    $("#progressBar").css("width",i / 75 + "rem");
+                    $("#progressPointer").css("left",i / 75 + "rem");
+                    if(i >= progressWidth){
+                        clearInterval(Global.progressTimer);
+                        if(index){
+                            $("#pointer em").eq(index - 1).addClass("on").siblings().removeClass("on");
+                            $("#numBar em").eq(index - 1).addClass("on").siblings().removeClass("on");
+                            $("#profitBar em").eq(index - 1).addClass("on").siblings().removeClass("on");
+                        }
+                    }
+                    i += ((progressWidth - i) > 5 ? 5 : 1);
+                },5);
+            },
+            //显示我的邀请人
+            showInvitor:function(){
+                if(inviteInfo.LAST_USER_ID && inviteInfo.LAST_USER_ID != '-1'){
+                    confirm({
+                        className:'invite myInvitor',
+                        html:'<div id="myInvitor"><div id="myInvitorWrapper"><i style="background:url(' + inviteInfo.USER_PIC + ') 0 0 / 100% 100% no-repeat;"></i><span>' + inviteInfo.NICK_NAME + '</span></div></div>',
+                        okText:' ',
+                        cancelText:' '
+                    });
+                }else{
+                    confirm({
+                        className:'invite',
+                        html:'<input type="text" maxlength="8" id="inviteCodeInput" placeholder="请输入邀请码">',
+                        okText:' ',
+                        okFun:function(){
+                            var inviteCode = $("#inviteCodeInput").val();
+                            if(inviteCode){
+                                o.invite($("#inviteCodeInput").val());
+                            }else{
+                                tip("请输入邀请码");
+                            }
+                        },
+                        okNoClose:true,
+                        cancelText:' '
+                    });
+                }
+            },
+            //获取竞拍记录
+            getAuctionRecord:function(callback){
+                if(!T.Storage.get('access_token')){
+                    return false;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/product/myAuction.json?page=0&limit=1&type=1',
+                    callback:function(data){
+                        auctionInfo = data.res_data.value.INFO;
+                        callback && callback(auctionInfo);
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //邀请
+            invite:function(inviteCode){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/commodity/services/invite/add.json?code=" + inviteCode,
+                    callback:function(json){
+                        tip('已建立对应关系','ok');
+                        o.getInviteInfo();//获取邀请信息
+                        $("#confirmBox,#mask").remove();//移除弹层
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //代拍
+            ebay:function(info){
+                if(info.length){
+                    var product =info[0];
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+product.COMMODITY_ID+'&expectNo=' + product.EXPECT_NO);
+                }else{
+                    T.Util.back({index:0});
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.invite.init();
+            },function () {//webview再次打开回调函数
+                T.invite.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.invite.init();
+        }
+    });
+</script>
+</body>
+</html>

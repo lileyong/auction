@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>管理收货地址</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+    <style>
+        .address-box{padding-bottom: 1.5rem;}
+        .address-item .address-edit em{margin-left: .83rem;}
+    </style>
+    <script type="text/javascript" src="../js/zepto.min.js"></script>
+    <script>
+        var T = {}
+        T.Util = {
+            filterScript: function (str) {
+                str = str || '';
+                str = decodeURIComponent(str);
+                str = str.replace(/<.*>/g, ''); // 过滤标签注入
+                str = str.replace(/(java|vb|action)script/gi, ''); // 过滤脚本注入
+                str = str.replace(/[\"\'][\s ]*([^=\"\'\s ]+[\s ]*=[\s ]*[\"\']?[^\"\']+[\"\']?)+/gi, ''); // 过滤HTML属性注入
+                str = str.replace(/[\s ]/g, '&nbsp;'); // 替换空格
+                return str;
+            },
+            //兼容写法s
+            getPara: function (name, url) {
+                var paraStr = (typeof url == 'undefined') ? window.location.href : url;
+                var paraArr = paraStr.split(/[?#]/g);
+                for(var index = 1;index < paraArr.length;index++){
+                    var para = paraArr[index];
+                    para = para.split('&');
+                    for (var i = para.length - 1; para[i]; i--) {
+                        para[i] = para[i].split('=');
+                        if (para[i][0] == name) {
+                            try { // 防止FF等decodeURIComponent异常
+                                return this.filterScript(para[i][1]);
+                            } catch (e) {
+                                return para[i][1];
+                            }
+                        }
+                    }
+                }
+                return '';
+            }
+        }
+        if(T.Util.getPara('page')){
+            $("html").addClass(T.Util.getPara('page'));
+        }
+    </script>
+</head>
+<body>
+<div class="navbar absolute">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1 id="navtitle">管理收货地址</h1>
+    <div id="rightBtn" style="display:none">管理</div>
+</div>
+<div class="mainContent" id="main">
+    <!--管理收货地址-->
+    <div id="address-manage" style="display:none;">
+        <div class="address-box" id="manageBox"></div>
+    </div>
+    <!--选择收货地址-->
+    <div id="address-select" style="display:none;">
+        <div class="address-box" id="selectBox"></div>
+    </div>
+    <div id="addNewAddress">添加新地址</div>
+</div>
+<script type="text/javascript" src="../js/main.js"></script>
+<script>
+    T.address = (function(){
+        var o = {
+            //程序入口
+            init:function(){
+                o.initHashChange();
+                o.bindEvent();
+            },
+            //hash监听
+            initHashChange:function(){
+                if("onhashchange" in window){
+                    window.addEventListener ? window.addEventListener("hashchange", hasChange, false) : window.attachEvent("onhashchange",hasChange);
+                }
+                function hasChange(){
+                    var page = T.Util.getPara('page')||'manage';
+                    if(page == 'manage'){
+                        $("#rightBtn").hide();
+                        $("title,#navtitle").text("管理收货地址");
+                        $("#address-manage").show();
+                        $("#address-select").hide();
+                    }else{
+                        $("#rightBtn").show();
+                        $("title,#navtitle").text("选择收货地址");
+                        $("#address-select").show();
+                        $("#address-manage").hide();
+                    }
+                    o.getAddress();
+                }
+                hasChange();
+            },
+            //事件绑定
+            bindEvent:function(){
+                //新建收货地址
+                $('#addNewAddress').off().Touch(function (el) {
+                    if(!$("#addNewAddress").is(".disabled")){
+                        var from = T.Util.getParaSearch('from');
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html' + (from ? "?from=" + from : ''));
+                    }
+                });
+                //管理收货地址
+                $("#rightBtn").off().Touch(function(){
+                    window.location.href = '#page=manage';
+                });
+                //设置默认
+                $('.address-edit h2').off().Touch(function (el) {
+                    if($(el).hasClass('default')){return;};
+                    o.editAddress($(el).parent().attr('data-id'),'isDefault',function () {
+                        $('.default').removeClass('default');
+                        $(el).addClass('default');
+                    });
+                });
+                //删除
+                $('.address-edit .delete').off().Touch(function (el) {
+                    confirm({html:'确认删除此收货地址？',okFun:function(){
+                        o.editAddress($(el).parent().attr('data-id'),'isDelete',function () {
+                            $(el).parent().parent().remove();
+                            var addressLen = $("#manageBox .address-item").length;
+                            if(addressLen == 0){
+                                $("#manageBox").html('<li class="nodata address"><i></i><h2>您还没有收货地址哦~</h2></li>');
+                            }else if(addressLen < 10){
+                                $("#addNewAddress").removeClass("disabled");
+                            }
+                        });
+                    }})
+                });
+                //编辑
+                $('.address-edit .edit').off().Touch(function (el) {
+                    var obj = {
+                        'userName': $(el).parent().attr('data-user-name'),
+                        'userPhone': $(el).parent().attr('data-user-phone'),
+                        'areaCode': $(el).parent().attr('data-area-code'),
+                        'userAddr': $(el).parent().attr('data-user-addr'),
+                        'area': $(el).parent().attr('data-area')
+                    }
+                    T.Storage.set('editAddressInfo',obj);
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?id='+$(el).parent().attr('data-id'));
+                });
+                /*编辑*/
+                $('.address-info .edit').off().Touch(function (el) {
+                    var obj = {
+                        'userName': $(el).attr('data-user-name'),
+                        'userPhone': $(el).attr('data-user-phone'),
+                        'areaCode': $(el).attr('data-area-code'),
+                        'userAddr': $(el).attr('data-user-addr'),
+                        'area': $(el).attr('data-area')
+                    }
+                    T.Storage.set('editAddressInfo',obj);
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?id='+$(el).attr('data-id')+'&noNavbar=1');
+                },{stop:true});
+                //选择收获地址
+                $('.selectItem').off().Touch(function (el) {
+                    T.Storage.set('selectAddressInfo',JSON.parse($(el).attr('dataInfo')));
+                    T.Util.back();
+                });
+            },
+            //获取收货地址列表
+            getAddress:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/userAddressList.json',
+                    callback:function(json){
+                        var data = json.res_data.value;
+                        o.showAddress(data);
+                    },
+                    errorCallback:function(){}
+                })
+            },
+            //渲染收货地址列表
+            showAddress:function(data){
+                var manageHtmlArr = [],selectHtmlArr = [];
+                for(var i=0;i<data.length;i++){
+                    var address = data[i].AREA ? (data[i].AREA + data[i].USER_ADDR) : data[i].USER_ADDR;
+                    var isDefault = data[i].IS_DEFAULT ? '<h2 class="default">默认地址</h2>':'<h2>设为默认</h2>';
+                    manageHtmlArr.push('<div class="address-item">\
+                                <div class="address-info"><h2 class="username">'+data[i].USER_NAME+'</h2><p class="tel">'+data[i].USER_PHONE+'</p><p class="address">'+address+'</p><em class="edit" data-id="'+data[i].ADDR_ID+'" data-user-name="'+data[i].USER_NAME+'" data-user-phone="'+data[i].USER_PHONE+'" data-area-code="'+data[i].AREA_CODE+'" data-user-addr="'+data[i].USER_ADDR+'" data-area="'+data[i].AREA+'">编辑</em></div>\
+                                <div class="address-edit " data-id="'+data[i].ADDR_ID+'" data-user-name="'+data[i].USER_NAME+'" data-user-phone="'+data[i].USER_PHONE+'" data-area-code="'+data[i].AREA_CODE+'" data-user-addr="'+data[i].USER_ADDR+'" data-area="'+data[i].AREA+'">'+isDefault+'<em class="delete">删除</em><em class="edit">编辑</em></div>\
+                                </div>');
+                    selectHtmlArr.push('<div class="selectItem address-item '+(data[i].IS_DEFAULT ?'default':'')+'" dataInfo=\''+JSON.stringify(data[i])+'\' data-id="'+data[i].ADDR_ID+'">\
+                                <div class="address-info"><h2 class="username">'+data[i].USER_NAME+'</h2><p class="tel">'+data[i].USER_PHONE+'</p><p class="address">'+address+'</p><em class="edit" data-id="'+data[i].ADDR_ID+'" data-user-name="'+data[i].USER_NAME+'" data-user-phone="'+data[i].USER_PHONE+'" data-area-code="'+data[i].AREA_CODE+'" data-user-addr="'+data[i].USER_ADDR+'" data-area="'+data[i].AREA+'">编辑</em></div>\
+                                </div>');
+                }
+                if(manageHtmlArr.length){
+                    $("html,body").removeClass("white");
+                    $('#manageBox').html(manageHtmlArr.join(''));
+                    $('#selectBox').html(selectHtmlArr.join(''));
+                }else{
+                    $("html,body").addClass("white");
+                    $('#manageBox,#selectBox').html('<li class="nodata address"><i></i><h2>您还没有收货地址哦~</h2></li>');
+                }
+                //超过10条记录时添加按钮置灰
+                if(data.length >= 10){
+                    $("#addNewAddress").addClass("disabled");
+                }else{
+                    $("#addNewAddress").removeClass("disabled");
+                }
+                o.bindEvent();
+            },
+            //编辑收货地址
+            editAddress:function (addrId,type,callback) {
+                var url = '/user/services/user/userAddress.json';
+                var reqData = {
+                    data:{
+                        'addrId':addrId,
+                    }
+                };
+                if(type =='isDefault'){//设为默认
+                    reqData.data.isDefault='1';
+                }
+                if(type =='isDelete'){//删除
+                    reqData.data.isDelete='1';
+                }
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        tip(type =='isDefault'?'设置成功':'删除成功','ok');
+                        callback();
+                    },
+                    errorCallback:function(){}
+                })
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.address.init();
+            },function () {//webview再次打开回调函数
+                T.address.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            window.onpageshow = function(){
+                T.address.init();
+            }
+        }
+    });
+</script>
+</body>
+</html>

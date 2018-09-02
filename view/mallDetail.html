@@ -1,0 +1,866 @@
+<style>
+    #detailbox {
+        width:10rem;
+        margin-bottom: 1.346667rem;
+        background-color: #f5f5f5;
+        overflow:hidden;
+    }
+
+    #mallbanner {
+        position:relative;
+        width: 100%;
+        height: 4rem;
+        background-color:#fff;
+        overflow:hidden;
+        box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    }
+
+    #bannerwrapper{
+        position:relative;
+        width:100%;
+        height:100%;
+        overflow:hidden;
+    }
+
+    #mallbanner #imglist{
+        width:100%;
+        height:100%;
+    }
+
+    #mallbanner #imglist img{
+        float:left;
+        width:100%;
+        height:100%;
+    }
+
+    #mallbanner #indicator{
+        position: absolute;
+        right: 0.266667rem;
+        bottom: 0.226667rem;
+        width: 1.066667rem;
+        height: 0.56rem;
+        text-align: center;
+        line-height: 0.56rem;
+        border-radius: 0.28rem;
+        background-color: #c6c7cc;
+        font-size: 0.32rem;
+        color: #fff;
+        opacity: 0.7;
+    }
+
+    #malldesc {
+        margin-bottom: 0.266667rem;
+        min-height:3.56rem;
+        overflow: hidden;
+        padding: 0 0.266667rem;
+        background-color: #fff;
+    }
+
+    #malldesc h2 {
+        margin-top: 0.266667rem;
+        line-height: 0.48rem;
+        font-size: 0.4rem;
+        color: #333;
+    }
+
+    #malldesc p.desc {
+        margin-top: 0.093333rem;
+        line-height: 0.48rem;
+        font-size: 0.346667rem;
+        color: #f72f2f;
+    }
+
+    #malldesc p.price {
+        margin-top: 0.32rem;
+        margin-bottom: 0.226667rem;
+        line-height: 0.8rem;
+        font-size: 0.586667rem;
+        color: #f72f2f;
+    }
+
+    #malldesc p.price em{
+        position:relative;
+        top:-0.02666667rem;
+        font-size:0.3733334rem;
+        margin-right:0.04rem;
+    }
+
+    #malldesc .footer {
+        height: 0.8rem;
+        line-height: 0.8rem;
+        border-top: 0.013333rem solid #dfdfdf;
+        font-size: 0.373333rem;
+        color: #999;
+    }
+
+    #malldesc .footer em {
+        margin-left: 0.64rem;
+        font-size: 0.373333rem;
+        color: #333;
+    }
+
+    #paynum{
+        clear:both;
+        width:100%;
+        height:1.0666667rem;
+        background-color:#fff;
+        overflow:hidden;
+        margin-bottom:0.2666667rem;
+    }
+
+    #paynum h2{
+        float:left;
+        padding-left:0.4533333rem;
+        line-height:1.0666667rem;
+        font-size:0.4rem;
+        color:#333;
+    }
+
+    #paynum #addsub{
+        float:right;
+        margin:0.2rem 0.4533333rem;
+    }
+
+    #logistics {
+        margin-bottom: 0.266667rem;
+        background-color: #fff;
+    }
+
+    #logistics .head {
+        position: relative;
+        width: 100%;
+        height: 0.933333rem;
+    }
+
+    #logistics .head:after {
+        content: '';
+        position: absolute;
+        right: 0.453333rem;
+        top: 0.546667rem;
+        display: inline-block;
+        background: url('../img/sprite.png') no-repeat -2.4rem -7.2rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.506667rem;
+        height: 0.106667rem;
+    }
+
+    #logistics .head h2 {
+        padding-left: 0.266667rem;
+        padding-top: 0.32rem;
+        line-height: 0.613333rem;
+        font-size: 0.346667rem;
+        color: #999;
+    }
+
+    #logistics .head h2 em {
+        position: relative;
+        margin-left: 0.666667rem;
+        font-size: 0.373333rem;
+        color: #333;
+    }
+
+    #logistics .head h2 em:before {
+        content: '';
+        position: absolute;
+        left: -0.373333rem;
+        top: 0.12rem;
+        display: inline-block;
+        background: url('../img/sprite.png') no-repeat -12.813333rem -6.56rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.266667rem;
+        height: 0.32rem;
+    }
+
+    #logistics .sendtime {
+        padding-left: 1.226667rem;
+        margin-top: 0.08rem;
+        font-size: 0.346667rem;
+        color: #999;
+    }
+
+    #logistics .expenses {
+        margin-bottom: 0.173333rem;
+        padding-left: 0.266667rem;
+        line-height: 0.746667rem;
+        font-size: 0.346667rem;
+        color: #999999;
+    }
+
+    #logistics .expenses em {
+        margin-left: 0.266667rem;
+        color: #333;
+    }
+
+    #logistics .footer {
+        width: 100%;
+        height: 0.666667rem;
+        line-height: 0.666667rem;
+        border-top: 0.013333rem solid #f5f5f5;
+    }
+
+    #logistics .expenses em {
+        margin-left: 0.266667rem;
+        color: #333;
+    }
+
+    #logistics .footer {
+        padding: 0 0.266667rem;
+    }
+
+    #logistics .footer em {
+        position: relative;
+        float: left;
+        padding-left: 0.386667rem;
+        display: inline-block;
+        width: 1.84rem;
+        height: 0.666667rem;
+        font-size: 0.293333rem;
+        color: #f72f2f;
+    }
+
+    #logistics .footer em:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        margin: 0.173333rem 0;
+        display: inline-block;
+        background: url('../img/sprite.png') no-repeat -12.813333rem -5.386667rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.32rem;
+        height: 0.32rem;
+    }
+
+    #select {
+        margin-bottom: 0.4rem;
+        padding: 0 0.266667rem;
+        width: 100%;
+        height: 1.066667rem;
+        line-height: 1.066667rem;
+        font-size: 0.346667rem;
+        color: #999;
+        background-color: #fff;
+    }
+
+    #select span {
+        margin-left: 0.266667rem;
+        color: #333;
+    }
+
+    #evaluate {
+        background-color: #f5f5f5;
+    }
+
+    .detailitem .title {
+        position: relative;
+        margin: auto;
+        width: 1.533333rem;
+        height: 0.92rem;
+        padding-left: 0.666667rem;
+        line-height: 0.853333rem;
+        font-size: 0.373333rem;
+        color: #999;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+
+    .detailitem .title i {
+        position: absolute;
+        left: 0.133333rem;
+        top: 0.253333rem;
+        display: inline-block;
+        background: url('../img/sprite.png') no-repeat -12.813333rem -1.546667rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.4rem;
+        height: 0.4rem;
+    }
+
+    .detailitem .title:before {
+        content: '';
+        position: absolute;
+        left: -2.533333rem;
+        top: 0.453333rem;
+        display: inline-block;
+        width: 2.533333rem;
+        height: 0.013333rem;
+        background-color: #dfdfdf;
+    }
+
+    .detailitem .title:after {
+        content: '';
+        position: absolute;
+        right: -2.533333rem;
+        top: 0.453333rem;
+        display: inline-block;
+        width: 2.533333rem;
+        height: 0.013333rem;
+        background-color: #dfdfdf;
+    }
+
+    #evaluate-list {
+        background-color: #fff;
+    }
+
+    .evaluate-item {
+        margin: 0 0.266667rem;
+        border-bottom: 0.013333rem solid #e3e5e9;
+    }
+
+    .evaluate-item:last-child {
+        border-bottom: none;
+    }
+
+    .evaluate-item .head {
+        position: relative;
+        height: 1.093333rem;
+        line-height: 1.093333rem;
+    }
+
+    .evaluate-item .head img {
+        position: absolute;
+        left: 0;
+        top: 0.2rem;
+        width: 0.693333rem;
+        height: 0.693333rem;
+        border-radius:0.3466667rem;
+    }
+
+    .evaluate-item .head h2 {
+        float: left;
+        padding-left: 0.906667rem;
+        font-size: 0.266667rem;
+        color: #333;
+    }
+
+    .evaluate-item .head .starlevel {
+        float: right;
+        font-size: 0.373333rem;
+        color:#f72f2f;
+    }
+
+    .evaluate-item .comment {
+        margin-top: 0.04rem;
+        line-height: 0.426667rem;
+        font-size: 0.373333rem;
+        color: #333;
+    }
+
+    .evaluate-item .imglist {
+        overflow:hidden;
+        margin: 0.24rem 0;
+    }
+
+    .evaluate-item .imglist img {
+        float: left;
+        margin-right:0.106667rem;
+        width: 2.28rem;
+        height: 2.28rem;
+    }
+
+    .evaluate-item .imglist img:last-child {
+        margin-right: 0;
+    }
+
+    .evaluate-item .config {
+        height: 0.72rem;
+        padding-left: 0.053333rem;
+        line-height: 0.72rem;
+        font-size: 0.32rem;
+        color: #999;
+    }
+
+    #evaluate-more {
+        width: 100%;
+        height: 1.066667rem;
+        overflow: hidden;
+    }
+
+    #evaluate-more em {
+        display: block;
+        margin: 0.133333rem auto 0.4rem auto;
+        width: 2.266667rem;
+        height: 0.533333rem;
+        text-align: center;
+        line-height: 0.533333rem;
+        border: 0.013333rem solid #f72f2f;
+        border-radius: 0.266667rem;
+        font-size: 0.32rem;
+        color: #f72f2f;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+
+    .detailitem#detail {
+        background-color: #f5f5f5;
+        overflow: hidden;
+    }
+
+    .detailitem#detail .title {
+        margin-top: 0.4rem;
+        margin-bottom: 0.12rem;
+        background-color: #f5f5f5;
+    }
+
+    .detailitem#detail .title i {
+        background: url('../img/sprite.png') no-repeat -12.813333rem -2.213333rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.4rem;
+        height: 0.4rem;
+    }
+
+    #detail-content img {
+        display:block;
+        width:100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #detailfoot {
+        position: fixed;
+        bottom: 0;
+        width: 10rem;
+        height: 1.333333rem;
+        box-shadow:0 -0.1066667rem 0.2133333rem 0 rgba(28,31,33,0.1);
+    }
+
+    #detailfoot #kefu {
+        float: left;
+        width: 1.506667rem;
+        height: 1.333333rem;
+        background-color: #fff;
+    }
+
+    #detailfoot #kefu:before {
+        content: '';
+        margin: auto;
+        margin-top: 0.266667rem;
+        display: block;
+        background: url('../img/sprite.png') no-repeat -5.493333rem -11.146667rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.453333rem;
+        height: 0.48rem;
+    }
+
+    #detailfoot #kefu p {
+        text-align: center;
+        color:#666;
+    }
+
+    #detailfoot #toBuy {
+        float: right;
+        width: calc(100% - 1.506667rem);
+        height: 1.333333rem;
+        text-align: center;
+        line-height: 1.333333rem;
+        font-size: 0.4rem;
+        color: #fff;
+        background-color: #f72f2f;
+    }
+    #shopNum{
+        height: .8rem;
+        line-height: .8rem;
+        font-size: .4rem;
+        width: 3rem;
+    }
+
+    /*iPhoneX适配*/
+    .iPhoneX #detailfoot{height:2.24rem;background-color:#fff;}
+    .iPhoneX #detailbox{margin-bottom:2.24rem;}
+</style>
+<div class="content" id="content">
+    <div id="detailbox">
+        <div class="detailitem" id="goods">
+            <div id="mallbanner"><div id="bannerwrapper">
+                <div id="imglist"></div>
+                <div id="indicator"></div>
+            </div></div>
+            <div id="malldesc">
+                <h2 class="name"></h2>
+                <p class="desc"></p>
+                <p class="price"></p>
+                <div class="footer"></div>
+            </div>
+            <div id="paynum">
+                <h2>购买数量</h2>
+                <div id="addsub">
+                    <em id="sub" class="addsub down"></em>
+                    <input type="tel" value="1" id="shopNum">
+                    <em id="add" class="addsub up"></em>
+                </div>
+            </div>
+            <div id="logistics">
+                <p class="expenses hide">快递<em>--元</em></p>
+                <p class="footer"><em>正品推荐</em><em>极速发货</em><em>公平公正</em></p>
+            </div>
+        </div>
+        <div class="detailitem" id="evaluate" style="display:none;">
+            <div class="title"><h2><i></i>评价</h2></div>
+            <div id="evaluate-list">
+                <div id="evaluate-list-box"></div>
+                <div id="evaluate-more"><em>查看更多评价</em></div>
+            </div>
+        </div>
+        <div class="detailitem" id="detail">
+            <div class="title"><h2><i></i>详情</h2></div>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+    <div id="detailfoot">
+        <div id="kefu"><p>客服</p></div>
+        <div id="toBuy">立即购买</div>
+    </div>
+</div>
+<script>
+    T.malldetail = (function(){
+        var commodityId = T.Util.getPara('id');//商品Id
+        var isTabSwitch = false;
+        var shopInfo = {},PIC_LIST=[];//商品信息
+        var addressId ='';
+        var favourable= '';
+
+        //主对象
+        var o = {
+            init:function(){
+                o.initPage();//初始化页面
+                o.getShopInfo();//获取商品详情
+                o.getShareOrder();//获取晒单分享
+                o.bindEvent();//事件绑定
+            },
+            //初始化页面
+            initPage:function(){
+                T.Util.getAppInfo();
+                T.User.getUserAddress();
+                $("html").removeClass("noNavbar");
+                //各个商品页面的PV/UV（sc_fwl001，数字为商品id）
+                T.Util.setUserBehaviorList({
+                    "busId":T.Util.getPara('id'),
+                    "conductCode": "sc_fwl"+T.Util.getPara('id'),
+                    "comductDesc": "各个商品页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //事件绑定
+            bindEvent:function(){
+                //tab定位
+                $(window).off().scroll(function(){
+                    var index = 0;
+                    var scrollTop = $(window).scrollTop() - parseFloat($("#content").css("margin-top"));
+                    if (scrollTop > ($('#detail').offset().top-$('.navbar')[0].offsetHeight)) {
+                        index = 1;
+                    }else if((scrollTop > ($('#evaluate').offset().top-$('.navbar')[0].offsetHeight)) && $('#evaluate').css("display") != 'none'){
+                        index = 2;
+                    }else{
+                        index = 0;
+                    }
+                    if(!isTabSwitch){
+                        $(".pointer").animate({"left":(1.466667 * index + 0.303333) + "rem"});
+                    }
+                });
+                //tab切换
+                $(".tabitem").off().Touch(function(el){
+                    if($(el).hasClass("on")){return;}
+                    $("input,textarea").blur();
+                    o.tabSwitch($(el).index());
+                });
+                //分享
+                $("#share").off().Touch(function(){
+                    if(!shopInfo && shopInfo.COMMODITY_TITLE){
+                        return false;
+                    }
+                    T.Util.thirdShare({
+                        "type":"native",
+                        "title":"优选商城，百万商品一元拍进行中",
+                        "description":"又有用户一元拍“" + shopInfo.COMMODITY_TITLE + "”，百万活动正在进行中，大奖等你来拿",
+                        "icon":T.Util.getAppLogo(),
+                        "url":Global.fullHost + '/auction/view/go.html#page=mallDetail.html&id=' + T.Util.getPara('id') + "&channelCode=" + (Global.isiOS ? 'iosh5':'adh5') + "&appInfo=" + Base64.encode(JSON.stringify(T.Util.getAppInfo())).replace(/\=/g,"_")
+                    },function(result){
+
+                    });
+                });
+                //选择收货地址
+                $("#selectAddress").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/address.html#page=select');
+                });
+                //查看更多评价
+                $("#evaluate-more").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/evaluate.html?commodityId=' + commodityId);
+                });
+                //下单
+                $('#toBuy').off().Touch(function () {
+                    //各个商品页面“立即购买”按钮的点击量（sc_gmdjl001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId":T.Util.getPara('id'),
+                        "conductCode": "sc_gmdjl"+T.Util.getPara('id'),
+                        "comductDesc": "各个商品页面“立即购买”按钮的点击量",
+                        "time": new Date().getTime()
+                    });
+                    if(T.Storage.get('access_token')){
+                        if(shopInfo && shopInfo.COMMODITY_NUM >= 1){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/pay.html?commodityId='+commodityId+'&count='+($("#shopNum").val()||'1')+'&free='+favourable+'&payType=mall&isentity='+shopInfo.IS_ENTITY);
+                        }else{
+                            alert("商品库存不足",function(){
+                                T.Util.back();
+                            });
+                        }
+
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                    }
+                });
+
+            },
+            //商城tab切换
+            tabSwitch:function(index){
+                var heightlist = [];
+                isTabSwitch = true;
+                setTimeout(function(){
+                    isTabSwitch = false;
+                },500);
+                heightlist[0] = $("#goods").offset().top - parseFloat($("#content").css("margin-top"));
+                heightlist[1] = $("#detail").offset().top - parseFloat($("#content").css("margin-top"));
+                heightlist[2] = $("#evaluate").offset().top - parseFloat($("#content").css("margin-top"));
+                $(".tabitem").eq(index).addClass("on").siblings().removeClass("on");
+                $(".pointer").animate({"left":(1.466667 * index + 0.303333) + "rem"});
+                if(index == 2 && !$("#evaluate-list-box").children().length){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/evaluate.html?commodityId=' + commodityId);
+                }else{
+                    $("body").scrollTop(0);
+                    $("#content").animate({"margin-top":-(heightlist[index] - $(".navbar").height())});
+                }
+            },
+            //加载详情页banner
+            loadBanner:function(imgList){
+                //渲染banner
+                var imgHtml = [],index = 0;
+                $.each(imgList,function(i,item){
+                    index++;
+                    imgHtml.push('<img src="' + item + '" style="width:' + window.innerWidth + 'px" data-index="' + index +'">');
+                });
+                $("#imglist").html(imgHtml.join("")).css({width:imgList.length * window.innerWidth});
+                $("#indicator").text('1/' + imgList.length);
+                //banner滑动
+                var hscroll = true,vscrol = true;
+                var start_x = 0,move_x = 0,start_left = 0,move_left = 0;
+                var start_y = 0,move_y = 0,start_top = 0,move_top = 0;
+                var index = 0,width = window.innerWidth;
+                var imgbox = $("#imglist").css({"margin-left":'0rem'});
+                var len = imgList.length;
+                imgbox.on("touchstart",function(e){
+                    e.preventDefault();
+                    try{
+                        start_x = e.changedTouches[0].clientX;
+                        start_y = e.changedTouches[0].clientY;
+                        start_left = parseInt(imgbox.css('margin-left'));
+                        start_top = parseInt(imgbox.css('padding'));
+                    }catch(e){}
+                });
+                imgbox.on("touchmove",function(e) {
+                    e.preventDefault();
+                    try {
+                        move_x = e.changedTouches[0].clientX;
+                        move_y = e.changedTouches[0].clientY;
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        move_top = parseInt(imgbox.css('padding'));
+                        var ratiox = 0.8 - Math.abs((move_left - start_left) / width);
+                        var ratioy = 0.2 - Math.abs((move_top - start_top) / width);
+                        var curLeft = move_left + 0.8 * ratiox * ratiox * (move_x - start_x);
+                        var curTop = move_top + 5 * ratioy * ratioy * (move_y - start_y);
+                        if(Math.abs(move_x - start_x) > Math.abs(move_y - start_y)){
+                            if(hscroll){
+                                imgbox.css({"margin-left": (curLeft) + "px"}, 500);
+                                vscrol = false;
+                            }
+                        }else{
+                            if(vscrol){
+                                $("#mallbanner").css({"padding": (curTop) + "px 0"}, 500);
+                                hscroll = false;
+                            }
+                        }
+                    } catch (e) {
+                    }
+                });
+                imgbox.on("touchend",function(e) {
+                    e.preventDefault();
+                    try {
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        if(move_left > start_left){
+                            index = Math.floor(-move_left / width);
+                        }else{
+                            index = Math.ceil(-move_left / width);
+                        }
+                        if (index < 0) {
+                            index = 0;
+                        } else if (index > len - 1) {
+                            index = len - 1;
+                            setTimeout(function(){
+                                o.tabSwitch(1);
+                            },10);
+                        }
+                        $("#indicator").text((index + 1) + '/' + len);
+                        if(Math.abs(move_x - start_x) > Math.abs(move_y - start_y)){
+                            imgbox.animate({"margin-left": (-index * width) + "px"}, 500);
+                        }else{
+                            $("#mallbanner").animate({"padding":"0"}, 500);
+                        }
+                        hscroll = true,vscrol = true;
+                    } catch (e) {
+                    }
+                });
+            },
+            //获取商品详情
+            getShopInfo:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/shop/info.json?commodityId='+commodityId,//
+                    callback:function(data){
+                        var  d=data.res_data.value;
+                        PIC_LIST = d.picList;
+                        shopInfo = d.shopInfo;
+                        favourable = d.favourable;
+                        var bannerImgArr = [],detailImgHtml=[];
+                        for(var m=0;m<PIC_LIST.length;m++){
+                            if(PIC_LIST[m].TYPE==1){//banner滚动图
+                                bannerImgArr.push(PIC_LIST[m].PHOTO_URL);
+                            }else{//商品详情图
+                                detailImgHtml.push('<img class="lozad" src="../img/goods/lazy_load.png" data-src="'+PIC_LIST[m].PHOTO_URL+'">');
+                            }
+                        }
+                        $('#detail-content').html(detailImgHtml.join(''));
+                        if(shopInfo.IS_ENTITY==0){//虚拟物品隐藏快递费
+                            $('#logistics .expenses').hide();
+                        }else{
+                            $('#logistics .expenses').show();
+                            $('#logistics .expenses em').html(shopInfo.freihghtMoney+'元');
+                        }
+                        lozad().observe();
+                        o.loadBanner(bannerImgArr);//加载banner
+                        $('#malldesc .name').html(shopInfo.COMMODITY_TITLE);
+                        $('#malldesc .desc').html(shopInfo.MALL_PRODUCT_NOTE);
+                        $('#malldesc .price').html('<em>¥</em>'+Number(shopInfo.MARKET_PRICE).toFixed(2));
+                        if(T.Storage.get('access_token')){
+                            $('#malldesc .footer').html('优惠<em>可使用购物币抵扣<span>' + d.favourable + '</span>元</em>');//购物币
+                        }else{
+                            $('#malldesc .footer').html('可使用购物币抵扣');//购物币
+                        }
+                        //选择购买数量
+                        $("#shopNum").NumInput({
+                            min:1,
+                            max:shopInfo.COMMODITY_NUM > 99999 ? 99999 : shopInfo.COMMODITY_NUM,
+                            fn:function(){
+
+                            }
+                        });
+                        //链接客服
+                        $('#kefu').off().Touch(function () {
+                            //T.Util.kefu('h5','来源：商城商品详情页面|商品ID：'+shopInfo.COMMODITY_ID+'|商品名称：'+shopInfo.COMMODITY_NAME+'|商品价格：'+shopInfo.MARKET_PRICE);
+                            var obj = {
+                                eventId : shopInfo.COMMODITY_ID,
+                                title: shopInfo.COMMODITY_NAME,
+                                content :"商品ID:"+shopInfo.COMMODITY_ID,
+                                imageUrl : PIC_LIST[0].PHOTO_URL,
+                                url : T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+shopInfo.COMMODITY_ID,
+                                memo : "商品价格:"+shopInfo.MARKET_PRICE
+                            }
+                            T.Util.kefuNew("h5",'来源：商城商品详情页面',obj);
+                        });
+                    },
+                    errorCallback:function(){}
+                })
+            },
+            //获取收货地址
+            getAddress:function () {//获取收货地址
+                if(!T.Util.isEmpty(T.Storage.getAndRemove('selectAddressInfo'))){
+                    var d = T.Storage.getAndRemove('selectAddressInfo');
+                    addressId = d.ADDR_ID;
+                    $('#defaultArea').html(d.AREA);
+                   return;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/userAddressList.json?isDefault=1',
+                    callback:function(data){
+                        var d=data.res_data.value;
+                        for(var i=0;i<d.length;i++){
+                            var address = d[i].AREA ? d[i].AREA:'去添加收货地址';
+                            if(d[i].IS_DEFAULT){
+                                addressId = d[i].ADDR_ID;
+                                $('#defaultArea').html(address);
+                                return;
+                            }
+                        }
+                        $('#defaultArea').html('去添加收货地址');
+                    },
+                    errorCallback:function(){}
+                })
+            },
+            //本商品晒单列表
+            getShareOrder:function () {
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    needToken:'no',
+                    reqUrl:'/order/services/order/shareOrder.json?commodityId=' + commodityId+'&page=1&limit=3&type=3',
+                    callback:function(data){
+                        var d = data.res_data.value.INFO,htmlArr=[];
+                        for(var i=0,j=d.length;i<j;i++){
+                            htmlArr.push('<div class="evaluate-item"><div class="head"><img src="' + d[i].PIC + '">');
+                            htmlArr.push('<h2>' + (d[i].NICK_NAME||d[i].USER_MOBILE) + '</h2><p class="starlevel" class="red">' + T.Util.repeat("★",d[i].SHARE_LEVEL) + '</p></div>');
+                            if(d[i].SHARE_DESC){
+                                htmlArr.push('<p class="comment">' + d[i].SHARE_DESC + '</p>');
+                            }
+                            htmlArr.push('<div class="imglist">');
+                            $.each(d[i].PHOTO_LIST,function(i,item){
+                                htmlArr.push('<img src="' + item + '">');
+                            });
+                            htmlArr.push('</div></div>');
+                        }
+                        if(htmlArr.length){
+                            $(".detailitem#evaluate").show();
+                            $('#evaluate-list-box').html(htmlArr.join(''));
+                        }else{
+                            $(".detailitem#evaluate").hide();
+                        }
+                        //查看大图
+                        $(".imglist img").off().Touch(function(){
+                            var imgList = [],imgListObj = $(this).parent().find("img");
+                            for(var i = 0;i < imgListObj.length;i++){
+                                imgList.push(imgListObj.eq(i).attr("src"));
+                            }
+                            T.Storage.set('imageViewerData',{
+                                index:$(this).index(),
+                                imgList:imgList
+                            });
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/imageViewer.html');
+                        });
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        if(data){
+                            tip(data.msg || data.result_msg);
+                        }
+                    }
+                });
+            },
+            //商城支付
+            payShop:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/shop/shopPay.json?commodityId='+commodityId+'&count=1&val='+addressId,
+                    callback:function(data){
+                       alert('购买成功');
+                    },
+                    errorCallback:function(){}
+                })
+            }
+        }
+        return {
+            init:o.init,
+            getShopInfo:o.getShopInfo
+        }
+    })();
+    $(document).ready(function () {
+        T.malldetail.init();
+    });
+</script>
+
+

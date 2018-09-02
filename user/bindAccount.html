@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>账号合并</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/bindAccount.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>账号合并</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="content">
+        <div id="bindHead"><h2>您要绑定<em id="bindInfo"></em>账号已注册使用，如需绑定，则需对账户的数据进行合并</h2></div>
+        <div id="bindUser">
+            <div id="newAccount" class="accountItem">
+                <img src="../img/goods/icon_auctioner.png" class="userPhoto">
+                <h2 class="accountType">微信账号</h2>
+                <p class="userName">风来了</p>
+                <div class="moneyList">
+                    <div class="moneyItem"><h2>拍币：</h2><p><em>0</em>币</p></div>
+                    <div class="moneyItem"><h2>委托账户：</h2><p><em>0</em>元</p></div>
+                </div>
+            </div>
+            <div id="bindAccount" class="accountItem">
+                <img src="../img/goods/icon_auctioner.png" class="userPhoto">
+                <h2 class="accountType">微信账号</h2>
+                <p class="userName">风来了</p>
+                <div class="moneyList">
+                    <div class="moneyItem"><h2>拍币：</h2><p><em>0</em>币</p></div>
+                    <div class="moneyItem"><h2>委托账户：</h2><p><em>0</em>元</p></div>
+                </div>
+            </div>
+        </div>
+        <div id="bindBtn">开始合并</div>
+        <div id="bindText">
+            <h2>合并后，绑定的账户以下数据会将丢失：</h2>
+            <p>1.赠币数据将丢失；</p>
+            <p>2.购物币数据将丢失；</p>
+            <p>3.一个月以前的竞拍订单记录丢失；</p>
+            <p>4.邀请记录将会丢失。</p>
+            <h2>绑定账户以下数据将会累计或平移到当前账户中</h2>
+            <p>1.拍币数据将被合并；</p>
+            <p>2.委托账户数据将被合并；</p>
+            <p>3.近一个月的订单记录将平移。</p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.bindAccount = (function(){
+        //var obj = {'10':'手机账号','20':'微信账号','30':'QQ账号'};
+        var bindObj = {'1':'手机账号','2':'QQ账号','3':'微信账号'};
+        var userinfo = T.Storage.get('userinfo');
+        var bindInfo = T.Storage.get('bindAccountInfo');
+        var httpFlag = true;
+        var o = {
+            init:function(){
+                $('#bindBtn').off().Touch(function () {
+                    o.bindEvent();
+                });
+                $("#back").off().Touch(function(){
+                    var from = T.Util.getPara("from");
+                    if(from == 'setMobile'){
+                        T.Util.back({num:2});
+                    }else{
+                        T.Util.back();
+                    }
+                });
+                if(T.Util.isEmpty(userinfo)){
+                    T.Util.login();
+                    return;
+                }else{
+                    var current = $('#newAccount');
+                    current.find('img').attr('src',userinfo.userPic);
+                    current.find('.userName').html(userinfo.nickName);
+                    current.find('.accountType').html(bindObj[userinfo.loginType]);
+                    var moneyList  = userinfo.moneyList;
+                    current.find('.moneyList em').eq(0).html(moneyList[2]);
+                    current.find('.moneyList em').eq(1).html((moneyList[0]||0));
+                };
+                if(!T.Util.isEmpty(bindInfo)){
+                    var bind = $('#bindAccount');
+                    bind.find('img').attr('src',bindInfo.userPic);
+                    bind.find('.userName').html(bindInfo.nickName);
+                    bind.find('.accountType').html(bindObj[bindInfo.loginType]);
+                    var moneyListA  = bindInfo.moneyList;
+                    bind.find('.moneyList em').eq(0).html(moneyListA[2]);
+                    bind.find('.moneyList em').eq(1).html(moneyListA[0]);
+                    if(bindInfo.loginType==3){
+                        $('#bindInfo').html('微信');
+                    }
+                    if(bindInfo.loginType==2){
+                        $('#bindInfo').html('QQ');
+                    }
+                }
+            },
+            merge:function () {
+                if(!httpFlag){return;}
+                httpFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    errorType:'1',
+                    reqData:{'type':bindInfo.loginType,'token':bindInfo.token},
+                    reqUrl:'/user/services/user/acct/merge.json',
+                    callback:function(){
+                        tip("合并成功",'ok');
+                        var from = T.Util.getPara("from");
+                        if(from == 'setMobile'){
+                            T.Util.back({num:2});
+                        }else{
+                            T.Util.back();
+                        }
+                        httpFlag = true;
+                    },
+                    errorCallback:function(data){
+                        httpFlag = true;
+                        tip(data.msg);
+                    }
+                });
+            },
+            bindEvent:function(){
+                var moneyList  = userinfo.moneyList;
+                var moneyListA  = bindInfo.moneyList;
+                confirm({
+                    className:'userDefined left bindAccount',
+                    html:'<img src="'+userinfo.userPic+'"><h2>合并后,您的账号数据如下</h2><p>' +
+                    '<span>拍 币：</span><em>'+((moneyList[2])+moneyListA[2])+'币</em></p><p><span>委托账户：</span><em>'+((moneyList[0]||0)+moneyListA[0])+'元</em></p>',
+                    okText:'确认合并',
+                    okFun:function(){
+                        o.merge();
+                    },
+                    close:true
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.bindAccount.init();
+            }, function () {//webview再次打开回调函数
+
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.bindAccount.init();
+        }
+    });
+</script>
+</body>
+</html>

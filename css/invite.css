@@ -1,0 +1,696 @@
+/*邀请首页样式*/
+
+#inviteBox {
+  background-color: #ffde00;
+}
+
+#inviteBox .bg {
+  position: absolute;
+  width: 100%;
+  display: block;
+}
+
+#rule {
+  position: fixed;
+  z-index: 1;
+  right: 0.24rem;
+  width: 0.773333rem;
+  height: 0.933333rem;
+  background: url(../img/activity/invite/rule.png) 0 0 / 100% 100% no-repeat;
+}
+
+#inviteBox #inviteHead {
+  position: relative;
+  width: 100%;
+  height: 7.573333rem;
+}
+
+#inviteBox #inviteStrategy {
+  position: relative;
+  width: 100%;
+  height: 6.866667rem;
+  overflow: hidden;
+}
+
+#inviteBox #inviteBtn {
+  position: relative;
+  margin: 0.186667rem auto 0 auto;
+  display: block;
+  width: 7.373333rem;
+  height: 1.16rem;
+}
+
+#inviteBox #inviteCount {
+  position: relative;
+  margin: 0.386667rem auto 0.72rem auto;
+  width: 9.413333rem;
+  min-height: 5.653333rem;
+  border: 0.026667rem solid #3c353e;
+  border-radius: 0.133333rem;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+#inviteBox #inviteTab {
+  position: relative;
+  width: 9.413333rem;
+  height: 1.306667rem;
+  border-bottom: 0.013333rem solid #d8d8d8;
+}
+
+#inviteBox #inviteTab .tabItem {
+  float: left;
+  padding-top: 0.213333rem;
+  width: 50%;
+  height: 1.093333rem;
+  text-align: center;
+  line-height: 1.093333rem;
+  font-size: 0.453333rem;
+  font-weight: bold;
+  color: #39383b;
+}
+
+#inviteBox #inviteTab .tabItem.on {
+  color: #f43c1a;
+}
+
+#inviteBox #inviteTab .tabPointer {
+  position: absolute;
+  left: 1.426667rem;
+  bottom: 0;
+  width: 1.853333rem;
+  height: 0.12rem;
+  background-color: #f43c1a;
+}
+
+#inviteBox #inviteContent {
+  position: relative;
+  margin: auto;
+  width: 9.413333rem;
+  min-height: 4.333333rem;
+}
+
+#inviteBox #inviteContent .tabContent {
+  width: 100%;
+  min-height: 4.333333rem;
+  overflow: hidden;
+}
+
+#rankList .nodata h2 {
+  width: 100%;
+  height: 4.333333rem;
+  text-align: center;
+  line-height: 4.333333rem;
+}
+
+.rankItem.firstThree {
+  float: left;
+  position: relative;
+  width: 3.066667rem;
+  height: 3.96rem;
+}
+
+.rankItem:nth-child(1) {
+  left: 3.066667rem;
+  background: url(../img/activity/invite/rankBg1.png) center 0.106667rem / 1.92rem 2.133333rem no-repeat;
+}
+
+.rankItem:nth-child(2) {
+  left: -3.066667rem;
+  margin-left: 0.106667rem;
+  background: url(../img/activity/invite/rankBg2.png) center 0.293333rem / 1.653333rem 1.866667rem no-repeat;
+}
+
+.rankItem:nth-child(3) {
+  background: url(../img/activity/invite/rankBg3.png) center 0.293333rem / 1.653333rem 1.866667rem no-repeat;
+}
+
+.rankItem.firstThree .count {
+  position: absolute;
+  z-index: 1;
+  bottom: 1.84rem;
+  right: 0.666667rem;
+  display: inline-block;
+  width: 0.413333rem;
+  height: 0.413333rem;
+  text-align: center;
+  line-height: 0.413333rem;
+  font-size: 0.28rem;
+  color: #fff;
+  border-radius: 50%;
+}
+
+.rankItem.firstThree:nth-child(1) .count {
+  bottom: 1.733333rem;
+  right: 0.546667rem;
+  width: 0.48rem;
+  height: 0.48rem;
+  line-height: 0.48rem;
+  background-color: #eb3b32;
+  border: 0.04rem solid #c1130a;
+}
+
+.rankItem.firstThree:nth-child(2) .count {
+  background-color: #fbac1c;
+  border: 0.04rem solid #fbac1c;
+}
+
+.rankItem.firstThree:nth-child(3) .count {
+  background-color: #e0a36e;
+  border: 0.04rem solid #bf8a61;
+}
+
+.rankItem.firstThree .photo {
+  position: absolute;
+  margin: 0.586667rem 0.786667rem 0 0.786667rem;
+  width: 1.493333rem;
+  height: 1.493333rem;
+  border-radius: 0.746667rem;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.rankItem.firstThree .photo img {
+  width: 100%;
+  height: 100%;
+}
+
+.rankItem.firstThree:nth-child(1) .photo {
+  margin: 0.453333rem 0.68rem 0 0.68rem;
+  width: 1.706667rem;
+  height: 1.706667rem;
+  border-radius: 0.853333rem;
+  overflow: hidden;
+}
+
+.rankItem.firstThree h2 {
+  margin-top: 2.4rem;
+  width: 100%;
+  height: 0.533333rem;
+  text-align: center;
+  line-height: 0.533333rem;
+  font-size: 0.4rem;
+  color: #39383b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rankItem.firstThree p {
+  height: 0.586667rem;
+  text-align: center;
+  line-height: 0.586667rem;
+  font-size: 0.32rem;
+  color: #6e6e6e;
+}
+
+.rankItem.firstThree p em {
+  color: #fd2b2b;
+}
+
+.rankItem.firstThree .total {
+  display: block;
+  margin: auto;
+  width: 2.64rem;
+  height: 0.453333rem;
+  background-color: #f43c1a;
+  border-radius: 0.226667rem;
+  text-align: center;
+  line-height: 0.44rem;
+  font-size: 0.293333rem;
+  color: #fbc042;
+}
+
+.rankItem.normal {
+  position: relative;
+  float: left;
+  margin: 0 0.666667rem;
+  width: 8.08rem;
+  height: 2.16rem;
+  border-bottom: 0.013333rem solid #d8d8d8;
+}
+
+.rankItem.normal:last-child {
+  border-bottom: none;
+}
+
+.rankItem.normal .count {
+  position: absolute;
+  left: -0.24rem;
+  top: 0;
+  width: 0.48rem;
+  height: 2.16rem;
+  text-align: center;
+  line-height: 2.16rem;
+  font-size: 0.4rem;
+  color: #6e6e6e;
+}
+
+.rankItem.normal img {
+  position: absolute;
+  left: 0.386667rem;
+  top: 0.546667rem;
+  width: 1.066667rem;
+  height: 1.066667rem;
+  border-radius: 0.533333rem;
+  overflow: hidden;
+}
+
+.rankItem.normal h2 {
+  padding-left: 1.64rem;
+  line-height: 2.16rem;
+  font-size: 0.4rem;
+  color: #39383b;
+}
+
+.rankItem.normal p {
+  position: absolute;
+  right: 0;
+  top: 0.413333rem;
+  width: 2.666667rem;
+  height: 0.586667rem;
+  text-align: center;
+  line-height: 0.586667rem;
+  font-size: 0.32rem;
+  color: #6e6e6e;
+}
+
+.rankItem.normal p em {
+  color: #fd2b2b;
+}
+
+.rankItem.normal .total {
+  position: absolute;
+  top: 1rem;
+  right: 0.013333rem;
+  display: block;
+  margin: auto;
+  width: 2.64rem;
+  height: 0.453333rem;
+  background-color: #f43c1a;
+  border-radius: 0.226667rem;
+  text-align: center;
+  line-height: 0.44rem;
+  font-size: 0.293333rem;
+  color: #fbc042;
+}
+
+#myIncome {
+  position: relative;
+  height: 1.64rem;
+  overflow: hidden;
+}
+
+#myIncome #userPhoto {
+  position: absolute;
+  left: 3.106667rem;
+  top: 0.2rem;
+  width: 1.44rem;
+  height: 1.44rem;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+#myIncome p {
+  padding-left: 4.72rem;
+  height: 0.506667rem;
+  line-height: 0.506667rem;
+  font-size: 0.32rem;
+  color: #39383b;
+}
+
+#myIncome p:nth-of-type(1) {
+  padding-top: 0.413333rem;
+}
+
+#myIncome p em {
+  margin: 0 0.026667rem;
+  color: #fd2b2b;
+}
+
+#myIncome .incomeItem {
+  float: left;
+  width: 50%;
+}
+
+#myIncome .incomeItem h2 {
+  padding-top: 0.266667rem;
+  height: 0.533333rem;
+  text-align: center;
+  line-height: 0.533333rem;
+  font-size: 0.4rem;
+  color: #39383b;
+}
+
+#myIncome .incomeItem p {
+  height: 0.426667rem;
+  line-height: 0.426667rem;
+  text-align: center;
+  line-height: 0.426667rem;
+  font-size: 0.32rem;
+  color: #6e6e6e;
+}
+
+#invitePeople {
+  clear: both;
+  margin: 0.333333rem auto;
+  width: 8.56rem;
+  padding-left: 0.36rem;
+  overflow: hidden;
+}
+
+#invitePeople img {
+  float: left;
+  display: block;
+  width: 1.066667rem;
+  height: 1.066667rem;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 0.36rem;
+  margin-bottom: 0.266667rem;
+}
+
+/*邀请规则页样式*/
+
+#rule1 {
+  position: relative;
+  width: 100%;
+  height: 10.853333rem;
+}
+
+#rule2 {
+  position: relative;
+  width: 100%;
+  height: 10.106667rem;
+}
+
+#rule3 {
+  position: relative;
+  width: 100%;
+  height: 9.28rem;
+}
+
+#inviteRuleBox #inviteStrategy {
+  position: relative;
+  overflow: hidden;
+}
+
+#inviteRuleBox .bg {
+  position: absolute;
+  display: block;
+  width: 100%;
+}
+
+#inviteStrategy #inviteTotal {
+  margin-top: 8.186667rem;
+  padding-left: 3.066667rem;
+  height: 0.813333rem;
+  line-height: 0.813333rem;
+  font-size: 0.373333rem;
+  color: #333;
+}
+
+#inviteStrategy #inviteTotal em {
+  color: #fd1a26;
+}
+
+#inviteStrategy #inviteProgress {
+  position: relative;
+  width: 100%;
+  height: 1.52rem;
+  overflow: hidden;
+}
+
+#inviteStrategy #inviteProgress #progress {
+  position: absolute;
+  left: 1.053333rem;
+  top: 0.64rem;
+  width: 7.88rem;
+  height: 0.24rem;
+}
+
+#inviteStrategy #inviteProgress #progress #progressBar {
+  position: absolute;
+  left: 0;
+  top: 0.08rem;
+  display: block;
+  width: 0;
+  height: 0.08rem;
+  border-radius: 0.04rem;
+  background-color: #dc3c44;
+}
+
+#inviteStrategy #inviteProgress #progress .pointer {
+  position: absolute;
+  left: 0;
+  margin-left: -0.12rem;
+  display: inline-block;
+  width: 0.106667rem;
+  height: 0.106667rem;
+  background-color: #fff;
+  border: 0.066667rem solid #ffd9d4;
+  border-radius: 0.12rem;
+}
+
+#inviteStrategy #inviteProgress #progress .pointer.on {
+  border-color: #dc3b43;
+}
+
+#inviteStrategy #inviteProgress #progress #pointer .pointer:nth-child(1) {
+  left: 0.56rem;
+}
+
+#inviteStrategy #inviteProgress #progress #pointer .pointer:nth-child(2) {
+  left: 1.706667rem;
+}
+
+#inviteStrategy #inviteProgress #progress #pointer .pointer:nth-child(3) {
+  left: 3.106667rem;
+}
+
+#inviteStrategy #inviteProgress #progress #pointer .pointer:nth-child(4) {
+  left: 5.013333rem;
+}
+
+#inviteStrategy #inviteProgress #progress #pointer .pointer:nth-child(5) {
+  left: 7.146667rem;
+}
+
+#inviteStrategy #inviteProgress #numBar {
+  position: relative;
+  margin-top: 0.186667rem;
+  width: 100%;
+  height: 0.4rem;
+}
+
+#inviteStrategy #inviteProgress #numBar em {
+  position: absolute;
+  margin-left: -0.4rem;
+  display: inline-block;
+  width: 0.8rem;
+  height: 100%;
+  text-align: center;
+  line-height: 100%;
+  font-size: 0.266667rem;
+  color: #999;
+  white-space: nowrap;
+}
+
+#inviteStrategy #inviteProgress #numBar em.on {
+  color: #dc3c44;
+}
+
+#inviteStrategy #inviteProgress #numBar em:nth-child(1) {
+  left: 1.613333rem;
+}
+
+#inviteStrategy #inviteProgress #numBar em:nth-child(2) {
+  left: 2.76rem;
+}
+
+#inviteStrategy #inviteProgress #numBar em:nth-child(3) {
+  left: 4.16rem;
+}
+
+#inviteStrategy #inviteProgress #numBar em:nth-child(4) {
+  left: 6.066667rem;
+}
+
+#inviteStrategy #inviteProgress #numBar em:nth-child(5) {
+  left: 8.2rem;
+}
+
+#inviteStrategy #inviteProgress #profitBar {
+  position: relative;
+  margin-top: 0.36rem;
+  width: 100%;
+  height: 0.4rem;
+}
+
+#inviteStrategy #inviteProgress #profitBar em {
+  position: absolute;
+  margin-left: -0.4rem;
+  display: inline-block;
+  width: 0.8rem;
+  height: 100%;
+  text-align: center;
+  line-height: 100%;
+  font-size: 0.293333rem;
+  color: #999;
+  white-space: nowrap;
+}
+
+#inviteStrategy #inviteProgress #profitBar em.on {
+  color: #dc3c44;
+}
+
+#inviteStrategy #inviteProgress #profitBar em:nth-child(1) {
+  left: 1.613333rem;
+}
+
+#inviteStrategy #inviteProgress #profitBar em:nth-child(2) {
+  left: 2.76rem;
+}
+
+#inviteStrategy #inviteProgress #profitBar em:nth-child(3) {
+  left: 4.16rem;
+}
+
+#inviteStrategy #inviteProgress #profitBar em:nth-child(4) {
+  left: 6.066667rem;
+}
+
+#inviteStrategy #inviteProgress #profitBar em:nth-child(5) {
+  left: 8.2rem;
+}
+
+/*邀请收益页样式*/
+
+#income {
+  width: 100%;
+  height: 2.4rem;
+  overflow: hidden;
+  border-bottom: 0.013333rem solid #ededed;
+  background-color: #fff;
+}
+
+#income .inviteItem {
+  position: relative;
+  float: left;
+  width: 50%;
+  height: 2.4rem;
+  text-align: center;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+#income .inviteItem:after {
+  content: '';
+  position: absolute;
+  right: 0.013333rem;
+  top: 0.586667rem;
+  display: inline-block;
+  width: 0;
+  height: 1.226667rem;
+  border-right: 0.013333rem dashed #cbcbcb;
+}
+
+#income .inviteItem:last-child:after {
+  display: none;
+}
+
+#income .inviteItem h2 {
+  margin-top: 0.626667rem;
+  line-height: 0.533333rem;
+  font-size: 0.506667rem;
+  color: #333;
+}
+
+#income .inviteItem h2.red {
+  color: #f72f2f;
+}
+
+#income .inviteItem p {
+  margin-top: 0.093333rem;
+  font-size: 0.293333rem;
+  color: #999;
+}
+
+.nodata.invite i {
+  display: block;
+  margin: 1.88rem auto 0 auto;
+  width: 7.546667rem;
+  height: 3.146667rem;
+  background: url(../img/activity/invite/nodata-income.png) 0 0 / 100% 100% no-repeat;
+}
+
+.nodata.invite h2 {
+  line-height: 1.466667rem;
+  font-size: 0.346667rem;
+  color: #666;
+}
+
+/*邀请下载页*/
+
+#downloadBox {
+  position: relative;
+  width: 100%;
+}
+
+#downloadBox #bg {
+  position: absolute;
+  display: block;
+  width: 100%;
+}
+
+#downloadBox #appInfo {
+  position: relative;
+  padding-top: 0.386667rem;
+  width: 100%;
+  height: 0.8rem;
+}
+
+#downloadBox #appInfo img {
+  position: absolute;
+  left: 1.053333rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 0.053333rem;
+  overflow: hidden;
+}
+
+#downloadBox #appInfo h2 {
+  padding-left: 1.973333rem;
+  line-height: 0.8rem;
+  font-size: 0.346667rem;
+  color: #fff;
+}
+
+#downloadBox #inviteInfo {
+  position: relative;
+  margin-top: 6.333333rem;
+}
+
+#downloadBox #inviteInfo h2 {
+  height: 1.493333rem;
+  text-align: center;
+  line-height: 0.746667rem;
+  font-size: 0.493333rem;
+  font-weight: bold;
+  color: #ff2323;
+}
+
+#downloadBox #inviteInfo p {
+  font-weight: normal;
+}
+
+#downloadBox #inviteInfo #qrcode {
+  margin: 1.906667rem auto;
+  width: 2.36rem;
+  height: 2.36rem;
+}
+
+#downloadBox #inviteInfo #qrcode img {
+  width: 2.36rem;
+  height: 2.36rem;
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>竞拍秘籍</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+
+        #guide-box img {
+            position: absolute;
+            width: 100%;
+            display: block;
+        }
+
+        #goAuction {
+            position: fixed;
+            z-index:99;
+            bottom: 0.4rem;
+            right: 0.333333rem;
+            display: inline-block;
+            width: 2.133333rem;
+            height: 2.133333rem;
+            background: url(../img/activity/guide/goAuction.png) 0 0 / 100% 100% no-repeat;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>竞拍秘籍</h1>
+</div>
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <div id="guide-box">
+            <img src="../img/activity/guide/esoterica.png">
+            <em id="goAuction"></em>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.guide = (function(){
+
+        var o = {
+            init:function(){
+                //banner内每个页面的PV/UV（banner_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"banner",
+                    "conductCode": "banner_fwl",
+                    "comductDesc": "banner内每个页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+                $("#goAuction").off().Touch(function(){
+                    //立即抢购按钮点击量（banner_mjqg）
+                    T.Util.setUserBehaviorList({
+                        "busId":"竞拍秘籍",
+                        "conductCode": "banner_mjqg",
+                        "comductDesc": "立即抢购按钮点击量",
+                        "time": new Date().getTime()
+                    });
+                    var userinfo = T.Storage.get('userinfo')||{};
+                    if(userinfo && userinfo.isNew == '1'){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newGoods.html&type=xstj');
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                    }
+                },{eventType:"live"});
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.guide.init();
+            },function () {//webview再次打开回调函数
+                T.guide.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.guide.init();
+        }
+    });
+</script>
+</body>
+</html>

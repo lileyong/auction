@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的委托</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        #myweituo-head{position:relative;height:2.92rem;border-bottom:1px solid #f72f2f;background-color:#fff;overflow:hidden;}
+        #myweituo-head h2{margin-top:0.28rem;text-align:center;line-height:0.45rem;font-size:0.32rem;color:#666;}
+        #myweituo-head p{text-align:center;line-height:0.93rem;font-size:0.64rem;color:#f72f2f;}
+        #myweituo-head em{display:inline-block;width:2.13rem;height:0.67rem;text-align:center;line-height:0.67rem;font-size:0.35rem;color:#fff;border-radius:0.335rem;}
+        #myweituo-head em#drawing{position:absolute;left:calc(50% - 2.73rem);bottom:0.4rem;background-color:#ffab03;}
+        #myweituo-head em#exchange{position:absolute;left:calc(50% + 0.6rem);bottom:0.4rem;background-color:#f72f2f;}
+        #myweituo-list{margin-top:0.15rem;}
+        .myweituo-item{position:relative;height:2.67rem;background-color:#fff;border-bottom:1px solid #f5f5f5;overflow:hidden;}
+        .myweituo-item img{position:absolute;left:0.45rem;top:0.335rem;width:2rem;height:2rem;}
+        .myweituo-item h2{padding-left:2.93rem;line-height:0.67rem;font-size:0.37rem;color:#333;}
+        .myweituo-item h2 em{color:#666;}
+        .myweituo-item h2.price{margin-top:0.34rem;}
+        .myweituo-item .fees i{position:relative;top:0.026667rem;right:0;margin-left:0.053333rem;display:inline-block; background: url('../img/sprite.png') no-repeat -12.813333rem -5.973333rem;background-size: 13.226667rem 11.946667rem;width: 0.32rem;height: 0.32rem;}
+        .myweituo-item i{position:absolute;right:0.53rem;top:0.47rem;display:inline-block;width:1.73rem;height:1.73rem;}
+        .myweituo-item i.doing{background:url(../img/usercenter/weituo_doing.png) 0 0 / 100% 100% no-repeat;}
+        .myweituo-item i.success{background:url(../img/usercenter/weituo_success.png) 0 0 / 100% 100% no-repeat;}
+        .myweituo-item i.failed{background:url(../img/usercenter/weituo_failed.png) 0 0 / 100% 100% no-repeat;}
+
+        /*委托费用明细弹窗*/
+        .popBox.weituo .confirmcontent p{position:relative;margin-top:0;padding-left:0.2933334rem;}
+        .popBox.weituo .confirmcontent p:before{content:'';position:absolute;left:0;top:0.2rem;display:inline-block;width:0.1066667rem;height:0.1066667rem;border-radius:50%;background-color:#969696;}
+        .popBox.weituo .confirmcontent p:nth-of-type(1){margin-top:0.32rem;}
+        .popBox.weituo .confirmcontent p em{color:#333;}
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>我的委托</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="myWeituo-box">
+        <div id="myweituo-head"><h2>可提现或兑换金额</h2><p>￥<span id="weiTuoMoney"></span></p><em id="drawing">提现</em><em id="exchange">兑换</em></div>
+        <div id="myweituo-list"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    var dropLoad = '';
+    var pageIndex = 1;
+    var pageSize = 10;
+    var endGetDataFlag = true,hasMore=false;
+
+    T.weituo = (function(){
+        var o = {
+            //程序入口
+            init:function(){
+                pageIndex = 1;
+                hasMore = false;
+                if(!T.Storage.get('access_token')){
+                    T.Util.login();
+                    return;
+                }
+                o.loadCache();
+                o.getDelegateList();
+                o.bindEvent();
+            },
+            //加载缓存
+            loadCache:function(){
+                var weiTuoMoney = T.Storage.get('weiTuoMoney');
+                $('#weiTuoMoney').html(Number(weiTuoMoney).toFixed(2));
+                var myWeituo = T.Storage.get('myWeituo');
+                if(myWeituo){
+                    $("#myweituo-list").html(myWeituo);
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //提现
+                $('#drawing').off().Touch(function (el) {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/drawingToCard.html#page=drawing&money='+$('#weiTuoMoney').html());
+                });
+                //兑换
+                $('#exchange').off().Touch(function (el) {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/drawingToCard.html#page=exchange&money='+$('#weiTuoMoney').html());
+                });
+                $(window).off().scroll(o.loadMoreData);//绑定下滑加载更多
+                $('#myWeituo-box').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getDelegateList();
+                    },
+                    threshold : 50
+                });
+            },
+            //加载更多数据
+            loadMoreData:function(){
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(hasMore){
+                        o.getDelegateList(true);
+                    }
+                }
+            },
+            //获取委托列表
+            getDelegateList:function (fromMore) {
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/delegate/list?page=' + pageIndex + '&limit=' + pageSize,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var weiTuoMoney = data.res_data.value.MONEY;
+                        $('#weiTuoMoney').html(weiTuoMoney.toFixed(2));//可提现或可兑换的钱
+                        T.Storage.set('weiTuoMoney',weiTuoMoney.toFixed(2));
+                        var htmlArr=[],d=data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        for(var i=0,j=d.length;i<j;i++){
+                            var stateIcon = '<i class="doing"></i>';
+                            if(d[i].STATUS==2||d[i].STATUS==4||d[i].STATUS==6){//1：自动审核未打款  2：自动审核已打款  3 待审核  4：审核通过 5：审核不通过 6:审核通过已转账
+                                stateIcon = '<i class="success"></i>';
+                            }else if(d[i].STATUS==5){
+                                stateIcon = '<i class="failed"></i>';
+                            }
+                            htmlArr.push(' <li class="myweituo-item" data-money="' + d[i].MONEY.toFixed(2) + '" data-weituo="'+Number(d[i].ENTRUST_POUNDAGE).toFixed(2)+'" data-auction="' + Number(d[i].AUCTION_POUNDAGE).toFixed(2) + '" AUCTION_PRICE="' + Number(d[i].AUCTION_PRICE).toFixed(2) + '" data-final="' + d[i].TRANSFER_MONEY.toFixed(2) + '">\
+                                <img class="lozad" src="../img/goods/lazy_load.png" data-src="'+d[i].COMMODITY_LOGO+'">\
+                                <h2 class="price">委托价：<em>￥'+d[i].MONEY.toFixed(2)+'</em></h2>\
+                                <h2 class="fees showTips">扣除费用<i></i>：<em>￥'+(d[i].MONEY.toFixed(2) - d[i].TRANSFER_MONEY.toFixed(2)).toFixed(2) +'</em></h2>\
+                                <h2 class="fees">实际到账：<em>￥'+d[i].TRANSFER_MONEY.toFixed(2) +'</em></h2>'+stateIcon+'</li>')
+                        }
+                        if(dropLoad != ''){
+                            $('#myweituo-list').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(htmlArr.length){
+                            $("html,body").removeClass("white");
+                            fromMore ? $('#myweituo-list').append(htmlArr.join('')) : $('#myweituo-list').html(htmlArr.join(''));
+                            lozad().observe();
+                        }else{
+                            $("html,body").addClass("white");
+                            $("#myweituo-list").html('<li class="nodata weituo"><i></i><h2>您还没有委托数据哦~</h2></li>');
+                        }
+                        //扣除费用明细
+                        $(".showTips").off().Touch(function(el){
+                            var money = $(el).parent().attr("data-money");
+                            var weituo = (money * $(el).parent().attr("data-weituo") / 100).toFixed(2);
+                            var auctionPrice = $(el).parent().attr("AUCTION_PRICE");
+                            var auction = (auctionPrice * $(el).parent().attr("data-auction") / 100).toFixed(2);
+                            confirm({
+                                className:'alert left weituo',
+                                html:"<h2>把商品委托售卖给第三方机构，成功后需扣除如下的费用：</h2><p>委托手续费：<em>￥" + weituo + "</em></p><p>最终竞拍价：<em>￥" + auctionPrice + "</em></p><p>竞拍手续费：<em>￥" + auction + "</em></p>",
+                                okText:"我知道了"
+                            });
+                        });
+                        T.Storage.set('myWeituo',$("#myweituo-list").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true" '));
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".myweituo-item").length){
+                                $("#myWeituo-box").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                })
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.weituo.init();
+            },function () {//webview再次打开回调函数
+                T.weituo.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.weituo.init();
+        }
+    })
+</script>
+</body>
+</html>

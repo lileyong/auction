@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="00090"/>
+</head>
+
+<body>
+<script>
+    (function() {
+        var refer = '';
+        var search = location.search;
+        if (search[0] == "?") {
+            search = search.substring(1);
+        }
+        search=search.replace('refer=','');
+        search.split("/f-and/").forEach(function(item) {
+            item = item.replace('/f-wenhao/','?').replace('/f-jinhao/','#');//先处理#号？号
+            if(item.indexOf('&')>-1){
+                refer=refer+'&'+item;
+            }else{
+                var pair = item.split("=");
+                var key = pair[0];
+                var value = pair[1] || "";
+                console.log(pair.length)
+                if(pair.length>2){
+                    var str = '';
+                    for(var i=2;i<pair.length;i++){
+                        str = '='+pair[i];
+                    }
+                    if(key.indexOf('http')==0){
+                        refer = key+'='+value+str;
+                    }else{
+                        refer = refer+'&'+key+'='+value+str;
+                    }
+                    console.log(refer);
+                }else{
+                    if(key.indexOf('http')==0){
+                        refer = key+'='+value;
+                    }else{
+                        refer = refer+'&'+key+'='+value;
+                    }
+                }
+
+            }
+        });
+        if(refer.indexOf('&')=='0'){
+            refer = refer = refer.replace('&','');
+        }
+        if(refer.indexOf('?')==-1 && refer.indexOf('#')==-1){
+            refer = refer.replace('&code=','?thirdLoginCode=');
+        }else{
+            refer = refer.replace('&code=','&thirdLoginCode=');
+        }
+        console.log(refer);
+        location.href = refer;
+    })();
+</script>
+</body>
+</html>

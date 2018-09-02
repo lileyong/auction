@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        .Item{display: -webkit-box;text-align: center;}
+        .Item p{-webkit-box-flex: 1;width: 0;position: relative;}
+        .Item p.on{color: #f72f2f}
+        .Item span{display: block;}
+
+        .pageType{ border-top: 1px solid #dfdfdf;height: 1.333333rem;background: #fff;position: fixed;left:calc(50% - 5rem);bottom: 0;z-index: 99;width: 10rem;box-sizing: border-box;font-size: .36rem;box-shadow:0 -0.1066667rem 0.2133333rem 0 rgba(28,31,33,0.1);}
+        .pageType em{position:relative;margin-top:0.16rem;height: 0.6rem;width: 0.5867rem;display: inline-block;}
+        .pageType span{position:relative;line-height:0.56rem;margin-top: -0.133333rem;font-size:0.2933rem;color:#5e606b;}
+        .pageType .on span{color: #f72f2f;}
+        #rightBtn{width: 1.5rem;right: 0;position: absolute;top:0;text-align: center;}
+        #searchbox{position:relative;margin:0.1733333rem auto;width:8rem;height:0.85rem;}
+        #searchbox.search{position:relative;margin:0.1733333rem auto;width:8.84rem;height:0.85rem;}
+        #searchbox:before{content:'';position:absolute;left:0.4rem;top:0.2rem;display:inline-block; background: url('../img/sprite.png') no-repeat -3.28rem -11.146667rem;
+            background-size: 13.226667rem 11.946667rem;
+            width: 0.506667rem;
+            height: 0.506667rem;}
+        #searchbox.success:before{display:none;}
+        #searchbox #searchinput{padding-left:1.13rem;display:block;width:8rem;height:100%;padding:0.2666667rem 0.08rem 0.2666667rem 1.13rem;line-height:0.32rem;font-size:0.32rem;background-color:#fff;border:none;border-radius:0.43rem;}
+        #searchbox #search_cancel{position:absolute;right:-0.5733334rem;bottom:-0.1733334rem;display:none;width:1.28rem;height:1.2rem;padding-left:0.1333334rem;line-height:1.2rem;font-size:0.3733334rem;color:#fff;}
+        #searchbox.search #search_cancel{display:inline-block;}
+        #searchbox em{position:absolute;margin:0.0667rem;padding-left:0.2rem;padding-right:0.72rem;display:inline-block;height:0.72rem;text-align:center;line-height:0.72rem;font-size:0.4rem;color:#333;background-color:#f4f4f4;border-radius:0.36rem;}
+        #searchbox em:after{content:'';position:absolute;right:0.24rem;top:0.25rem;display:block; background: url('../img/sprite.png') no-repeat -12.813333rem -7.733333rem;
+            background-size: 13.226667rem 11.946667rem;
+            width: 0.213333rem;
+            height: 0.213333rem;}
+        #detailtab{position:relative;margin:auto;width:4.4rem;overflow:hidden;}
+        #detailtab .tabitem{float:left;width:1.4666667rem;height:1.2rem;text-align:center;line-height:1.2rem;font-size:0.4rem;color:#333;}
+        #detailtab .pointer{position:absolute;bottom:0;left:calc(16.67% - 0.43rem);display:inline-block;width:0.86rem;height:0.0533333rem;background-color:#333333;}
+    </style>
+</head>
+<body>
+<img src="../img/download/dlbg.png" id="dlbanner">
+<div class="navbar" style="display: none;">
+    <div class="back_arrow back_home hide" id="back"></div>
+    <h1 id="navtitle"></h1>
+    <form id="searchbox" class="hide" action="javascript:T.allGoods.doSearch($('#searchinput').val());"><input id="searchinput" type="search" placeholder="搜索您需要的商品"><span id="search_cancel">取消</span></form>
+    <div id="detailtab" class="hide">
+        <div class="tabitem">商品</div>
+        <div class="tabitem">详情</div>
+        <div class="tabitem">评价</div>
+        <span class="pointer"></span>
+    </div>
+    <div class="hide" id="rightBtn">设置</div>
+    <div class="hide" id="share"><i></i></div>
+    <div class="hide" id="navInfo"><i></i></div>
+</div>
+<div class="mainContent" id="main">
+
+</div>
+<footer class="Item pageType" style="display: none;">
+    <p data-href="#page=index.html"><em></em><span>首页</span></p>
+    <p data-href="#page=latestDeal.html"><em></em><span>最新成交</span></p>
+    <p data-href="#page=allGoods.html"><em></em><span>竞拍大厅</span></p>
+    <p data-href="#page=mall.html"><em></em><span>购物商城</span></p>
+    <p data-href="#page=mine.html"><em></em><span>个人中心</span></p>
+</footer>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script>
+    /*静态页面资源缓存发版本控制机制,当这些页面有修改的时候修要修改对应的值*/
+    var listHtml = {
+        'index.html':{'title':T.Util.getAppInfo("appName"),'pageLevel':'one','version':'v0.11'},
+        'latestDeal.html': {'title':'最新成交','pageLevel':'one','version':'v0.11'},
+        'allGoods.html':{'title':'竞拍大厅','pageLevel':'one','version':'v0.11'},
+        'mall.html':{'title':'购物商城','pageLevel':'one','version':'v0.11'},
+        'mine.html': {'title':'个人中心','pageLevel':'one','version':'v0.11'},
+        'newGoods.html':{'title':'新品天地','pageLevel':'two','version':'v0.11'},
+        'cjg.html':{'title':'差价购','pageLevel':'two','version':'v0.11'},
+        'cjgRule.html':{'title':'规则说明','pageLevel':'two','version':'v0.11'},
+        'newUser.html':{'title':'新人专享','pageLevel':'one','version':'v0.11'},
+        'newUserRule.html':{'title':'新人专享规则说明','pageLevel':'two','version':'v0.11'},
+        'newUserH5.html':{'title':'商品推荐','pageLevel':'two','version':'v0.11'},
+        'auctionTrend.html':{'title':'成交走势','pageLevel':'two','version':'v0.11'},
+        'auctionList.html':{'title':'','pageLevel':'two','version':'v0.11'},
+        'goodsDetail.html':{'title':'商品详情','pageLevel':'two','version':'v0.11'},
+        'mallDetail.html':{'title':'商品详情','pageLevel':'two','version':'v0.11'},
+        'shaidan.html':{'title':'晒单','pageLevel':'two','version':'v0.11'},
+        'benefit.html':{'title':'购实惠','pageLevel':'two','version':'v0.11'},
+        'auctioner.html':{'title':'售卖师主页','pageLevel':'two','version':'v0.11'},
+        'auctionHouse.html':{'title':'拍卖行主页','pageLevel':'two','version':'v0.11'},
+        'goodsRecord.html':{'title':'竞拍记录','pageLevel':'two','version':'v0.11'}
+    };
+
+    if (window.location.origin.indexOf('jp.ruirun123')> -1) {//生产环境用这种方式 测试 rc环境不用
+        if (T.Storage.get('listHtml')) {
+            var localList = JSON.parse(T.Storage.get('listHtml'));
+            for (var i in listHtml) {
+                if (!localList[i]||!localList[i].version || localList[i].version != listHtml[i].version) {//存在版本变更 清除本地缓存
+                    T.Storage.set(i,'');
+                    console.log('页面'+i+'静态资源已更新,版本号：'+listHtml[i].version);
+                }
+            }
+        } else {
+            for (var i in listHtml) {
+                T.Storage.set(i,'');
+            }
+        }
+        T.Storage.set('listHtml', JSON.stringify(listHtml));//
+    }else {
+        for (var i in listHtml) {
+            T.Storage.set(i,'');
+        }
+        console.info('开发环境获取服务器最新资源成功！');
+    }
+    /*静态页面资源缓存发版本控制机制*/
+    var hashUrl=(function(){
+        var $domContent=$('#main');
+        //加载页面
+        var getPage=function(url){
+            if(url.indexOf('?')>-1){
+                url = url.substring(0,url.indexOf('?'));
+            }
+            //检测本地缓存
+            if(T.Storage.get(url) && T.Storage.get(url)!=''){
+                success(T.Storage.get(url));
+                return;
+            }
+            $.ajax({
+                type:'get',
+                dataType:'text',
+                cache:false,
+                url:url,
+                success:function(html){
+                    T.Storage.set(url,html);
+                    success(html);
+                }
+            });
+
+            function success(html){
+                if(Global.isWechat){//||Global.isQQ
+                    T.User.getUInfo(function () {//如果更新之后发现绑定类型发生变化会清除token重新联合登录
+                        console.log('微信或者qq联合登录界面更新用户信息成功');
+                    });
+                }
+                addTimerList = [];//页面切换成功清空倒计时
+                if(globalMQArr.length>0){T.Util.mqtt([],'unsubscribe');globalMQArr=[];}//切换页面取消订阅
+                window.scrollTo(0,0);
+                window.clearInterval(Global.setAutoScroll);//清除滚动计时器
+                console.log(url)
+                $('title,.navbar h1').html(listHtml[url].title);//标题
+                if(Global.isiOS && !T.isNative){
+                    var i = document.createElement('iframe');
+                    i.src = Global.fullHost.replace('http://localhost','https://dev.ruirun123.cn:6443') + '/favicon.ico';
+                    i.style.display = 'none';
+                    i.onload = function() {
+                        setTimeout(function(){
+                            i.remove();
+                        }, 9)
+                    }
+                    document.title = listHtml[url].title;
+                    document.body.appendChild(i);
+                }
+                $('#back,#navtitle,#searchbox,#detailtab,#rightBtn,#share,#navInfo').hide();
+                if(url == 'mallDetail.html'){
+                    $(".navbar").addClass("white");
+                }else{
+                    $(".navbar").removeClass("white");
+                }
+                if(url == 'index.html'){
+                    $('.navbar').hide();
+                }else{
+                    $('.navbar').show();
+                }
+                if(url == 'allGoods.html'){
+                    $("#searchbox").show();
+                }else if(url == 'mine.html'){
+                    $('#navtitle,#rightBtn').show();
+                }else if(url == 'goodsDetail.html'){
+                    $("#navtitle").show();
+                    if(T.isNative && Global.isAudit != 1){
+                        if(Global.canShare=='1'||!Global.isiOS){
+                            $("#share").show();
+                        }
+                    }
+                }else if(url == 'mallDetail.html'){
+                    $("#detailtab").show();
+                    if(T.isNative && Global.isAudit != 1){
+                        if(Global.canShare=='1'||!Global.isiOS){
+                            $("#share").show();
+                        }
+                    }
+                }else if(url == 'cjg.html'){//||url == 'newUser.html'
+                    $('#navInfo').show();
+                    $("#navtitle").show();
+                }else{
+                    $("#navtitle").show();
+                }
+                if(listHtml[url].pageLevel=='one'){//一级页面展示尾部 隐藏返回按钮
+                    $('#back').hide();
+                    if(!T.isNative||url=='newUser.html'){$('footer.pageType').show();};
+                }else if(url == 'newUserH5.html'){//非一级页面，但是不需要返回按钮
+                    $('#back').hide();
+                }else{
+                    $('#back').show();
+                    if(!T.isNative){$('footer.pageType').hide();};
+                }
+                if(T.isNative||T.Storage.get('isApp',1)||T.Util.getPara('isApp')=='1'){
+                    $("#dlbanner").hide();
+                }else if(url == 'index.html'||url == 'latestDeal.html'||url == 'allGoods.html'||url == 'mall.html'||url == 'mine.html'){
+                    $("html").addClass("tabpage");
+                    T.Util.initAppDownload();
+                }else{
+                    $("html").removeClass("tabpage");
+                }
+                if(url == 'allGoods.html'||url == 'mallDetail.html'){
+                    $("html").removeClass("noNavbar");
+                }else if(url == 'index.html'||url == 'mine.html'){
+                    $("html").addClass("noNavbar");
+                }else if((T.Util.getPara('noNavbar')||T.Storage.get('noNavbar'))){
+                    $("html").addClass("noNavbar");
+                }else{
+                    $("html").removeClass("noNavbar");
+                }
+                $domContent.html(html);
+            }
+        }
+        var change=function(){
+            var url=decodeURIComponent(T.Util.getParaHash('page'))||'index.html';
+            if(typeof loadMoreData === 'function'){//页面切换移除绑定滑到底部加载更多事件
+                $(window).unbind('scroll', loadMoreData);
+            }
+            $('#loading-new').show();
+            getPage(url);
+            return false;
+        }
+        //初始化
+        var init=function(o){
+            if("onhashchange" in window){
+                window.addEventListener ? window.addEventListener("hashchange", change, false) : window.attachEvent("onhashchange", change);
+            }
+
+            var scrollTop = $(window).scrollTop();
+            window.onscroll = function(){
+                if(T.isNative||T.Storage.get('isApp',1)||T.Util.getPara('isApp')=='1') return false;
+                var url=decodeURIComponent(T.Util.getParaHash('page'))||'index.html';
+                if(url == 'index.html'||url == 'latestDeal.html'||url == 'allGoods.html'||url == 'mall.html'||url == 'mine.html'){
+                    $("#dlbanner,.navbar").addClass("animate");
+                    if($(window).scrollTop() - scrollTop > 5){
+                        $("html").removeClass("tabpage");
+                    }else{
+                        $("html").addClass("tabpage");
+                    }
+                    clearTimeout(Global.scrollTopTimer);
+                    Global.scrollTopTimer = setTimeout(function(){
+                        scrollTop = $(window).scrollTop();
+                    },100);
+                }
+            };
+            if(window.location.hash==''){
+                if(!T.Util.isEmpty(T.Util.getPara("pageFrom"))){
+                    var _pageFrom = T.Util.getPara("pageFrom");
+                    window.location.href ='#page='+_pageFrom+'.html';
+                }else{
+                    window.location.href = '#page=index.html';
+                }
+            }else{
+                change();
+            }
+        };
+        return {
+            init:init
+        }
+    })();
+    //字幕向上滚动组件
+    (function($){
+        $.fn.scrollText=function(options){
+            var settings={
+                sBox:'.box',
+                speed:4000
+            }
+            var settings=$.extend(settings,options);
+            var me = $('.msg-box');
+            me.each(function(){
+                var oHeight = $(me).height();
+                var scrollFunction={
+                    scrollUp:function(){
+                        $(settings.sBox).animate({
+                            marginTop:-oHeight/70+'rem'
+                        },500,function(){
+                            $(settings.sBox).css('margin-top',0);
+                            $(settings.sBox).find("li").eq(0).appendTo($(settings.sBox).find('ul'));
+                        })
+                    }
+                }
+                Global.setAutoScroll = window.setInterval(function (){scrollFunction.scrollUp()}, settings.speed);
+            });
+        }
+    })(Zepto);
+    var leaveTime = 10000;
+    var leaveTimer1 ;
+    var unsubscribeFlag = false;
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                hashUrl.init();
+            },function () {//webview再次打开回调函数
+                    $('iframe[src*=hybrid]').remove();
+                    if(T.Util.getPara("page")=='index.html'){
+                        T.index.viewAgain();
+                    }else if(T.Util.getPara("page")=='goodsDetail.html'){
+                        T.goodsDetail.viewAgain();
+                    }else if(T.Util.getPara("page")=='mallDetail.html'){
+                        T.malldetail.getShopInfo();
+                    }else if(T.Util.getPara("page")=='goodsRecord.html'){
+                        //再次回来还是么有token 直接回退一级
+                        if(T.Util.isEmpty(T.Storage.get('userinfo'))){
+                            T.Util.back();
+                            return;
+                        }
+                        T.goodsRecord.viewAgain();
+                    }else if(T.Util.getPara("page")=='cjg.html'){
+                        //再次回来还是么有token 直接回退一级
+                        if(T.Util.isEmpty(T.Storage.get('userinfo'))){
+                            T.Util.back();
+                            return;
+                        }
+                        T.cjg.viewAgain();
+                    }
+                    if(T.Util.getPara("page")=='allGoods.html'||T.Util.getPara("page")=='newGoods.html'||
+                        T.Util.getPara("page")=='auctionList.html'||T.Util.getPara("page")=='auctioner.html'){
+                        window.clearTimeout(leaveTimer1);//如果在设置的时间之后回来 清除计时器
+                        if(unsubscribeFlag){//如果清除了订阅主题 则需要重新订阅
+                            T.Util.mqtt([],'viewAgain')
+                        }
+                        if(T.Storage.get('commodityIdNeedRefresh')){
+                            var commodity = T.Storage.get('commodityIdNeedRefresh');
+                            if($('[data-id="'+commodity+'"]').length>0){//页面上存在 需要刷新该商品信息
+                                T.Util.getCommodityInfo(commodity);
+                            }
+                            T.Storage.remove('commodityIdNeedRefresh')
+                        }
+                    }
+            },function () {//webview消失第一视角回调函数
+                if(T.Util.getPara("page")=='allGoods.html'||T.Util.getPara("page")=='newGoods.html'||
+                    T.Util.getPara("page")=='auctionList.html'||T.Util.getPara("page")=='auctioner.html'){
+                    leaveTimer1=window.setTimeout(function(){
+                        T.Util.mqtt([],'unsubscribe');//切换webview取消订阅 10秒后 如果10秒内回来则清除定时器
+                        unsubscribeFlag = true;
+                    },leaveTime);
+                }
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+                if(T.Util.getPara("page")=='index.html'){
+                    T.index.intoAgain();//bug0416 第三方登录跳转到第三方平台会触发这个事件 在具体实现方法里面会触发h5调用原生登出
+                }else if(T.Util.getPara("page")=='goodsDetail.html'){
+                    T.goodsDetail.viewAgain();
+                }else if(T.Util.getPara("page")=='mallDetail.html'){
+                    T.malldetail.getShopInfo();
+                }
+            });
+        }else{
+            hashUrl.init();
+        }
+        $(".pageType p[data-href]").off().Touch(function(el){//1级页面切换
+            if($(el).hasClass('on')){return}
+            if(T.isNative){
+                T.Util.goTabbar($(this).index());
+            }else{
+                window.location.href = $(el).attr('data-href');
+            }
+        });
+    });
+</script>
+</body>
+</html>
+
+

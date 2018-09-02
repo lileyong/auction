@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的订单</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/orderDetail.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>我的订单</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="content">
+        <div id="orderDetail">
+            <div id="orderDetailWrap">
+                <div id="orderHead">
+                    <div id="orderStatus"><h2>--</h2></div>
+                    <div id="welcome"><h2>--</h2></div>
+                </div>
+                <div id="orderMain"></div>
+                <div id="orderFoot"><em>再次竞拍</em></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    var endGetDataFlag = true;//是否请求完毕
+    T.orderDetail = (function(){
+        var dropLoad = '';//下拉刷新
+        var orderNo = T.Util.getPara('orderNo');//订单号
+        var expectId = T.Util.getPara('expectId');//期号ID
+
+        var o = {
+            //程序入口
+            init:function(){
+                if(!T.Util.isEmpty(T.Storage.get('paySuc'))){//支付完的回来检察是否支付成功 成功的话 隐藏对应按钮
+                    needRefreshId = T.Storage.get('paySuc').paySubmitOrderNo;
+                    if(expectId==T.Storage.get('paySuc').expectId){
+                        orderNo = T.Storage.get('paySuc').paySubmitOrderNo;
+                    }
+                }
+                o.getOrderDetail();//获取订单详情
+                o.bindEvent();
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定下拉刷新
+                $('#content').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        o.getOrderDetail();
+                    },
+                    threshold : 50
+                });
+            },
+            //获取购物类型
+            getOrderType:function(d){
+                //1：商城支付 2：差价购 3：拍中购买  4:新用户优惠购买  -1未支付
+                //ORDER_TYPE  1：商城支付 2：差价购 3：拍中购买  4:新用户优惠购买  -1：未支付
+                if(d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2){//差价购  d.ORDER_TYPE == 2 //差价购已付款
+                    return {type:'cjg',name:'差价购'};
+                }else if(d.ORDER_TYPE == 1||d.ORDER_TYPE == 4){//商城购
+                    return {type:'mall',name:'商城购'};
+                }else{
+                    return {type:'auction',name:'竞拍购'};
+                }
+            },
+            servicePrice:function(auctionPrice,servicePrice){
+                var num = auctionPrice*(servicePrice/100);
+               /* if((auctionPrice*(servicePrice/100)).toString().split(".").length>1){//存在小数点
+                    if((auctionPrice*(servicePrice/100)).toString().split(".")[1].length>2){//小数点有3位
+                        num =  parseInt(auctionPrice*(servicePrice/100)*100)/100;
+                    }else{
+                        num = auctionPrice*(servicePrice/100);
+                    }
+                }else{
+                    num = auctionPrice*(servicePrice/100);
+                }*/
+                return num;
+            },
+            //获取订单详情
+            getOrderDetail:function(){
+                tip("加载中...","loading");
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                var reqUrl = '/order/services/order/recordInfo.json?orderNo=' + orderNo;
+                if(T.Util.isEmpty(orderNo)){
+                    reqUrl = '/commodity/services/order/notPayOrderInfo.json?expectId=' + expectId;
+                }
+                if(!T.Util.isEmpty(T.Util.getPara('white')) && T.Util.getPara('white')==1){
+                    reqUrl = '/order/services/order/recordInfo/white.json?orderNo='+orderNo+'&userId='+T.Util.getPara('userId');
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:reqUrl,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        pageLoading.hide();
+                        var d  = data.res_data.value;
+                        var htmlArr=[];
+                        var orderType = o.getOrderType(d);
+                        var goBuyBtn = '';
+                        orderNo = d.orderNo;
+                        if(d.ORDER_TYPE == 1||d.ORDER_TYPE == 4 || d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2){//商场购买 或者差价购
+                            goBuyBtn = '<em class="record-btn gobuy">再次购买</em>';
+                        }else{
+                            goBuyBtn = '<em class="record-btn goAuction">再次竞拍</em>';
+                        }
+                        $('#welcome').removeClass('address');
+                        $('#orderStatus h2').html('等待付款');
+                        $('#welcome h2').html('订单仅有'+((d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2)?'七':'三')+'天有效时间，请及时付款！');
+                        $('#orderFoot').html('<em class="pay">去支付</em>');
+                        if(d.AUCTION_STATUS == 30 && !d.PAY_STATUS && (!d.DELEGATE_STATUS||(d.DELEGATE_STATUS!=2&&d.DELEGATE_STATUS!=3&&d.DELEGATE_STATUS!=4&&d.DELEGATE_STATUS!=6))){
+                            $('#orderStatus h2').append('<em id="'+d.COMMODITY_ID+'"></em>');
+                            addTimer('#'+d.COMMODITY_ID,Math.ceil((d.EPXPIRES_TIME-(new Date().getTime()+parseInt(T.Storage.get('difTime'))))/1000),'waitPay');
+                        }
+                        if(d.AUCTION_STATUS == 20 && !d.PAY_STATUS ){
+                            $('#orderStatus h2').append('<em id="'+d.COMMODITY_ID+'"></em>');
+                            addTimer('#'+d.COMMODITY_ID,Math.ceil((d.GOLD_EXPIRES_TIME-(new Date().getTime()+parseInt(T.Storage.get('difTime'))))/1000),'waitPay');
+                        }
+                        htmlArr.push('<div id="goodsInfo"><div class="orderTitle"><h2 class="' + orderType["type"] + '">' + orderType["name"] + '</h2><p id="kefu">联系客服</p></div>');
+                        htmlArr.push('<div class="goodsInfo"><img class="lozad" src="../img/goods/lazy_load.png" data-src="' + d.COMMODITY_LOGO + '"><p>' + (d.COMMODITY_TITLE||d.COMMODITY_NAME) + '</p></div></div>');
+
+                        if(d.BARGAIN_STATUS && d.BARGAIN_STATUS==-150||(d.ORDER_STATUS&&d.ORDER_STATUS=='-10')){
+                            $('#orderHead').addClass('lose');
+                            $('#orderStatus h2').html('已失效');
+                            $('#welcome h2').html('很遗憾，订单已失效，下次记得及时付款哦！');
+                            $('#orderFoot').html(goBuyBtn);
+                            T.Util.showGoodsRecommend();//智能推荐
+                        }
+                        if(d.DELEGATE_STATUS && d.DELEGATE_STATUS==3){
+                            $('#orderHead').addClass('done');
+                            $('#orderStatus h2').html('委托申请中');
+                            $('#welcome h2').html('您的委托订单等待审核中');
+                            $('#orderFoot').html(goBuyBtn);
+
+                            htmlArr.push('<div id="orderInfo" class="infoItem"><h2>委托编号：<span id="orderNo">' + (d.DELEGATE_NO||"暂无")+ '</span></h2>' +
+                                '<h2>委托时间：' +(d.DELEGATE_TIME ? new Date(d.DELEGATE_TIME).format('yyyy-MM-dd hh:mm:ss') :'暂无') + '</h2></div>');
+
+                            T.Util.showGoodsRecommend();//智能推荐
+                        }
+                        if(d.DELEGATE_STATUS &&(d.DELEGATE_STATUS==4||d.DELEGATE_STATUS==2||d.DELEGATE_STATUS==6)){//委托成功
+                            $('#orderHead').addClass('done');
+                            $('#orderStatus h2').html('委托成功');
+                            $('#welcome h2').html('您的订单委托成功');
+                            $('#orderFoot').html(goBuyBtn);
+
+                            htmlArr.push('<div id="orderInfo" class="infoItem"><h2>委托编号：<span id="orderNo">' + (d.DELEGATE_NO||"暂无")+ '</span></h2>' +
+                                '<h2>委托时间：' +(d.DELEGATE_TIME ? new Date(d.DELEGATE_TIME).format('yyyy-MM-dd hh:mm:ss') :'暂无') + '</h2></div>');
+
+                            T.Util.showGoodsRecommend();//智能推荐
+                        }
+                        if(!T.Util.isEmpty(d.ORDER_STATUS)&&d.ORDER_STATUS==0 && d.PAY_STATUS && d.PAY_STATUS==10){
+                            $('#orderHead').addClass('done');
+                            $('#orderStatus h2').html('等待发货');
+                            if(d.ORDER_INFO){
+                                $('#welcome h2').html('您的商品等待出库');
+                                $('#orderFoot').html(goBuyBtn);
+                            }else{
+                                $('#welcome').addClass('address');
+                                $('#welcome h2').html('您还未填写地址');
+                                $('#orderFoot').html(goBuyBtn+'<em class="addAddress">填写地址</em>');
+                            }
+
+
+                            htmlArr.push('<div id="orderInfo" class="infoItem"><h2>订单编号：<span id="orderNo">' + d.ORDER_NO + '</span></h2><h2>下单时间：' + new Date(d.PAY_TIME).format('yyyy-MM-dd hh:mm:ss') + '</h2></div>');
+                            htmlArr.push('<div id="payType" class="infoItem"><h2>支付方式：' + d.PLATFORM_DESC + '</h2><h2>支付时间：' + new Date(d.PAY_TIME).format('yyyy-MM-dd hh:mm:ss') + '</h2></div>');
+                           // htmlArr.push('<div id="wuliuInfo" class="infoItem"><h2>配送方式：快递</h2><h2>快递单号：' + d.LOGISTICS_NO + '</h2></div>');
+                            //如果是实物，获取地址信息
+                            if(d.IS_ENTITY == 1 && d.ORDER_INFO){
+                                T.Util.xmlHttpRequest({
+                                    type:'get',
+                                    errorType:'1',
+                                    async:false,
+                                    reqUrl:'/order/services/order/deliveryInfo.json?orderNo='+orderNo,
+                                    callback:function(data){
+                                        var d = data.res_data.value;
+                                        htmlArr.push('<div id="addressInfo">' +
+                                            '<h2 class="userName">' + d.USER_NAME + '</h2>' +
+                                            '<p class="tel">' + d.USER_PHONE + '</p>' +
+                                            '<p class="address">地址:' + d.AREA + d.USER_ADDR + '</p></div>');
+                                    },
+                                    errorCallback:function(data){
+
+                                    }
+                                });
+                            }
+                        }
+                        if(d.ORDER_STATUS && d.ORDER_STATUS==10){
+                            $('#orderHead').addClass('wuliu');
+                            $('#orderStatus h2').html('商品出库');
+                            $('#welcome h2').html('您的订单正在出库');
+                            $('#welcome').addClass('jt');
+                            $('#orderFoot').html('<em class="record-btn sureDelivery">确认收货</em>'+goBuyBtn);
+
+                            htmlArr.push('<div id="orderInfo" class="infoItem"><h2>订单编号：<span id="orderNo">' + d.ORDER_NO + '</span></h2><h2>下单时间：' + new Date(d.PAY_TIME).format('yyyy-MM-dd hh:mm:ss') + '</h2></div>');
+                            htmlArr.push('<div id="payType" class="infoItem"><h2>支付方式：' + d.PLATFORM_DESC + '</h2><h2>支付时间：' + new Date(d.PAY_TIME).format('yyyy-MM-dd hh:mm:ss') + '</h2></div>');
+                            if(d.IS_ENTITY==1){
+                                htmlArr.push('<div id="wuliuInfo" class="infoItem"><h2>配送方式：快递</h2><h2>快递单号：' + d.LOGISTICS_NO + '</h2></div>');
+                            }
+                            //如果是实物，获取地址信息
+                            if(d.IS_ENTITY == 1 && d.ORDER_INFO){
+                                T.Util.xmlHttpRequest({
+                                    type:'get',
+                                    errorType:'1',
+                                    async:false,
+                                    reqUrl:'/order/services/order/deliveryInfo.json?orderNo='+orderNo,
+                                    callback:function(data){
+                                        var d = data.res_data.value;
+                                        htmlArr.push('<div id="addressInfo">' +
+                                            '<h2 class="userName">' + d.USER_NAME + '</h2>' +
+                                            '<p class="tel">' + d.USER_PHONE + '</p>' +
+                                            '<p class="address">地址:' + d.AREA + d.USER_ADDR + '</p></div>');
+                                    },
+                                    errorCallback:function(data){
+
+                                    }
+                                });
+                            }
+
+                            T.Util.showGoodsRecommend();//智能推荐
+                        }
+                        if(d.ORDER_STATUS && d.ORDER_STATUS==200){
+                            $('#orderHead').addClass('wuliu');
+                            $('#orderStatus h2').html('完成');
+                            $('#welcome h2').html('感谢您在掌上乐购购物，欢迎您再次光临！');
+                            $('#welcome').addClass('jt');
+                            $('#orderFoot').html(goBuyBtn);
+
+                            htmlArr.push('<div id="orderInfo" class="infoItem"><h2>订单编号：<span id="orderNo">' + d.ORDER_NO + '</span></h2><h2>下单时间：' + new Date(d.PAY_TIME).format('yyyy-MM-dd hh:mm:ss') + '</h2></div>');
+                            htmlArr.push('<div id="payType" class="infoItem"><h2>支付方式：' + d.PLATFORM_DESC + '</h2><h2>支付时间：' + new Date(d.PAY_TIME).format('yyyy-MM-dd hh:mm:ss') + '</h2></div>');
+                            if(d.IS_ENTITY==1) {
+                                htmlArr.push('<div id="wuliuInfo" class="infoItem"><h2>配送方式：快递</h2><h2>快递单号：' + d.LOGISTICS_NO + '</h2></div>');
+                            }
+                            //如果是实物，获取地址信息
+                            if(d.IS_ENTITY == 1 && d.ORDER_INFO){
+                                T.Util.xmlHttpRequest({
+                                    type:'get',
+                                    errorType:'1',
+                                    async:false,
+                                    reqUrl:'/order/services/order/deliveryInfo.json?orderNo='+orderNo,
+                                    callback:function(data){
+                                        var d = data.res_data.value;
+                                        htmlArr.push('<div id="addressInfo">' +
+                                            '<h2 class="userName">' + d.USER_NAME + '</h2>' +
+                                            '<p class="tel">' + d.USER_PHONE + '</p>' +
+                                            '<p class="address">地址:' + d.AREA + d.USER_ADDR + '</p></div>');
+                                    },
+                                    errorCallback:function(data){
+
+                                    }
+                                });
+                            }
+
+                            T.Util.showGoodsRecommend();//智能推荐
+                        }
+
+                        //支付信息
+                        if(d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2){//差价购
+                            if(d.PAY_STATUS&&d.PAY_STATUS==10){//已付款
+                                htmlArr.push('<div id="payInfo"><div id="payDetail">' +
+                                    '<h2>掌上价<em>¥' + (d.MARKET_PRICE).toFixed(2)+ '</em></h2>' +
+                                    '<h2>抵扣购物币<em>-' + (d.REBATE_MONEY).toFixed(2) + '</em></h2>' +
+                                    '<h2>'+(d.IS_ENTITY==0?'充值手续费':'运费')+'<em>+' + (d.TRANSPORT_PRICE).toFixed(2) + '</em></h2>' +
+                                    '</div>' +
+                                    '<div id="paytotal">实付款<span>' + (d.ORDER_MONEY).toFixed(2)+ '</span></div></div>');
+                            }else{
+                                htmlArr.push('<div id="payInfo"><div id="payDetail">' +
+                                    '<h2>掌上价<em>¥' + (d.MARKET_PRICE).toFixed(2) + '</em></h2>' +
+                                    '<h2>抵扣购物币<em>-' + (d.TOTAL_GOLD).toFixed(2) + '</em></h2>' +
+                                    '<h2>'+(d.IS_ENTITY==0?'充值手续费':'运费')+'<em>+' + (d.TRANSF_PRICE).toFixed(2) + '</em></h2>' +
+                                    '</div>' +
+                                    '<div id="paytotal">需付款<span>' + (d.MARKET_PRICE - d.TOTAL_GOLD+d.TRANSF_PRICE).toFixed(2)+ '</span></div></div>');
+                            }
+                        }else if(d.ORDER_TYPE == 1||d.ORDER_TYPE == 4){//商城购
+                            htmlArr.push('<div id="payInfo"><div id="payDetail">' +
+                                '<h2>掌上价<em>¥' + (d.MARKET_PRICE).toFixed(2) + ' x '+d.COUNT+'</em></h2>' +
+                                '<h2>运费<em>+' + (d.TRANSPORT_PRICE).toFixed(2) + '</em></h2>' +
+                                '</div><div id="paytotal">实付款<span>' + (d.ORDER_MONEY).toFixed(2) + '</span></div></div>');
+                        }else if((d.DELEGATE_STATUS&&d.DELEGATE_STATUS==3) ||(d.DELEGATE_STATUS &&(d.DELEGATE_STATUS==4||d.DELEGATE_STATUS==2||d.DELEGATE_STATUS==6))){//已提交委托
+                            var str = '预计委托所得';
+                            if(d.DELEGATE_STATUS &&(d.DELEGATE_STATUS==4||d.DELEGATE_STATUS==2||d.DELEGATE_STATUS==6)){
+                                str = '委托所得';
+                            }
+                            htmlArr.push('<div id="payInfo"><div id="payDetail">' +
+                                '<h2>委托价<em>¥' + (d.DELEGATE_MONEY).toFixed(2) + '</em></h2>' +
+                                '<h2>委托手续费<em>-' + (d.DELEGATE_MONEY * d.tax).toFixed(2) + '</em></h2>' +
+                                '<h2>最终竞拍价<em>-' + (d.AUCTION_PRICE).toFixed(2) + '</em></h2>' +
+                                '<h2>竞拍手续费('+d.AUCTION_POUNDAGE+'%)<em>-' + (d.AUCTION_PRICE*(d.AUCTION_POUNDAGE/100)).toFixed(2)+ '</em></h2>' +
+                                '</div><div id="paytotal">'+str+'<span>' + ((d.DELEGATE_MONEY-((d.DELEGATE_MONEY * d.tax).toFixed(2))*1-d.AUCTION_PRICE-((d.AUCTION_PRICE*(d.AUCTION_POUNDAGE/100)).toFixed(2))*1)).toFixed(2) + '</span></div></div>');
+                        }else{//竞拍成功购
+                            var str = '需付款';
+                            if(d.PAY_STATUS&&d.PAY_STATUS==10){//已付款
+                                str = '实付款';
+                            }
+                            htmlArr.push('<div id="payInfo"><div id="payDetail">' +
+                                '<h2>竞拍价<em>¥' + (d.AUCTION_PRICE).toFixed(2) + '</em></h2>' +
+                                '<h2>竞拍手续费('+d.AUCTION_POUNDAGE+'%)<em>+' + (o.servicePrice(d.AUCTION_PRICE,d.AUCTION_POUNDAGE)).toFixed(2)+ '</em></h2>' +
+                                '<h2>'+(d.IS_ENTITY==0?'充值手续费':'运费')+'<em>+' + (d.TRANSF_PRICE).toFixed(2) + '</em></h2>' +
+                                '</div><div id="paytotal">'+str+'<span>' + (d.AUCTION_PRICE+d.TRANSF_PRICE+((o.servicePrice(d.AUCTION_PRICE,d.AUCTION_POUNDAGE)).toFixed(2)*1)).toFixed(2) + '</span></div></div>');
+                        }
+
+                        $("#orderMain").html(htmlArr.join(""));
+
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        $('.sureDelivery').off().Touch(function(el){// 确认收货
+                            confirm({className:'sureDelivery',html:'您是否已收到该订单商品？'
+                                ,cancelText:'未收货',cancelFun:function () {
+
+                                },okText:'已收货',okFun:function () {
+                                    T.Util.xmlHttpRequest({
+                                        type:'get',
+                                        errorType:1,
+                                        reqUrl:'/order/services/order/finishOrder.json?orderNo=' + orderNo,//确认收货接口
+                                        callback:function(data){
+                                            $(el).hide();
+                                            $('#orderStatus h2').html('完成');
+                                            $('#welcome h2').html('感谢您在掌上乐购购物，欢迎您再次光临！');
+                                           tip('确认收货成功');
+                                        },
+                                        errorCallback:function(data){
+                                            console.log('确认收货异常');
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                        //事件绑定
+                        $("#orderNo").off().Touch(function(){
+                            T.Util.copyToClipboard($(this).text());
+                        });
+                        $(".pay").off().Touch(function(el){//差价购和去付款跳转支付页面
+                            var payType = (d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2)?'auctionFail':'auctionSuc';
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/pay.html?commodityId='+d.COMMODITY_ID+'&expectId='+d.EXPECT_ID+'&NEW_ORDER_NO='+orderNo+'&auctionPrice='+d.AUCTION_PRICE+'&payType='+payType+'&isentity='+d.IS_ENTITY);
+                        });
+                        $("#welcome.jt").off().Touch(function(){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/queryExpress.html?ORDER_NO='+orderNo+'&IS_ENTITY='+d.IS_ENTITY+'&prompt='+d.PROMPT);
+                        });
+                        $(".goAuction").off().Touch(function(el){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+d.COMMODITY_ID+'&isNext=1');
+                        });
+                        $(".gobuy").off().Touch(function(el){//继续购买
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+d.COMMODITY_ID);
+                        });
+                        $('.goodsInfo').off().Touch(function(el){//点击商品区域
+                            //我的订单中“查看”商品详情的点击量（ddxqdjl）
+                            T.Util.setUserBehaviorList({
+                                "busId":"我的订单",
+                                "conductCode": "ddxqdjl",
+                                "comductDesc": "我的订单中“查看”商品详情的点击量",
+                                "time": new Date().getTime()
+                            });
+                            if(d.ORDER_TYPE == 1||d.ORDER_TYPE == 4 || d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2){//再次购买
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+d.COMMODITY_ID);
+                            }else{//再次竞拍
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+d.COMMODITY_ID+'&isNext=1');
+                            }
+                        });
+                        $(".addAddress,#welcome.address").off().Touch(function(el){//去填写地址
+                            if(d.IS_ENTITY==0){//不是实物
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setOrderInfo.html?orderNo='+orderNo+'&prompt='+d.PROMPT);
+                            }else{
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?orderNo='+orderNo);
+                            }});
+                        $("#kefu").off().Touch(function(){
+                            //我的订单中“联系客服”的点击量（ddkfdjl）
+                            T.Util.setUserBehaviorList({
+                                "busId":"我的订单",
+                                "conductCode": "ddkfdjl",
+                                "comductDesc": "我的订单中“联系客服”的点击量",
+                                "time": new Date().getTime()
+                            });
+                            var str = '来源：我的订单详情页|商品名称：'+d.COMMODITY_NAME+'|商品ID：'+d.COMMODITY_ID;
+                            if(!T.Util.isEmpty(orderNo)){
+                                str = str +'|订单号：'+orderNo;
+                            }else{
+                                str = str +'|商品期号ID：'+expectId;
+                            }
+                            if(!T.Util.isEmpty(d.LOGISTICS_NO)){
+                                str = str +'|快递单号：'+d.LOGISTICS_NO;
+                            }
+                            //T.Util.kefu("h5",str);
+                            var obj = {
+                                eventId : orderNo,
+                                title: d.COMMODITY_NAME,
+                                content :"订单号:"+orderNo,
+                                imageUrl : d.COMMODITY_LOGO,
+                                url : T.Util.getRootPath()+'/'+Global.webRoot+'/view/orderDetail.html?orderNo='+orderNo+'&expectId='+expectId+'&white=1&userId='+T.Storage.get('userinfo').userId,
+                                memo : "订单状态:"+$('#orderStatus h2').html()
+                            }
+                           /* function CustomizeEvent(){
+                                this.eventId = orderNo;
+                                this.title = d.COMMODITY_NAME;
+                                this.content ="订单号:"+orderNo;
+                                this.imageUrl = d.COMMODITY_LOGO;
+                                this.url = window.location.href;
+                                this.memo = "订单状态:"+$('#orderStatus h2').html();
+                            }
+                            var obj = new CustomizeEvent();*/
+                            T.Util.kefuNew("h5",'用户订单详情',obj)
+                        });
+                        lozad().observe();
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        endGetDataFlag = true;
+                        pageLoading.hide();
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".record-item").length){
+                                $("#orderMain").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.orderDetail.init();
+            }, function () {//webview再次打开回调函数
+                    //再次回来还是么有token 直接回退一级 兼容token失效回退不了
+                if(T.Util.isEmpty(T.Storage.get('userinfo'))){
+                    T.Util.back();
+                    return;
+                }else {
+                    endGetDataFlag = true;
+                    T.orderDetail.init();
+                }
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.orderDetail.init();
+        }
+    });
+</script>
+</body>
+</html>

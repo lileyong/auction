@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>设置</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+    <script type="text/javascript" src="../js/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/main.js"></script>
+    <script type="text/javascript" src="../js/md5.js"></script>
+    <script>
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                //审核环境隐藏帮助中心
+                if(Global.isAudit && Global.isAudit == '1'){
+                    var t = document.documentElement.className;
+                    document.documentElement.className = t ? t + " audit" : "audit";
+                }
+                //分享开关
+                if(Global.canShare && Global.canShare == '1'){
+                    $("#shareapp").show();
+                }else{
+                    var t = document.documentElement.className;
+                    document.documentElement.className = t ? t + " noShare" : "noShare";
+                }
+                //退出登录开关
+                if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                    var t = document.documentElement.className;
+                    document.documentElement.className = t ? t + " hideLogin" : "hideLogin";
+                }else{
+                    $('#loginout').show();
+                }
+            }, function () {//webview再次打开回调函数
+
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>设置</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="setting-box">
+        <div class="setting-item"><div class="setting-wrapper"><h2>版本信息</h2><p id="appVersion"></p></div></div>
+        <div class="setting-item arrow-right" id="helpcenter"><div class="setting-wrapper"><h2>帮助中心</h2></div></div>
+        <div class="setting-item arrow-right" id="clearcache"><div class="setting-wrapper"><h2>清除缓存</h2></div></div>
+        <div class="setting-item arrow-right" id="aboutus"><div class="setting-wrapper"><h2>关于我们</h2></div></div>
+        <div class="setting-item arrow-right" id="evaluate"><div class="setting-wrapper"><h2>前往评分</h2></div></div>
+        <div class="setting-item arrow-right margim-bottom" id="shareapp"><div class="setting-wrapper"><h2>分享应用</h2></div></div>
+        <div class="setting-item arrow-right" id="kfonline"><div class="setting-wrapper"><h2>在线客服</h2></div></div>
+        <div id="loginout">退出登录</div>
+    </div>
+</div>
+<script>
+    T.setting = (function(){
+        var o = {
+            init:function(){
+                //版本信息
+                if(T.isNative){
+                    $("#appVersion").text(T.Util.getAppInfo('appVersion') + "_" + Global.appCode + "_" + Global.webVersion);
+                }else{
+                    $("#appVersion").text(T.Util.getAppInfo('appVersion') + "_" + Global.appCode);
+                }
+                o.bindEvent();
+                //退出登录开关
+                if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                    var t = document.documentElement.className;
+                    document.documentElement.className = t ? t + " hideLogin" : "hideLogin";
+                }else{
+                    $('#loginout').show();
+                }
+            },
+            bindEvent:function(){
+                //返回
+                $('#back').Touch(function () {
+                    T.Util.back();
+                });
+                //分享
+                $('#shareapp').off().Touch(function(){
+                    T.Util.thirdShare({
+                        "type":"native",
+                        "title":T.Util.getShareText()["title"],
+                        "description":T.Util.getShareText()["description"],
+                        "icon":T.Util.getAppLogo(),
+                        "url":T.Util.getDownloadUrl()
+                    },function(result){
+
+                    });
+                });
+                //清理缓存
+                $("#clearcache").off().Touch(function(){
+                    T.Util.clearCache();
+                });
+                //在线客服
+                $("#kfonline").off().Touch(function(){
+                    //T.Util.kefu('h5','来源：设置页面');
+                    T.Util.kefuNew('h5','来源：设置页面');
+                });
+                //跳转帮助中心
+                $("#helpcenter").off().Touch(function(){
+                    //“新手指导”我的入口点击量（xszd_djl）
+                    T.Util.setUserBehaviorList({
+                        "busId":"新手指导",
+                        "conductCode": "xszd_djl",
+                        "comductDesc": "“新手指导”我的入口点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/helpCenter.html');
+                });
+                //关于我们
+                $("#aboutus").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/aboutUs.html');
+                });
+                //前往评分
+                $("#evaluate").off().Touch(function(){
+                    if(Global.isiOS){
+                        T.Util.openWindow("itms-apps://itunes.apple.com/app/tap-black-to-white/id" + T.Util.getAppInfo("appleID"),{isExterior:1});
+                    }else{
+                        T.Util.openWindow('http://a.app.qq.com/o/simple.jsp?pkgname=com.zslg.lot&from=singlemessage');
+                    }
+                });
+                //退出登录
+                $("#loginout").off().Touch(function(){
+                    T.Util.clearUserInfo();
+                    if(T.isNative){
+                        T.Util.sendToken({"token":''});
+                    }
+                    T.Util.back();
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.setting.init();
+            }, function () {//webview再次打开回调函数
+
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.setting.init();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>充值100%送</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        #recharge-box {
+            position: relative;
+        }
+
+        #bg {
+            position: absolute;
+            width: 100%;
+        }
+
+        #recharge-head {
+            position: relative;
+            width: 100%;
+            height: 10.0666667rem;
+            overflow: hidden;
+        }
+
+        #recharge-head #doRecharge {
+            display: block;
+            width: 6.453334rem;
+            height: 1.56rem;
+            margin: 0.68rem auto 0 auto;
+        }
+
+        #recharge-head #recharge-menu {
+            overflow: hidden;
+        }
+
+        #recharge-head #recharge-menu span {
+            float: left;
+            display: inline-block;
+            width: 3.12rem;
+            height: 0.613333rem;
+            text-align: center;
+            line-height: 0.586667rem;
+            font-size: 0.32rem;
+        }
+
+        #recharge-head #recharge-menu span:first-child {
+            margin: 0.3333334rem 1.133333rem 0.44rem 0.746667rem;
+            color: #fff;
+        }
+
+        #recharge-head #recharge-menu span:last-child {
+            margin: 0.3333334rem 0.533333rem 0.44rem 1.346667rem;
+            color: #f4dc3a;
+            text-decoration: underline;
+        }
+
+        #recharge-head #recharge-menu span em {
+            color: #f4dc3a;
+        }
+
+        #recharge-main {
+            position: relative;
+            width: 9.066667rem;
+            height: 9.053333rem;
+            margin: 0 0.426667rem 0 0.506667rem;
+        }
+
+        #recharge-main #light {
+            position: absolute;
+            left: 0.093333rem;
+            top: -0.026667rem;
+            width: 8.88rem;
+            height: 8.88rem;
+        }
+
+        #recharge-main #drawbox {
+            position: absolute;
+            left: 0.96rem;
+            top: 0.813333rem;
+            width: 7.146667rem;
+            height: 7.026667rem;
+        }
+
+        #drawbox .prizeItem {
+            position: absolute;
+            width: 2.24rem;
+            height: 2.12rem;
+        }
+
+        #drawbox .prizeItem:nth-child(1) {
+            left: 0;
+            top: 0;
+        }
+
+        #drawbox .prizeItem:nth-child(2) {
+            left: 2.453333rem;
+            top: 0;
+        }
+
+        #drawbox .prizeItem:nth-child(3) {
+            left: 4.906667rem;
+            top: 0;
+        }
+
+        #drawbox .prizeItem:nth-child(4) {
+            left: 4.906667rem;
+            top: 2.453333rem;
+        }
+
+        #drawbox .prizeItem:nth-child(5) {
+            left: 4.906667rem;
+            top: 4.906667rem;
+        }
+
+        #drawbox .prizeItem:nth-child(6) {
+            left: 2.453333rem;
+            top: 4.906667rem;
+        }
+
+        #drawbox .prizeItem:nth-child(7) {
+            left: 0;
+            top: 4.906667rem;
+        }
+
+        #drawbox .prizeItem:nth-child(8) {
+            left: 0;
+            top: 2.453333rem;
+        }
+
+        #drawbox .prizeItem img {
+            position: absolute;
+            left: 0.266667rem;
+            top: -0.053333rem;
+            width: 1.653333rem;
+            height: 1.653333rem;
+        }
+
+        #drawbox .prizeItem h2 {
+            position: absolute;
+            top: 1.333333rem;
+            width: 100%;
+            text-align: center;
+            line-height: 0.64rem;
+            font-size: 0.346667rem;
+            color: #fff;
+        }
+        #recharge-main #drawbox #prizeBox{
+            width:100%;
+            height:100%;
+        }
+
+        #recharge-main #drawbox #drawBtn {
+            position: absolute;
+            left: 2.36rem;
+            top: 2.4rem;
+            width: 2.426667rem;
+            height: 2.346667rem;
+        }
+
+        #recharge-main #drawbox #pointer {
+            position: absolute;
+            display:none;
+            width: 2.426667rem;
+            height: 2.346667rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer1 {
+            left: -0.093333rem;
+            top: -0.106667rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer2 {
+            left: 2.36rem;
+            top: -0.106667rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer3 {
+            left: 4.813333rem;
+            top: -0.106667rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer4 {
+            left: 4.813333rem;
+            top: 2.346667rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer5 {
+            left: 4.813333rem;
+            top: 4.8rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer6 {
+            left: 2.36rem;
+            top: 4.8rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer7 {
+            left: -0.093333rem;
+            top: 4.8rem;
+        }
+
+        #recharge-main #drawbox #pointer.pointer8 {
+            left: -0.093333rem;
+            top: 2.346667rem;
+        }
+
+        #prizeListBox{
+            position: relative;
+            margin-top:4.5066667rem;
+            height:1.9333334rem;
+            overflow: hidden;
+        }
+
+        #prizeList {
+            margin:0.25rem auto;
+            width: 7.626667rem;
+            height: 1.4333334rem;
+            overflow: hidden;
+        }
+
+        #prizeList #prizeContent {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 0.453333rem;
+            font-size: 0.293333rem;
+            color: #fff;
+        }
+
+        #prizeList #prizeContent .nodata{
+            line-height:1.533333rem;
+        }
+
+        #prizeList #prizeContent.rowup {
+            -webkit-animation: 4s rowup linear infinite normal;
+            animation: 4s rowup linear infinite normal;
+            -webkit-backface-visibility: hidden;
+        }
+
+        #prizeList #prizeContent.rowup1 {
+            -webkit-animation: 8s rowup linear infinite normal;
+            animation: 8s rowup linear infinite normal;
+            -webkit-backface-visibility: hidden;
+        }
+
+        #rule {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        #rule #showRule {
+            position: absolute;
+            right: 0.266667rem;
+            top: 0;
+            width:0.8533334rem;
+            height:1.12rem;
+        }
+
+        #rule #ruleBox {
+            width: 100%;
+            height: 0;
+            background-color: #e7f3ff;
+            border-radius: 0 0 0.106667rem 0.106667rem;
+            line-height: 0.453333rem;
+            font-size: 0.293333rem;
+            color: #333333;
+            overflow: hidden;
+            transition: all ease-out 0.3s;
+            -webkit-transition: all ease-out 0.3s;
+        }
+
+        #rule.show {
+            width: 100%;
+            height: 100%;
+        }
+
+        #rule.show #ruleBox {
+            height: 9.2rem;
+        }
+
+        #rule #ruleBox #ruleTitle {
+            display: block;
+            margin: 0.546667rem auto 0 auto;
+            width: 8.306667rem;
+            height: 1.08rem;
+        }
+
+        #rule #ruleBox #ruleText {
+            padding: 0.4rem;
+            line-height: 0.48rem;
+            font-size: 0.32rem;
+        }
+
+        #rule #ruleUp {
+            display:none;
+            float: right;
+            margin-right: 0.266667rem;
+            width:0.8533334rem;
+            height:1.12rem;
+        }
+
+        /*抽奖提示弹层*/
+        .popBox.lotteryTip .box-content {
+            width: 9.413333rem;
+            height: 5.5333334rem;
+            margin: auto;
+            background: url(../img/activity/recharge/lottery_tip.png) center center / 9.413333rem 5.5333334rem no-repeat;
+            overflow: visible;
+        }
+
+        .popBox.lotteryTip .confirmcontent {
+            padding: 0!important;
+        }
+
+        .popBox.lotteryTip .confirmcontent h2{
+            padding:1.64rem 1.44rem 0 1.44rem;
+            line-height:0.64rem;
+            font-size:0.4rem;
+            font-weight:normal;
+            color:#fff;
+        }
+
+        .popBox.lotteryTip .confirmbutton {
+            border: none;
+            display: block;
+            width: 9.4133334rem;
+        }
+
+        .popBox.lotteryTip .confirmbutton div.cancelText {
+            display: none;
+        }
+
+        .popBox.lotteryTip .confirmbutton div.okText {
+            margin: 0.7866667rem auto;
+            width: 5.3333334rem;
+            height: 1.146667rem;
+            border: none;
+            background: url(../img/activity/recharge/recharge_btn2.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        .popBox.lotteryTip .box-content #close {
+            position: absolute;
+            right: 0.44rem;
+            top: -0.9rem;
+            display: inline-block;
+            background: url('../img/sprite.png') no-repeat -7.2rem -8.933333rem;
+            background-size: 13.226667rem 11.946667rem;
+            width: 0.986667rem;
+            height: 0.986667rem;
+        }
+
+        /*抽中弹层*/
+        .popBox.showPrize .box-content {
+            width: 9.4133334rem;
+            height: 8.4rem;
+            margin: auto;
+            background: url(../img/activity/recharge/winAlert.png) center center / 9.413333rem 8.4rem no-repeat;
+            overflow: visible;
+        }
+
+        .popBox.showPrize .confirmcontent {
+            padding: 0!important;
+        }
+
+        .popBox.showPrize .confirmcontent h2 {
+            margin: 3.973333rem 0 0.733333rem 0;
+            text-align: center;
+            line-height: 0.8rem;
+            font-size: 0.533333rem;
+            color: #fff;
+        }
+
+        .popBox.showPrize .confirmbutton {
+            border: none;
+            margin: auto;
+            display: block;
+            width: 8.533333rem;
+        }
+
+        .popBox.showPrize .confirmbutton div.cancelText {
+            display: none;
+        }
+
+        .popBox.showPrize .confirmbutton div.okText {
+            margin: 0.546667rem auto;
+            width: 5.3333334rem;
+            height: 1.146667rem;
+            border: none;
+            background: url(../img/activity/recharge/showMyPrize.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        .popBox.showPrize .box-content #close {
+            position: absolute;
+            right: 0.6666667rem;
+            top: 0;
+            display: inline-block;
+            background: url('../img/sprite.png') no-repeat -7.2rem -8.933333rem;
+            background-size: 13.226667rem 11.946667rem;
+            width: 0.986667rem;
+            height: 0.986667rem;
+        }
+
+        .popBox.showPrize.auction .box-content #close{
+            right:0.4266667rem;
+            top:0.0933333rem;
+        }
+
+        /*继续抽奖弹窗*/
+        .popBox.showPrize.continueDraw .box-content{
+            height:8.4rem;
+            background: url(../img/activity/recharge/continue_draw.png) center center / 9.413333rem 8.4rem no-repeat;
+        }
+
+        .popBox.showPrize.continueDraw .confirmcontent h2{
+            margin:3.9466667rem 1.44rem 0 1.44rem;
+            font-size:0.5333334rem;
+        }
+
+        .popBox.showPrize.continueDraw .confirmbutton div.okText{
+            margin:1.2rem auto;
+            background:url(../img/activity/recharge/continue_draw_btn.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        /*充值弹窗*/
+        .popBox.showPrize.recharge .box-content{
+            height:7.5466667rem;
+            background: url(../img/activity/recharge/recharge.png) center center / 9.413333rem 7.5466667rem no-repeat;
+        }
+
+        .popBox.showPrize.recharge .confirmcontent h2{
+            margin:3.3066667rem 1.44rem 0.72rem 1.44rem;
+            font-size:0.5333334rem;
+        }
+
+        .popBox.showPrize.recharge .confirmbutton div.okText{
+            margin:auto;
+            background:url(../img/activity/recharge/recharge_btn2.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        /*充值送弹窗*/
+        .popBox.showPrize.rechargeSend .box-content{
+            height:10.9466667rem;
+            background: url(../img/activity/recharge/rechargeSend.png) center center / 9.413333rem 10.9466667rem no-repeat;
+        }
+
+        .popBox.showPrize.rechargeSend .confirmcontent h2{
+            margin:3.3333334rem 1.44rem 2.96rem 1.44rem;
+            font-size:0.5333334rem;
+        }
+
+        .popBox.showPrize.rechargeSend .confirmcontent img{
+            display:inline-block;
+            margin:0.6133334rem auto 0.5733334rem auto;
+            width:6.9333334rem;
+            height:2.6666667rem;
+            border-radius:0.08rem;
+        }
+
+        .popBox.showPrize.rechargeSend .confirmbutton div.okText{
+            margin:auto;
+            background:url(../img/activity/recharge/recharge_btn2.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        .popBox.showPrize.rechargeSend .confirmbutton{
+            position:absolute;
+            left:0.44rem;
+            top:0rem;
+        }
+
+        /*购买弹窗*/
+        .popBox.showPrize.auction .box-content{
+            height:9.32rem;
+            background: url(../img/activity/recharge/draw_auction.png) center center / 9.413333rem 9.32rem no-repeat;
+        }
+
+        .popBox.showPrize.auction .confirmcontent h2{
+            margin:3.6533334rem 1.44rem 1.0133334rem 1.44rem;
+            font-size:0.5333334rem;
+        }
+
+        .popBox.showPrize.auction .confirmcontent .shopList{
+            position:relative;
+            float:none;
+            margin:0.6533334rem 1.1866667rem 0.5733334rem 1.3066667rem;
+            display:inline-block;
+            width:6.9333334rem;
+            height:2.6666667rem;
+            border-radius:0.08rem;
+        }
+
+        .popBox.showPrize.auction .confirmcontent .shopList img{
+            position:absolute;
+            left:0;
+            top:0;
+            width:2.88rem;
+            height:100%;
+        }
+
+        .popBox.showPrize.auction .confirmcontent .shopList p em{
+            color:#333;
+        }
+
+        .popBox.showPrize.auction .confirmcontent .shopList .avgPrice{
+            margin-top:0.3733334rem;
+            padding-left:3.04rem;
+            text-align:left;
+            line-height:0.48rem;
+            font-size:0.32rem;
+            color:#666;
+        }
+
+        .popBox.showPrize.auction .confirmcontent .shopList .curPrice{
+            margin-top:0;
+            padding-left:3.04rem;
+            text-align:left;
+            line-height:0.48rem;
+            font-size:0.32rem;
+            color:#666;
+        }
+
+        .popBox.showPrize.auction .confirmcontent .shopList .shopTime{
+            position:absolute;
+            margin:0;
+            left:3.04rem;
+            top:1.5333334rem;
+            width:3.7066667rem;
+            height:0.64rem;
+            line-height:0.64rem;
+        }
+
+        .popBox.showPrize.auction .confirmcontent .shopList .shopTime em{
+            width:1.88rem;
+            height:100%;
+            line-height:0.64rem;
+        }
+
+        .popBox.showPrize.auction .confirmbutton{
+            display:none;
+        }
+
+        .popBox.showPrize.auction .box-content #close{
+            bottom:-1.88rem;
+        }
+
+        /*我的奖品*/
+        .popBox.showMyPrize .box-content {
+            width: 9.6533334rem;
+            height: 8.2266667rem;
+            margin: auto;
+            background: url(../img/activity/recharge/prizeAlert.png) center center / 9.6533334rem 8.2266667rem no-repeat;
+            overflow: visible;
+        }
+
+        .popBox.showMyPrize .confirmcontent {
+            padding: 0!important;
+        }
+
+        .popBox.showMyPrize #myPrizeList {
+            margin: 1.3066667rem auto 0.4933334rem auto;
+            width: 5.88rem;
+            height: 4.32rem;
+            overflow-y:auto;
+            -webkit-overflow-scrolling:touch;
+        }
+
+        .popBox.showMyPrize #myPrizeList .nodata i{
+            margin-top:0.5333334rem;
+            display:inline-block;
+            width:2.9333334rem;
+            height:1.9733334rem;
+            background:url(../img/activity/recharge/noprize.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        .popBox.showMyPrize #myPrizeList .nodata h2{
+            margin-top:0.3066667rem;
+            line-height:0.48rem;
+            font-size:0.2933334rem;
+            color:#f57880;
+        }
+
+        .popBox.showMyPrize #myPrizeList .myPrizeItem {
+            position: relative;
+            width: 100%;
+            height: 1.44rem;
+            overflow: hidden;
+            border-bottom:1px solid #e79a9f;
+            box-sizing:border-box;
+            -webkit-box-sizing:border-box;
+        }
+
+        .popBox.showMyPrize #myPrizeList .myPrizeItem h2 {
+            margin-top: 0.3466667rem;
+            padding-left: 1.84rem;
+            text-align: left;
+            line-height: 0.4rem;
+            font-size: 0.4rem;
+            color: #763741;
+        }
+
+        .popBox.showMyPrize #myPrizeList .myPrizeItem h2 em {
+            color: #dd3138;
+        }
+
+        .popBox.showMyPrize #myPrizeList .myPrizeItem p {
+            margin-top: 0.0533334rem;
+            padding-left: 1.84rem;
+            text-align: left;
+            line-height: 0.2666667rem;
+            font-size: 0.2666667rem;
+            color:#995e68;
+        }
+
+        .popBox.showMyPrize #myPrizeList .myPrizeItem i {
+            position: absolute;
+            left: 0.0666667rem;
+            top: -0.08rem;
+            display: inline-block;
+            width: 1.6rem;
+            height: 1.6rem;
+        }
+
+        .popBox.showMyPrize .confirmbutton {
+            border: none;
+            margin: auto;
+            display: block;
+            width: 6.16rem;
+            height: 1.72rem;
+        }
+
+        .popBox.showMyPrize .confirmbutton div.cancelText {
+            display: none;
+        }
+
+        .popBox.showMyPrize .confirmbutton div.okText {
+            margin: 0.3733334rem auto 0.213333rem auto;
+            width: 4.853333rem;
+            height: 1.2rem;
+            border: none;
+            background: url(../img/activity/recharge/btn_ok.png) 0 0 / 100% 100% no-repeat;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>充值100%送</h1>
+</div>
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <div id="recharge-box">
+            <img src="../img/activity/recharge/bg.png" id="bg">
+            <div id="recharge-head">
+                <div id="prizeListBox"><div id="prizeList"><div id="prizeContent"></div></div></div>
+                <img src="../img/activity/recharge/recharge_btn.png" id="doRecharge">
+                <div id="recharge-menu"><span id="drawcount">当日抽奖次数：<em>-</em></span><span id="showMyPrize">我的奖品>></span></div>
+            </div>
+            <div id="recharge-main">
+                <img src="../img/activity/recharge/light1.png" id="light">
+                <div id="drawbox">
+                    <div id="prizeBox"></div>
+                    <img src="../img/activity/recharge/draw_btn.png" id="drawBtn">
+                    <img src="../img/activity/recharge/pointer.png" id="pointer" class="pointer1">
+                </div>
+            </div>
+            <div id="rule">
+                <img src="../img/activity/recharge/ruledown.png" id="showRule">
+                <div id="ruleBox">
+                    <img src="../img/activity/recharge/rule.png" id="ruleTitle">
+                    <div id="ruleText">
+                        <p>1、活动时间：2018.3.16 00:00分 ~ 2018.8.30 23:59:59分</p>
+                        <p>2、每个用户都可参与充值，100%获取奖励</p>
+                        <p>a）在充值页面单笔充值满50及以上可获得1次抽奖机会，一天最多10次机会，抽奖1次消耗1次机会。</p>
+                        <p>b）未用完的抽奖机会当天24:00时失效，请及时使用；</p>
+                        <p>c）充值的本金将转为拍币不可提现，永久有效，拍中商品委托成功后可提现。</p>
+                        <p>3、奖品：提供赠币、话费、Beats耳机、iPhoneX奖品，赠币实时派发；话费卡与实物奖品由，请提供联系地址并与客服联系。</p>
+                        <p>4、所有获取实物的奖品如未提供地址与联系人，或提供错误的地址信息则由本人负责，活动结束15天后，不再受理此次活动的申诉。</p>
+                        <p>5、所有存在作弊等行为，一经发现有权处置不派发奖品或有其它惩罚措施。如有其它疑问，可联系在线客服。</p>
+                    </div>
+                </div>
+                <img src="../img/activity/recharge/ruleup.png" id="ruleUp">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.recharge = (function(){
+        var pageIndex = 0;//我的奖品分页
+        var pageSize = 10;//分页步长
+        var hasMore = false;//是否有更多数据
+        var endGetDataFlag = true;//接口请求完毕
+        var drawCount = 0;//可抽奖次数
+        var prizeCount = 8;//转盘奖品数
+        var advertInfo = null;//获取运营信息
+        var click = false;
+
+        //旋转对象
+        var lottery={
+            index:0,	//当前转动到哪个位置
+            count:8,	//总共有多少个位置
+            timer:0,	//setTimeout的ID，用clearTimeout清除
+            speed:200,	//初始转动速度
+            times:20,	//转动次数
+            cycle:50,	//转动基本次数：即至少需要转动多少次再进入抽奖环节
+            prize:0,	//中奖位置
+            init:function(){
+                this.light();
+                $("#pointer").removeAttr("class").addClass("pointer" + (this.index + 1));
+            },
+            goTo:function(prize,index){
+                lottery.speed = 100;
+                lottery.prize = index;
+                lottery.count = prizeCount;
+                roll(prize);
+                return false;
+            },
+            roll:function(){
+                var index = lottery.index;
+                var count = lottery.count;
+                lottery.light();
+                $("#pointer").removeAttr("class").addClass("pointer" + (index + 1));
+                index += 1;
+                if (index>count-1) {
+                    index = 0;
+                };
+                $("#pointer").removeAttr("class").addClass("pointer" + (index + 1));
+                lottery.index=index;
+                return false;
+            },
+            light:function(){
+                if($("#light").attr("src").match('light1.png')){
+                    $("#light").attr("src","../img/activity/recharge/light2.png");
+                }else{
+                    $("#light").attr("src","../img/activity/recharge/light1.png");
+                }
+            },
+            stop:function(index){
+                this.prize=index;
+                return false;
+            }
+        }
+
+        //旋转函数
+        function roll(json){
+            lottery.times += 1;
+            lottery.roll();
+            if (lottery.times > lottery.cycle+10 && lottery.prize==lottery.index) {
+                $("#drawBtn").removeClass("click");
+                setTimeout(function(){
+                    o.showPrize(json);
+                },100);
+                clearTimeout(lottery.timer);
+                lottery.times=0;
+                click=false;
+            }else{
+                if (lottery.times<lottery.cycle) {
+                    lottery.speed -= 10;
+                }else{
+                    if (lottery.times > lottery.cycle+10 && ((lottery.prize==0 && lottery.index==7) || lottery.prize==lottery.index+1)) {
+                        lottery.speed += 110;
+                    }else{
+                        lottery.speed += 20;
+                    }
+                }
+                if (lottery.speed<40) {
+                    lottery.speed=40;
+                };
+                lottery.timer = setTimeout(roll,lottery.speed,json);
+            }
+            return false;
+        }
+
+        var o = {
+            init:function(){
+                o.loadCache();//加载缓存
+                o.getPrizeInfo();//获取奖品信息
+                o.getPrizeList();//获取中奖信息
+                o.bindEvent();//事件绑定
+                //banner内每个页面的PV/UV（banner_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"banner",
+                    "conductCode": "banner_fwl",
+                    "comductDesc": "banner内每个页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //加载缓存
+            loadCache:function(){
+                var rechargePrize = T.Storage.get('rechargePrize');
+                if(rechargePrize){
+                    $("#prizeBox").html(rechargePrize);
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定滑动加载更多
+                $("#myPrizeList").off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(this).children().eq(0).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                        if(hasMore){
+                            o.getMyPrize(true);
+                        }
+                    }
+                });
+                //显示规则
+                $("#showRule").off().Touch(function(){
+                    $("#showRule").hide();
+                    $("#ruleUp").show();
+                    $("#rule").addClass("show");
+                    T.Util.preventDefault();
+                });
+                //收起规则
+                $("#ruleUp").off().Touch(function(){
+                    $("#showRule").show();
+                    $("#ruleUp").hide();
+                    $("#rule").removeClass("show");
+                    T.Util.unPreventDefault();
+                });
+                //点击空白区域收起规则
+                $("#rule").bind("touchstart",function(ev){
+                    if($(ev.target).is("#rule")){
+                        $("#showRule").show();
+                        $("#ruleUp").hide();
+                        $("#rule").removeClass("show");
+                        T.Util.unPreventDefault();
+                    }
+                });
+                //立即充值
+                $("#doRecharge").off().Touch(function(){
+                    //“立即充值”的点击量（banner_czcjljcz）
+                    T.Util.setUserBehaviorList({
+                        "busId":"充值活动",
+                        "conductCode": "banner_czcjljcz",
+                        "comductDesc": "“立即充值”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    if(T.Storage.get('access_token')){
+                        o.doRecharge();
+                    }else{
+                        T.Util.login({isBack:true});//跳登录页，登录成功后原路返回
+                    }
+                });
+                //显示我的奖品
+                $("#showMyPrize").off().Touch(function(){
+                    if(T.Storage.get('access_token')){
+                        o.getMyPrize();
+                    }else{
+                        T.Util.login({isBack:true});
+                    }
+                });
+                //抽奖
+                $("#drawBtn").off().Touch(function(){
+                    o.lotteryDraw();
+                });
+            },
+            //获取奖品信息
+            getPrizeInfo:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/user/services/activity/info.json?code=PAY_LOTTERY",
+                    callback:function(json){
+                        var value = json.res_data.value;
+                        //渲染抽奖次数
+                        drawCount = value.COU||0;
+                        if(T.Storage.get('access_token')){
+                            $("#drawcount em").text(drawCount);
+                        }else{
+                            $("#drawcount em").text("-");
+                        }
+                        //渲染奖品信息
+                        var prizeInfo = value.REWARD_LIST;
+                        var prizeHtml = [];
+                        prizeCount = prizeInfo.length;
+                        $.each(prizeInfo,function(i,item){
+                            prizeHtml.push('<div class="prizeItem" data-index="' + i + '" data-id="' + item.ID + '"><img src="' + item.REWARD_PIC + '"><h2>' + item.REWARD_DESC + '</h2></div>');
+                        });
+                        $("#prizeBox").html(prizeHtml.join(""));
+                        T.Storage.set('rechargePrize',$("#prizeBox").html());
+                    },
+                    errorCallback:function(data){
+
+                    }
+                });
+            },
+            //获取个人中奖列表
+            getMyPrize:function(fromMore){
+                if(!fromMore){
+                    pageIndex = 0;
+                }
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/user/services/activity/lottery/reward.json?code=PAY_LOTTERY&page=" + pageIndex + "&limit=" + pageSize,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var myPrize = data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND == "2"){
+                            pageIndex++;
+                            hasMore = true;
+                        }else{
+                            hasMore = false;
+                        }
+                        var myPrizeHtml = [];
+                        $.each(myPrize,function(i,item){
+                            myPrizeHtml.push('<div class="myPrizeItem"><i style="background:url(' + (item.REWARD_PIC||Global.noPic) + ') 0 0 / 100% 100% no-repeat;"></i><h2>' + item.REWARD_DESC + '</h2><p>领取时间: ' + new Date(item.CRT_TIME).format('yyyy-MM-dd hh:mm') + '</p></div>');
+                        });
+                        if(!myPrizeHtml.length){
+                            myPrizeHtml.push('<div class="nodata"><i></i><h2>暂时还没有奖品哦~</h2></div>');
+                        }
+                        if(fromMore){
+                            myPrize.length && $("#myPrizeList").append(myPrizeHtml.join(""));
+                        }else{
+                            confirm({
+                                className:'showMyPrize',
+                                html:'<div id="myPrizeList">' + myPrizeHtml.join("") + '</div>',
+                                okText:' ',
+                                okFun:function(){
+
+                                }
+                            });
+                        }
+                        o.bindEvent();
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        data && tip(data.msg);
+                    }
+                });
+            },
+            //获取公共中奖列表
+            getPrizeList:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/user/services/activity/boradCast.json?code=PAY_LOTTERY&page=0&limit=10",
+                    callback:function(json){
+                        var info = json.res_data.value.INFO;
+                        var html = '<div class="prizeList">';
+                        for(var i = 0;i < info.length;i++){
+                            html += '<div class="prizeItem">恭喜' + info[i].NICK_NAME + '成功抽中' + info[i].REWARD_DESC + '</div>';
+                        }
+                        html += '</div>';
+                        if(info.length){
+                            $("#prizeContent").html(html);
+                        }else{
+                            $("#prizeContent").html('<h2 class="nodata">虚位以待</h2>');
+                        }
+                        if(info.length >= 4){
+                            $("#prizeContent").append(html);
+                            var height = $("#prizeContent .prizeList").height();
+                            o.addKeyFrames("-" + height + "px");
+                            $("#prizeContent").addClass("rowup");
+                        }
+                    },
+                    errorCallback:function(data){
+
+                    }
+                });
+            },
+            //抽奖
+            lotteryDraw:function(){
+                if(!T.Storage.get('access_token')){
+                    return T.Util.login({isBack:true});
+                }
+                if($("#drawBtn").is(".click")){
+                    return false;
+                }
+                $("#drawBtn").addClass("click");
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    authError:1,
+                    reqUrl:"/user/services/activity/lottery.json?code=PAY_LOTTERY&channelCode=" + T.Util.getAppInfo("channelCode") + '&appVersion=' + T.Util.getAppInfo("appVersion"),
+                    callback:function(data){
+                        var value = data.res_data.value;//运营信息
+                        var prize = value.REWARD_LIST[0];
+                        advertInfo = value.PAY_INFO||value.NOTE_INFO;
+                        if(prize){
+                            //更新可抽奖次数
+                            drawCount -= 1;
+                            if(T.Storage.get('access_token')){
+                                $("#drawcount em").text(drawCount);
+                            }else{
+                                $("#drawcount em").text("-");
+                            }
+                            $("#pointer").show();
+                            var index = 0;
+                            $.each($(".prizeItem"),function(i){
+                                if($(".prizeItem").eq(i).attr("data-id") == prize.ID){
+                                    index = parseInt($(".prizeItem").eq(i).attr("data-index"));
+                                }
+                            });
+                            lottery.goTo(prize,index);
+                        }
+                    },
+                    errorCallback:function(data){
+                        $("#drawBtn").removeClass("click");
+                        if(data && data.msg){
+                            confirm({
+                                className:'lotteryTip',
+                                html:'<h2>' + data.msg + '</h2>',
+                                okText:' ',
+                                okFun:function(){
+                                    //抽奖次数不够引导充值弹窗的按钮点击量（banner_czcjbz）
+                                    T.Util.setUserBehaviorList({
+                                        "busId":"充值活动",
+                                        "conductCode": "banner_czcjbz",
+                                        "comductDesc": "抽奖次数不够引导充值弹窗的按钮点击量",
+                                        "time": new Date().getTime()
+                                    });
+                                    o.doRecharge();
+                                },
+                                cancelText:' ',
+                                close:true
+                            });
+                        }
+                    }
+                });
+            },
+            //滚动效果
+            addKeyFrames:function(y){
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                var keyFrames = '\
+                @-webkit-keyframes rowup {\
+                    0% {\
+                        -webkit-transform: translate3d(0, 0, 0);\
+                        transform: translate3d(0, 0, 0);\
+                    }\
+                    100% {\
+                        -webkit-transform: translate3d(0, A_DYNAMIC_VALUE, 0);\
+                        transform: translate3d(0, A_DYNAMIC_VALUE, 0);\
+                    }\
+                }\
+                @keyframes rowup {\
+                    0% {\
+                        -webkit-transform: translate3d(0, 0, 0);\
+                        transform: translate3d(0, 0, 0);\
+                    }\
+                    100% {\
+                        -webkit-transform: translate3d(0, A_DYNAMIC_VALUE, 0);\
+                        transform: translate3d(0, A_DYNAMIC_VALUE, 0);\
+                    }\
+                }';
+                style.innerHTML = keyFrames.replace(/A_DYNAMIC_VALUE/g, y);
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            //获取推荐商品html
+            doShopListHtml:function(d,type){
+                var messArr = [];
+                var htmlArr=[];
+                addTimer('#'+d.COMMODITY_ID,Math.ceil(d.SURPLUS_TIME/1000));
+                htmlArr.push('<div class="shopList" data-id="' + d.COMMODITY_ID + '" data-no="' + d.EXPECT_NO + '"><img src="' + advertInfo.COMMODITY_LOGO + '"><p class="avgPrice">平均成交价：<em>￥</em><em>' + Number(advertInfo.AVG_PRICE).toFixed(2) + '</em></p><p class="curPrice">当前竞拍价：<em>￥</em><em class="AUCTION_PRICE">' + Number(advertInfo.AUCTION_PRICE).toFixed(2) + '</em></p>');
+                htmlArr.push('<div class="shopTime"><span id="'+d.COMMODITY_ID+'" data-djs="'+d.COUNT_DOWN+'" type-djs="1"><cite>--</cite>:<cite>--</cite>:<cite>--</cite></span><em>参与竞拍</em></div></div>');
+                messArr.push('auction/commodity/'+d.COMMODITY_ID);
+                var userinfo = T.Storage.get('userinfo');
+                if(!T.Util.isEmpty(userinfo)){
+                    messArr.push('user/favorite/'+userinfo.userId);//用户收藏相关
+                }
+                T.Util.mqtt(messArr);
+
+                return htmlArr;
+            },
+            //充值
+            doRecharge:function(){
+                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/recharge.html?from=buy&money=50');
+            },
+            //显示中奖信息
+            showPrize:function(prize){
+                var userInfo = T.Storage.get('userinfo')||{};
+                var moneyList = userInfo.moneyList;
+                var confirmObj = {
+                    className:'showPrize',
+                    html:'<h2>恭喜您抽中' + prize.REWARD_DESC + '</h2>',
+                    okText:' ',
+                    okFun:function(){
+                        o.getMyPrize();
+                    },
+                    close:true
+                }
+                if(drawCount > 0){//如果还有抽奖机会，显示继续抽奖
+                    confirmObj.className = 'showPrize continueDraw';
+                    confirmObj.okFun = function(){
+                        o.lotteryDraw();
+                    }
+                }else if(advertInfo && advertInfo.IsHaveRecharge) {//显示余额不足
+                    //判断是否有充值优惠活动
+                    if(advertInfo && advertInfo.IsHaveRecharge == '1'){
+                        confirmObj.className = 'showPrize rechargeSend';
+                        confirmObj.html += '<img src="../img/activity/recharge/banner.png">';
+                    }else{
+                        confirmObj.className = 'showPrize recharge';
+                    }
+                    confirmObj.okFun = function(){
+                        //抽奖次数不够引导充值弹窗的按钮点击量（banner_czcjbz）
+                        T.Util.setUserBehaviorList({
+                            "busId":"充值活动",
+                            "conductCode": "banner_czcjbz",
+                            "comductDesc": "抽奖次数不够引导充值弹窗的按钮点击量",
+                            "time": new Date().getTime()
+                        });
+                        o.doRecharge();
+                    }
+                }else if(advertInfo){//推荐商品
+                    confirmObj.className = 'showPrize auction';
+                    confirmObj.html += o.doShopListHtml(advertInfo);
+                }
+                confirm(confirmObj);
+                //点击进入商品详情页
+                if($("#confirmBox .shopList").length){
+                    $("#confirmBox .shopList").off().Touch(function(el){
+                        $("#confirmBox,#mask").remove();
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).attr("data-id")+'&isNext=1&expectNo='+$(el).attr("data-no"));
+                    });
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.recharge.init();
+            },function () {//webview再次打开回调函数
+                T.recharge.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.recharge.init();
+        }
+    });
+</script>
+</body>
+</html>

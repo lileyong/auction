@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>查看图片</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/imageViewer.css">
+</head>
+<body>
+<div id="viewer">
+    <div id="navbar" class="navbar">
+        <div class="back_arrow back_home" id="back"></div>
+        <h1 id="navTitle">1/3</h1>
+        <span id="delete" class="hide"></span>
+    </div>
+    <div id="viewBox">
+        <div id="imgList"></div>
+    </div>
+    <div id="deleteBox" class="hidden">
+        <h2>要删除这张照片吗？</h2>
+        <div class="deleteBtn" id="deleteOk">删除</div>
+        <div class="deleteBtn" id="deleteCancel">取消</div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    (function(e) {
+            function a(e, t, n, r) {
+                return Math.abs(e - t) >= Math.abs(n - r) ? e - t > 0 ? "Left" : "Right" : n - r > 0 ? "Up" : "Down"
+            }
+            function f() {
+                s = null,
+                t.last && (t.el.trigger("longTap"),
+                    t = {})
+            }
+            function l() {
+                s && clearTimeout(s),
+                    s = null
+            }
+            function c() {
+                n && clearTimeout(n),
+                r && clearTimeout(r),
+                i && clearTimeout(i),
+                s && clearTimeout(s),
+                    n = r = i = s = null,
+                    t = {}
+            }
+            function h(e) {
+                return (e.pointerType == "touch" || e.pointerType == e.MSPOINTER_TYPE_TOUCH) && e.isPrimary
+            }
+            function p(e, t) {
+                return e.type == "pointer" + t || e.type.toLowerCase() == "mspointer" + t
+            }
+            var t = {}, n, r, i, s, o = 750, u;
+            e(document).ready(function() {
+                var d, v, m = 0, g = 0, y, b;
+                "MSGesture"in window && (u = new MSGesture,
+                    u.target = document.body),
+                    e(document).bind("MSGestureEnd", function(e) {
+                        var n = e.velocityX > 1 ? "Right" : e.velocityX < -1 ? "Left" : e.velocityY > 1 ? "Down" : e.velocityY < -1 ? "Up" : null;
+                        n && (t.el.trigger("swipe"),
+                            t.el.trigger("swipe" + n))
+                    }).on("touchstart MSPointerDown pointerdown", function(r) {
+                        if ((b = p(r, "down")) && !h(r))
+                            return;
+                        y = b ? r : r.touches[0],
+                        r.touches && r.touches.length === 1 && t.x2 && (t.x2 = undefined,
+                            t.y2 = undefined),
+                            d = Date.now(),
+                            v = d - (t.last || d),
+                            t.el = e("tagName"in y.target ? y.target : y.target.parentNode),
+                        n && clearTimeout(n),
+                            t.x1 = y.pageX,
+                            t.y1 = y.pageY,
+                        v > 0 && v <= 250 && (t.isDoubleTap = !0),
+                            t.last = d,
+                            s = setTimeout(f, o),
+                        u && b && u.addPointer(r.pointerId)
+                    }).on("touchmove MSPointerMove pointermove", function(e) {
+                        if ((b = p(e, "move")) && !h(e))
+                            return;
+                        y = b ? e : e.touches[0],
+                            l(),
+                            t.x2 = y.pageX,
+                            t.y2 = y.pageY,
+                            m += Math.abs(t.x1 - t.x2),
+                            g += Math.abs(t.y1 - t.y2)
+                    }).on("touchend MSPointerUp pointerup", function(s) {
+                        if ((b = p(s, "up")) && !h(s))
+                            return;
+                        l(),
+                            t.x2 && Math.abs(t.x1 - t.x2) > 30 || t.y2 && Math.abs(t.y1 - t.y2) > 30 ? i = setTimeout(function() {
+                                t.el.trigger("swipe"),
+                                    t.el.trigger("swipe" + a(t.x1, t.x2, t.y1, t.y2)),
+                                    t = {}
+                            }, 0) : "last"in t && (m < 30 && g < 30 ? r = setTimeout(function() {
+                                var r = e.Event("tap");
+                                r.cancelTouch = c,
+                                    t.el.trigger(r),
+                                    t.isDoubleTap ? (t.el && t.el.trigger("doubleTap"),
+                                        t = {}) : n = setTimeout(function() {
+                                        n = null,
+                                        t.el && t.el.trigger("singleTap"),
+                                            t = {}
+                                    }, 250)
+                            }, 0) : t = {}),
+                            m = g = 0
+                    }).on("touchcancel MSPointerCancel pointercancel", c),
+                    e(window).on("scroll", c)
+            }),
+                ["swipe", "swipeLeft", "swipeRight", "swipeUp", "swipeDown", "doubleTap", "tap", "singleTap", "longTap"].forEach(function(t) {
+                    e.fn[t] = function(e) {
+                        return this.on(t, e)
+                    }
+                })
+        }
+    )(Zepto);
+    T.imageViewer = (function(){
+        var source = T.Util.getPara('source');
+        var o = {
+            init:function(){
+                $("html").removeClass("noNavbar");
+                o.loadImage();//初始化页面
+                o.bindEvent();//事件绑定
+            },
+            //加载图片
+            loadImage:function(){
+                var imageViewerData = T.Storage.get('imageViewerData');
+                if(imageViewerData && imageViewerData.imgList.length){
+                    $.each(imageViewerData.imgList,function(i,item){
+                        $("#viewer #imgList").append('<div class="imgitem" data-index="' + $("#viewer #imgList .imgitem").length + '"><div class="imgcell"><img src="'+item+'"></div></div>');
+                    });
+                    o.initImgScroll(imageViewerData.index);
+                    setTimeout(function(){
+                        $(".navbar").addClass("slideUp");
+                    },600);
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //删除图片
+                $("#delete").off().Touch(function(){
+                    $("#deleteBox").removeClass("hidden");
+                });
+                //确认删除图片
+                $("#deleteOk").off().Touch(function(){
+                    // 根据索引删除指定的文件对象
+                    var index = parseInt($("#viewer .imgitem").eq(T.viewerIndex).attr("data-index"));
+                    $("#viewer #imgList .imgitem").eq(T.viewerIndex).remove();
+                    $("#addshaidan-imglist .imgitem").eq(T.viewerIndex).remove();
+                    $("#deleteBox").addClass("hidden");
+                    setTimeout(function(){
+                        var len = $("#viewer #imgList .imgitem").length;
+                        if(len){
+                            o.initImgScroll(T.viewerIndex);
+                        }else{
+                            T.Util.back();
+                        }
+                        $("#addImg").show();
+                        setTimeout(function(){
+                            tip("已删除","ok");
+                        },300);
+                    },10);
+                });
+                //取消删除图片
+                $("#deleteCancel").off().Touch(function(){
+                    $("#deleteBox").addClass("hidden");
+                });
+            },
+            //初始化滑动
+            initImgScroll:function(index,larger){
+                var len = $("#viewer #imgList .imgitem").length;
+                if(index < 0){
+                    index = 0;
+                }else if(index > len - 1){
+                    index = len - 1;
+                }
+                T.viewerIndex = index;
+                $("#navTitle").text(index + 1 + "/" + len);
+                o.imgScroll(len,index,larger);
+            },
+            //获取放大图片张数
+            getLargeLen:function(index){
+                var largerLen = 0,preLargerLen  = 0;
+                var imgList = $("#imgList .imgitem");
+                for(var i = 0;i < imgList.length;i++){
+                    if(imgList.eq(i).find("img").is(".larger")){
+                        largerLen += 1;
+                    }
+                }
+                for(var i = 0;i < index;i++){
+                    if(imgList.eq(i).find("img").is(".larger")){
+                        preLargerLen += 1;
+                    }
+                }
+                return [largerLen,preLargerLen];
+            },
+            //图片滑动
+            imgScroll:function(len,index,larger){
+                //banner滑动
+                var ismove = false;//是否为滑动
+                var hscroll = true,vscrol = true;
+                var start_x = 0,move_x = 0,start_left = 0,move_left = 0;
+                var start_y = 0,move_y = 0,start_top = 0,move_top = 0;
+                var index = index,width = window.innerWidth;
+                var largerLen = o.getLargeLen(index)[0],preLargerLen = o.getLargeLen(index)[1];
+                var imgbox = $("#imgList").css({"marginLeft":-index * width - ((0.5*preLargerLen + (larger?0.25:0))*width) + "px","width":10 * len + (5*largerLen) + "rem"});
+
+                imgbox.off().on("touchstart",function(e){
+                    e.preventDefault();
+                    $("#deleteBox").addClass("hidden");
+                    setTimeout(function(){
+                        if(!ismove){
+                            $(".navbar").toggleClass("slideUp");
+                        }
+                    },10);
+
+                    try{
+                        start_x = e.changedTouches[0].clientX;
+                        start_y = e.changedTouches[0].clientY;
+                        start_left = parseInt(imgbox.css('margin-left'));
+                        start_top = parseInt(imgbox.css('padding'));
+                    }catch(e){}
+                });
+                imgbox.on("touchmove",function(e) {
+                    e.preventDefault();
+                    try {
+                        move_x = e.changedTouches[0].clientX;
+                        move_y = e.changedTouches[0].clientY;
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        move_top = parseInt(imgbox.css('padding'));
+                        var ratiox = 0.8 - Math.abs((move_left - start_left) / width);
+                        var ratioy = 0.2 - Math.abs((move_top - start_top) / width);
+                        var curLeft = move_left + 0.8 * ratiox * ratiox * (move_x - start_x);
+                        var curTop = move_top + 5 * ratioy * ratioy * (move_y - start_y);
+                        if(Math.abs(move_x - start_x) >= Math.abs(move_y - start_y)){
+                            if(hscroll){
+                                imgbox.css({"margin-left": curLeft + "px"}, 500);
+                                vscrol = false;
+                            }
+                        }else{
+                            if(vscrol){
+                                hscroll = false;
+                            }
+                        }
+                        if((move_x - start_x) > 1||(move_y - start_y) > 1){
+                            ismove = true;
+                            $(".navbar").addClass("slideUp");
+                        }else{
+                            ismove = false;
+                            $(".navbar").toggleClass("slideUp");
+                        }
+                    } catch (e) {
+                    }
+                });
+                imgbox.on("touchend",function(e) {
+                    e.preventDefault();
+                    try {
+                        ismove = false;
+                        move_left = parseInt(imgbox.css('margin-left'));
+                        if(move_left > start_left){//右滑
+                            index = Math.floor(-(move_left + (0.5*preLargerLen*width)) / width);
+                        }else{
+                            index = Math.ceil(-(move_left + (0.5*(larger?(preLargerLen + 1):preLargerLen)*width)) / width);
+                        }
+                        if (index < 0) {
+                            index = 0;
+                        } else if (index > len - 1) {
+                            index = len - 1;
+                        }
+                        T.viewerIndex = index;
+                        largerLen = o.getLargeLen(index)[0],preLargerLen = o.getLargeLen(index)[1];
+                        larger = $('.imgitem[data-index="' + T.viewerIndex + '"]').find("img").is(".larger");
+                        $("#navTitle").text((index + 1) + '/' + len);
+                        if(Math.abs(move_x - start_x) > Math.abs(move_y - start_y)){
+                            if(move_x - start_x > 0){//右滑
+                                imgbox.animate({"margin-left": (-(index * width + (0.5*preLargerLen*width))) + "px"}, 500);
+                            }else{//左滑
+                                imgbox.animate({"margin-left": (-(index * width + (0.5*(larger?(preLargerLen + 1):preLargerLen)*width))) + "px"}, 500);
+                            }
+                        }else{
+                            $("#mallbanner").animate({"padding":"0"}, 500);
+                        }
+                        hscroll = true,vscrol = true;
+                    } catch (e) {
+                    }
+                });
+                //单击返回
+                imgbox.on("singleTap",function(e) {
+                    if(source && source =='goodsDetailShare'){
+                        T.Util.back();
+                    }
+                });
+                //双击放大
+                imgbox.on("doubleTap",function(e) {
+                    var imgObj = $('.imgitem[data-index="' + T.viewerIndex + '"]');
+                    if(imgObj.find("img").hasClass("larger")){
+                        imgObj.find("img").css({width:imgObj.find("img").width()/1.5,height:imgObj.find("img").height()/1.5}).removeClass("larger");
+                        imgbox.css({marginLeft:parseInt(imgbox.css("marginLeft")) + (0.5*preLargerLen*width)});
+                        o.initImgScroll(T.viewerIndex);
+                    }else{
+                        imgbox.css({width:(10 * len + 5 * largerLen) + "rem"});
+                        imgObj.find("img").css({width:1.5*imgObj.find("img").width(),height:1.5*imgObj.find("img").height()}).addClass("larger");
+                        imgbox.css({marginLeft:parseInt(imgbox.css("marginLeft")) - ((0.5*preLargerLen + 0.25)*width)});
+                        o.initImgScroll(T.viewerIndex,true);
+                    }
+                    $(".navbar").toggleClass("slideUp");
+                })
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.imageViewer.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.imageViewer.init();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<style>
+    .msg-box{height:0.933333rem;line-height:0.009333rem;overflow:hidden;padding:0 0.453333rem;position: relative;background: #fff;}
+    .msg-box span{position: absolute;transform:translateY(50%);-webkit-transform:translateY(50%);}
+    .msg-list{color:#333;}
+    .msg-list li{height:0.933333rem;line-height:0.933333rem;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;padding-left: 1.6rem;font-size:0.32rem;}
+    .msg-list li em{color:#f72f2f;}
+
+    .latestdeal-item{position:relative;height:3.2rem;background-color:#fff;border-bottom:1px solid #f5f5f5;overflow:hidden;}
+    .latestdeal-item:last-child{border-bottom:none;}
+    .latestdeal-item img{position:absolute;left:0.45rem;top:0.84rem;width:2rem;height:2rem;}
+    .latestdeal-item .auction-time{float:left;padding-left:0.45rem;margin-top:0.2rem;line-height:0.56rem;font-size:0.32rem;color:#999;}
+    .latestdeal-item .auction-detail{float:left;clear:both;padding-left:2.92rem;line-height:0.64rem;font-size:0.37rem;color:#666;}
+    .latestdeal-item .auction-detail.user{margin-top:0.14rem;color:#333;}
+    .latestdeal-item .auction-detail em{color:#999;}
+    .latestdeal-item .auction-detail em.price{color:#f72f2f;}
+    .latestdeal-item .save-ratio{position:absolute;right:0.45rem;top:0;width:2.13rem;height:3.2rem;text-align:center;font-size:0.53rem;overflow:hidden;}
+    .latestdeal-item .save-ratio p{margin-top:0.75rem;line-height:0.67rem;font-size:0.53rem;color:#333;}
+    .latestdeal-item .save-ratio em{line-height:0.72rem;display:block;font-size:0.37rem;color:#666;}
+    .latestdeal-item .save-ratio span{position:relative;top:-0.1rem;display:inline-block;width:2.13rem;height:0.67rem;text-align:center;line-height:0.67rem;font-size:0.35rem;color:#fff;border-radius:0.33rem;background-color:#f72f2f;}
+</style>
+<div class="content" id="content">
+    <div id="latestdeal-box">
+        <div class="msg-box">
+            <span class="icon-index1"></span>
+            <div class="msg-list">
+                <ul id="radioUl"></ul>
+            </div>
+        </div>
+        <div id="latestdeal-list"></div>
+    </div>
+    <div class="clearboth"></div>
+</div>
+<script type="text/javascript">
+    T.latestDeal = (function(){
+        var page = T.Util.getParaHash('page');
+        var dropLoad = '';
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//分页条目
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        var o = {
+            //程序入口
+            init:function(){
+                o.loadCache();//加载缓存
+                o.initPage();//初始化页面
+                o.getRadioMsg();//获取广播内容
+                o.getHistoryAuction();//获取往期成交记录
+                o.bindEvent();//事件绑定
+                //页面的PV/UV（zxcj_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"最新成交",
+                    "conductCode": "zxcj_fwl",
+                    "comductDesc": "页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //初始化页面
+            initPage:function(){
+                if(!T.isNative){$(".clearboth").addClass("h5");}
+                $(".pageType p[data-href]").eq(1).addClass('on').siblings().removeClass("on");
+            },
+            //加载缓存
+            loadCache:function(){
+                var content = T.Storage.get("latestDeal");
+                if(content){
+                    $("#content").html(content);
+                }
+                $('.dropload-up').remove();
+            },
+            //事件绑定
+            bindEvent:function(){
+                $(window).off().scroll(o.loadMoreData);//绑定下滑加载更多
+                $('#content').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getHistoryAuction();
+                    },
+                    threshold : 50
+                });
+            },
+            //绑定最新成交事件
+            bindLatestDealEvent:function(){
+                //参与竞拍
+                $(".auction-submit").off().Touch(function(el){
+                    //各个商品“参与竞拍”的点击量（zxcj_jpdjl001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId":$(el).data("id"),
+                        "conductCode": "zxcj_jpdjl"+$(el).data("id"),
+                        "comductDesc": "各个商品“参与竞拍”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).attr('data-id')+'&expectNo='+$(el).attr('data-expect-no')+'&isNext=1');
+                });
+            },
+            //日期格式化
+            timeFormat:function(time){
+                if(typeof time == 'string'){
+                    return new Date(time.replace(/-/g,'/')).format("yyyy-MM-dd hh:mm");
+                }else if(typeof time == 'number'){
+                    return new Date(time).format("yyyy-MM-dd hh:mm");
+                }else{
+                    return '--:--';
+                }
+            },
+            getRadioMsg:function () {//获取广播内容
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/broadCast.json?page=1&limit=5',
+                    callback:function(data){
+                        if(data && data.res_data && data.res_data.value){
+                            var htmlArr=[],d=data.res_data.value.INFO;
+                            for(var i=0,j=d.length;i<j;i++){
+                                htmlArr.push('<li>'+d[i].BROADCAST_CONTENT+'</li>');
+                            }
+                            htmlArr.push('<li>恭喜<em>【989***】</em> 以<em>199元</em>拍到iPhoneX 64G</li>');
+                            $('#radioUl').html(htmlArr.join(''));
+                            $('.msg-box').off().scrollText({sBox:'.msg-list',speed:3000});
+                        }
+                    },
+                    errorCallback:function(){}
+                })
+            },
+            //获取往期成交记录
+            getHistoryAuction:function(fromMore){
+                tip('加载中...','loading');
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/order/pastDone.json?page=' + pageIndex + '&limit=' + pageSize,//type 0:全部 1：正在拍 2：我拍中 3：未拍中 4：待付款
+                    callback:function(data){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                            $(".loaded").remove();
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showHistoryAuction(d,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".latestdeal-item").length){
+                                $("#latestdeal-list").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //计算节省比例
+            getSaveRatio:function(item){
+                if(item.BARGAIN_MONEY && item.MARKET_PRICE){
+                    return (100 - item.BARGAIN_MONEY / item.MARKET_PRICE * 100).toFixed(2)
+                }else{
+                    return '0.00';
+                }
+            },
+            //渲染往期成交记录
+            showHistoryAuction:function(data,fromMore){
+                var html = [];
+                $.each(data,function(i,item){
+                    html.push('<div class="latestdeal-item"><img class="userphoto lozad" src="../img/goods/lazy_load.png" data-src="' + item.COMMODITY_LOGO + '">');
+                    html.push('<h2 class="auction-time">' + o.timeFormat(item.BARGAIN_TIME) + '</h2><h2 class="auction-detail user">' + (item.NICK_NAME||item.USER_MOBILE) + '</h2>');
+                    html.push('<h2 class="auction-detail dealprice">成交价：<em class="price">￥' + (item.BARGAIN_MONEY ? item.BARGAIN_MONEY.toFixed(2) : "0.00")  + '</em></h2>');
+                    html.push('<h2 class="auction-detail marketprice">市场价：<em class="price">￥' + (item.MARKET_PRICE ? item.MARKET_PRICE.toFixed(2) : "0.00")  + '</em></h2>')
+                    html.push('<h2 class="save-ratio' + (item.BARGAIN_MONEY >= item.MARKET_PRICE ? " hide":"") + '"><p>' + o.getSaveRatio(item) + '%</p><em>节省</em><span class="auction-submit" data-id='+item.COMMODITY_ID+' data-expect-no='+item.EXPECT_NO+'>参与竞拍</span></h2></div>')
+                });
+                if(dropLoad != ''){
+                    $("#latestdeal-list").html('');
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+                if(html.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? $("#latestdeal-list").append(html.join("")) : $("#latestdeal-list").html(html.join(""));
+                    if(!hasMore && !$("#latestdeal-list .loaded").length){
+                        $("#latestdeal-list").append('<h2 class="loaded">已加载最近100条成交记录</h2>');
+                    }
+                }else{
+                    if(!fromMore){
+                        $("html,body").addClass("white");
+                        $("#latestdeal-list").html('<div class="nodata"><i></i><h2>暂无数据~</h2></div>');
+                    }
+                }
+                if(/latestDeal.html/.test(window.location.href)){
+                    T.Storage.set('latestDeal',$("#content").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true"'));
+                }
+                lozad().observe();
+                o.bindLatestDealEvent();
+            },
+            //滑到底部加载更多
+            loadMoreData:function(){
+                if(T.Util.getPara('page')!='latestDeal.html'){return;}
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(!hasMore)return;//没有更多 不请求数据
+                    o.getHistoryAuction(true);
+                }
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.latestDeal.init();
+    });
+</script>
+
+
+

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>关于我们</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>关于我们</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="aboutus-box">
+        <div id="appinfo"><i id="applogo"></i><h2 id="appName">掌上拍</h2><p id="version"></p></div>
+        <div id="copyright"><h2>Copyright © 2017-2018</h2><p>深圳市掌上拍科技有限公司  版权所有</p></div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.aboutUs = (function(){
+        var o = {
+            init:function(){
+                var appName = T.Util.getAppInfo("appName");
+                var channelCode = T.isNative ? T.Util.getAppInfo("channelCode") : "appstore";
+                var appVersion = T.Util.getAppInfo('appVersion');
+                $("#appName").text(T.Util.getAppInfo("appName"));
+                $("#applogo").css("background","url(" + T.Util.getAppLogo(true) + ") 0 0 / 100% 100% no-repeat");
+                $("#version").text("V" + appVersion + "_" + Global.appCode + "_" + Global.webVersion);
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.aboutUs.init();
+            }, function () {//webview再次打开回调函数
+
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.aboutUs.init();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<script>$("html").addClass("noNavbar").addClass(Global.isWechat?"wechat":"");</script>
+<style>
+    #userHead {
+        position: relative;
+        width: 100%;
+        height: 3.2rem;
+        background: #ff4634 url(../img/usercenter/userHead.png) 0 0 / 100% 100% no-repeat;
+    }
+
+    #userHead #userPhoto {
+        position: absolute;
+        left: 0.466667rem;
+        top: 0.96rem;
+        width: 1.706667rem;
+        height: 1.706667rem;
+    }
+
+    #userHead #userPhoto:after {
+        content: '';
+        position: absolute;
+        right: -0.013333rem;
+        bottom: -0.053333rem;
+        display: inline-block;
+        width: 0.666667rem;
+        height: 0.666667rem;
+    }
+
+    #userHead #userPhoto.wechat:after {
+        background: url(../img/usercenter/wechat50.png) 0 0 / 100% 100% no-repeat;
+    }
+
+    #userHead #userPhoto #photo {
+        width: 1.6rem;
+        height: 1.6rem;
+        border: 0.053333rem solid #e53f2e;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    #userHead #userInfo {
+        padding-left: 2.413333rem;
+        padding-top: 0.96rem;
+        height: 1.706667rem;
+        line-height: 1.706667rem;
+        font-size: 0.4rem;
+        font-family: 'PingFang SC Bold','Microsoft YaHei';
+        color: #fff;
+    }
+
+    #userHead #userName {
+        height: 0.853333rem;
+        line-height: 0.853333rem;
+        font-size: 0.4rem;
+        font-family: 'PingFang SC Bold','Microsoft YaHei';
+        color: #fff;
+    }
+
+    #userHead #userID {
+        padding-top: 0.133333rem;
+        height: 0.72rem;
+        line-height: 0.72rem;
+        font-size: 0.32rem;
+        font-family: 'PingFang SC Medium','Microsoft YaHei';
+        color: #fff;
+    }
+
+    #userHead #setting {
+        position: absolute;
+        right: 0.186667rem;
+        top: 0.653333rem;
+        display: inline-block;
+        width: 1.066667rem;
+        height: 1.066667rem;
+        background: url(../img/usercenter/setting.png) center center / 0.533333rem 0.533333rem no-repeat;
+    }
+
+    .wechat #userHead #setting{
+        display: none;
+    }
+
+    #userAsset {
+        width: 100%;
+        height: 4.306667rem;
+        background-color: #fff;
+        margin-bottom: 0.266667rem;
+    }
+
+    #userAsset #assetHead {
+        position: relative;
+        width: 100%;
+        height: 1.333333rem;
+        border-bottom: 0.026667rem solid #f5f5f5;
+    }
+
+    #userAsset #assetHead h2 {
+        padding-left: 0.453333rem;
+        height: 1.333333rem;
+        line-height: 1.333333rem;
+        font-size: 0.4rem;
+        color: #333;
+    }
+
+    #userAsset #assetHead h2 .tip {
+        position: absolute;
+        display: inline-block;
+        width: 0.666667rem;
+        height: 1.333333rem;
+        background: url(../img/usercenter/info.png) 0.133333rem 0.48rem / 0.4rem 0.4rem no-repeat;
+    }
+
+    #userAsset #recharge {
+        position: absolute;
+        right: 0.453333rem;
+        top: 0.266667rem;
+        display: inline-block;
+        width: 2.4rem;
+        height: 0.8rem;
+        text-align: center;
+        line-height: 0.8rem;
+        font-size: 0.426667rem;
+        color: #fefefe;
+        border-radius: 0.4rem;
+        background-color: #f72f2f;
+    }
+
+    #assetList .assetItem {
+        float: left;
+        width: 50%;
+        height: 1.466667rem;
+        border-bottom: 0.013333rem solid #f5f5f5;
+    }
+
+    #assetList .assetItem:nth-last-of-type(1) {
+        border-bottom: none;
+    }
+
+    #assetList .assetItem:nth-last-of-type(2) {
+        border-bottom: none;
+    }
+
+    #assetList .assetItem h2 {
+        padding-left: 0.453333rem;
+        padding-top: 0.133333rem;
+        height: 0.453333rem;
+        line-height: 0.453333rem;
+        font-size: 0.32rem;
+        color: #999999;
+    }
+
+    #assetList .assetItem p {
+        padding-left: 0.453333rem;
+        height: 0.773333rem;
+        line-height: 0.773333rem;
+        font-size: 0.533333rem;
+        color: #333;
+    }
+
+    .myAuction {
+        border-bottom: 0.013333rem solid #eee;
+        margin-bottom: .3rem;
+        background: #fff;
+    }
+
+    .myAuction div:first-child {
+        height: 0.8rem;
+        line-height: .8rem;
+        border-bottom: 0.013333rem solid #f5f5f5;
+        position: relative;
+        padding-left: 1.2rem;
+        font-size:0.3733333rem;
+    }
+
+    .iconMyAuction {
+        left: 0.4rem;
+        top: 0.133333rem;
+        position: absolute;
+    }
+
+    .myAuction .Item {
+        height: 2rem;
+    }
+
+    .myAuction .Item em {
+        margin: auto;
+        margin-top: 0.37rem;
+        display: block;
+    }
+
+    .myAuction .Item span {
+        line-height: 0.75rem;
+        font-size: 0.32rem;
+        color: #333;
+    }
+
+    .mycenterList {
+        background: #fff;
+    }
+
+    .mycenterList ul li {
+        position: relative;
+        overflow: hidden;
+        padding-left: 0.4rem;
+    }
+
+    .mycenterList ul li i {
+        position: absolute;
+        right: 0.45rem;
+        top: 0.35rem;
+    }
+
+    .mycenterList ul li a {
+        overflow: hidden;
+        display: block;
+    }
+
+    .mycenterList .mycenterList_label {
+        margin-left: 0.47rem;
+        width: calc(100% - 0.95rem);
+        height: 1.066667rem;
+        line-height: 1.066667rem;
+        font-size: 0.37rem;
+        color: #333;
+        border-bottom: 0.013333rem solid #eee;
+    }
+
+    .mycenterList .icon {
+        width: 0.48rem;
+        border-bottom: 0.013333rem solid transparent;
+        height: 1.066667rem;
+        line-height: 1.066667rem;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .mycenterList .goto {
+        border-bottom: 0.013333rem solid #eee;
+        width: 1.8%;
+        padding-right: 5.6%;
+    }
+
+    .mycenterList .goto span {
+        height: 1.066667rem;
+        line-height: 1.066667rem;
+    }
+
+    .mycenterList .icon span {
+        height: 1.066667rem;
+        line-height: 1.066667rem;
+    }
+
+    .mycenterList .goto span img {
+        vertical-align: middle;
+        width: 0.1733rem;
+    }
+
+    .mycenterList .icon span em {
+        vertical-align: middle;
+    }
+
+    .mycenterList ul li:last-child .goto {
+        border: 0;
+    }
+
+    .mycenterList ul li:last-child .mycenterList_label {
+        border: 0;
+    }
+
+    .disclaimer {
+        height: 1.45rem;
+        background-color: #f5f5f5;
+    }
+
+    .disclaimer h2 {
+        text-align: center;
+        line-height: 0.8rem;
+        font-size: 0.27rem;
+        color: #999;
+    }
+
+    .icon-mineCjg {
+        width: 0.773333rem;
+        height: 0.773333rem;
+        background: url(../img/goods/mineCjg.png) no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .icon-mineSd {
+        width: 0.773333rem;
+        height: 0.773333rem;
+        background: url(../img/goods/mineSd.png) no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .icon-mineYj {
+        width: 0.5466666666rem;
+        height: 0.346666666rem;
+        position: absolute;
+        top: -.2rem;
+        left: .2rem;
+        background: url(../img/goods/mineYj.png) no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .popBox.infoTip .box-content {
+        width: 8.533333rem;
+        height: 8.64rem;
+    }
+
+    .popBox.infoTip .box-content img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .popBox.infoTip .box-content #close {
+        right: 0;
+        top: 0;
+        background: transparent;
+    }
+    #confirmBox.layer .box-content{background-color:transparent;}
+    #confirmBox.layer .box-content i#close{content:'';position:absolute;right:0rem;top:0rem;display:inline-block;width:1.5rem;height:1.5rem;background:none;}
+    #confirmBox.layer .confirmcontent{padding:0!important;height:auto;max-height:100%;}
+    #confirmBox.layer .confirmcontent img{display:block;width:100%;}
+    #confirmBox.layer .confirmbutton{display:none;}
+</style>
+<div id="content">
+    <div id="userHead">
+        <div id="userPhoto"><img src="../img/usercenter/photo.png" id="photo"></div>
+        <div id="userInfo"><h2 id="userName">--</h2><p id="userID">ID:--</p></div>
+        <em id="setting"></em>
+    </div>
+    <div id="userAsset">
+        <div id="assetHead"><h2>我的总资产<i class="tip"></i></h2><em id="recharge">充值</em></div>
+        <div id="assetList">
+            <div class="assetItem"><h2>拍币</h2><p>--</p></div>
+            <div class="assetItem"><h2>赠币</h2><p>--</p></div>
+            <div class="assetItem"><h2>购物币</h2><p>--</p></div>
+            <div class="assetItem"><h2>委托账户</h2><p>--</p></div>
+        </div>
+    </div>
+    <div class="myAuction">
+        <div><em class="iconMyAuction icon-mine12"></em>我的竞拍</div>
+        <div class="Item">
+            <p data-href="#page=goodsRecord.html&type=all"><em class="icon-mine1"></em><span>全部</span></p>
+            <p data-href="#page=goodsRecord.html&type=ing"><em class="icon-mine2"></em><span>正在拍</span></p>
+            <p data-href="#page=goodsRecord.html&type=overOk"><em class="icon-mine3"></em><span>我拍中</span></p>
+            <p data-href="#page=cjg.html"><em class="icon-mineCjg"></em><span>差价购</span></p>
+            <p id="goShaidan"><em class="icon-mineSd"></em><em class="icon-mineYj"></em><span>晒单</span></p>
+        </div>
+    </div>
+    <div class="mycenterList">
+        <ul>
+            <li>
+                <a id="myOrder">
+                    <div class="icon pull-left">
+                        <span><em class="icon-mine7"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left iostxt1">
+                        我的订单
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+            <li>
+                <a id="bill">
+                    <div class="icon pull-left">
+                        <span><em class="icon-mine8"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left iostxt1">
+                        账单明细
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+            <li>
+                <a id="weituo">
+                    <div class="icon pull-left">
+                        <span><em class="icon-mine9"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left iostxt1">
+                        我的委托
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+            <li>
+                <a id="coupon">
+                    <div class="icon pull-left">
+                        <span><em class="icon-coupon"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left iostxt1">
+                        我的卡券
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+            <li>
+                <a id="shaidan">
+                    <div class="icon pull-left">
+                        <span><em class="icon-mine10"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left iostxt1">
+                        我的晒单
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+            <li>
+                <a  id="address">
+                    <div class="icon pull-left">
+                        <span><em class="icon-mine11"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left">
+                        收货地址
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+            <li>
+                <a  id="message">
+                    <div class="icon pull-left">
+                        <span><em class="icon-mine15"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left">
+                        消息中心
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+            <li>
+                <a  id="kefu">
+                    <div class="icon pull-left">
+                        <span><em class="icon-mine14"></em></span>
+                    </div>
+                    <div class="mycenterList_label pull-left">
+                        在线客服
+                    </div>
+                </a>
+                <i class="icon-mine13"></i>
+            </li>
+        </ul>
+    </div>
+    <div class="disclaimer"><h2>本平台抢购活动均与苹果公司（Apple Inc.）无关</h2></div>
+</div>
+<div class="clearboth"></div>
+<script>
+    T.mine = (function(){
+        //主对象
+        var o = {
+            init:function(){
+                if(!T.isNative){$(".clearboth").addClass("h5");}
+                $(".pageType p[data-href]").eq(4).addClass('on').siblings().removeClass("on");
+                if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                    o.initLogout();
+                }else{
+                    o.initLogin();
+                    T.User.getUInfo(function () {
+                        o.initLogin();
+                    });
+                }
+                o.bindEvent();
+                o.getLayer();
+                //页面PV/UV（grzxfwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"个人中心",
+                    "conductCode": "grzxfwl",
+                    "comductDesc": "页面PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            initLogin:function(){
+                var userinfo = T.Storage.get('userinfo')||{};
+                $('#photo').attr('src',userinfo.userPic);
+                if(userinfo.loginType=='3'){
+                    $("#userPhoto").addClass("wechat");
+                }else if(userinfo.loginType=='2'){
+                    $("#userPhoto").addClass("qq");
+                }
+                $("#userInfo").removeClass("login").html('<h2 id="userName">' + (userinfo.nickName||userinfo.userMobile) + '</h2><p id="userID">ID:' + userinfo.userId + '</p>');
+                $('.assetItem').eq(0).find("p").html(T.Util.parseNumber(userinfo.moneyList[2]));
+                $('.assetItem').eq(1).find("p").html(T.Util.parseNumber(userinfo.moneyList[3]));
+                $('.assetItem').eq(2).find("p").html(T.Util.parseNumber(userinfo.moneyList[4]));
+                $('.assetItem').eq(3).find("p").html(T.Util.parseNumber(userinfo.moneyList[0]||0));
+            },
+            getLayer:function(){//获取引导弹层
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/template/APP_CONFIG.json?CODE=APP_LAYER_V2&channelCode=' + (Global.isiOS?"iosh5":"adh5") + '&deviceType=3&appVersion=all',//+(Global.isiOS ? 'iosh5':'adh5'),
+                    callback:function(data){// 1：未登录首页  2：登录个人中心 3:注册送弹窗  4:全局 运营弹窗
+                        // type 1：未登录首页  2：登录个人中心 3:注册送弹窗  4:全局 运营弹窗  5：登陆-预约  6：登陆-新用户  7：登陆-老用户  8：登陆-未付款弹窗  9：登陆-购物币当天失效
+                        var d = data.res_data,layer='';
+                        var layerType = -1;
+                        var layerTypeIsLogin = 1;
+                        //清除昨天以前弹过的标记
+                        for (var i= 1;i<10;i++){
+                            var userinfo = T.Storage.get('userinfo');
+                            if(userinfo && userinfo.userId){//删除用户弹层信息
+                                if(new Date(parseInt(T.Storage.get(userinfo.userId+'LayerTime'+i)||1529280000000)).format('YYYY-MM-dd')!= new Date(new Date().getTime()+parseInt(T.Storage.get('difTime'))).format('YYYY-MM-dd')){//不是同一天
+                                    T.Storage.remove(userinfo.userId+'LayerTime'+i);
+                                }
+                            }else{
+                                if(new Date(parseInt(T.Storage.get('LayerTime'+i)||1529280000000)).format('YYYY-MM-dd')!= new Date(new Date().getTime()+parseInt(T.Storage.get('difTime'))).format('YYYY-MM-dd')){//不是同一天
+                                    T.Storage.remove('LayerTime'+i);
+                                }
+                            }
+                        }
+                        //清除昨天以前弹过的标记
+                        if(T.Util.isEmpty(T.Storage.get('userinfo'))){//未登录
+                            if(d[1]&&d[1].length>0){
+                                for(var i=0;i<d[1].length;i++){
+                                    if(T.Util.isEmpty(T.Storage.get('LayerTime'+d[1][i].TYPE))){
+                                        layer = d[1][i];
+                                        layerType = layer.TYPE;
+                                        break;
+                                    }
+                                    continue;
+                                }
+                            }
+
+                        }else{//已登录
+                            var userinfo = T.Storage.get('userinfo');
+                            if(d[2]&&d[2].length>0){
+                                for(var i=0;i<d[2].length;i++){
+                                    if(userinfo && userinfo.userId && T.Util.isEmpty(T.Storage.get(userinfo.userId+'LayerTime'+d[2][i].TYPE))){
+                                        layerTypeIsLogin = 2;
+                                        layer = d[2][i];
+                                        layerType = layer.TYPE;
+                                        break;
+                                    }
+                                    continue;
+                                }
+                            }
+                        }
+                        if(layerType== -1&& d[4]&&d[4].length>0){//全局类型 运营弹窗 没有触发 1 2 再触发4 每个一天只触发一次
+                            for(var i=0;i<d[4].length;i++){
+                                if(T.Util.isEmpty(T.Storage.get('LayerTime'+d[4][i].TYPE))){
+                                    layer = d[4][i];
+                                    layerType = layer.TYPE;
+                                    break;
+                                }
+                                continue;
+                            }
+                        }
+                        if(layer!=''&&layerType!=-1){
+                            if(layerTypeIsLogin==2){
+                                var userinfo = T.Storage.get('userinfo');
+                                if(userinfo && userinfo.userId){//记录用户弹层信息
+                                    T.Storage.set(userinfo.userId+'LayerTime'+layerType,new Date().getTime());
+                                }
+                            }else{
+                                T.Storage.set('LayerTime'+layerType,new Date().getTime());
+                            }
+
+                            window.confirm({className:'layer',html:'<img src="' + layer.LAYER_PIC + '" data-href="'+layer.TAG_URL+'" data-src="'+layer.LAYER_DESC+'" data-type="'+layerType+'">',close:true,okFun:function (el) {
+                                T.Util.openWindow(Global.fullHost + $(el).attr('data-href'));//弹层跳转
+                            }});
+                        }
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            initLogout:function(){
+                $('#photo').attr('src','../img/usercenter/photo.png');
+                $("#userInfo").addClass("login").text('立即登录 / 注册');
+                $('.assetItem').eq(0).find("p").html('--');
+                $('.assetItem').eq(1).find("p").html('--');
+                $('.assetItem').eq(2).find("p").html('--');
+                $('.assetItem').eq(3).find("p").html('--');
+            },
+            bindEvent:function(){
+                $('#photo').off().Touch(function (el) {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/userInfo.html');
+                });
+                $("#userInfo.login").off().Touch(function(){
+                    //左上角“立即登录/注册”按钮的点击量（zddjl）
+                    var userinfo = T.Storage.get('userinfo');
+                    T.Util.setUserBehaviorList({
+                        "busId":userinfo?userinfo.userId:"个人中心",
+                        "conductCode": "zddjl",
+                        "comductDesc": "左上角“立即登录/注册”按钮的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html?goNewUser=1');
+                });
+                $('#setting').off().Touch(function (el) {
+                    //“设置”按钮的点击量（szan）
+                    var userinfo = T.Storage.get('userinfo');
+                    T.Util.setUserBehaviorList({
+                        "busId":userinfo?userinfo.userId:"个人中心",
+                        "conductCode": "szan",
+                        "comductDesc": "“设置”按钮的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setting.html');
+                });
+                $("#assetHead .tip").off().Touch(function(){
+                    confirm({
+                        className:'userDefined img infoTip',
+                        html:'<img src="../img/usercenter/infoTip.png">',
+                        close:true
+                    });
+                });
+                $("#assetList .assetItem").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/accountDetail.html?type='+$(this).index());
+                });
+                $('.myaccount,#bill').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/accountDetail.html');
+                });
+                $('#shaidan').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/myShaidan.html');
+                });
+                $('#myOrder').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/myOrder.html');
+                });
+                $('#myInvitation').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/invite.html');
+                });
+                $('#address').off().Touch(function () {
+                    //收货地址入口点击量（shdzdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId":"个人中心",
+                        "conductCode": "shdzdjl",
+                        "comductDesc": "收货地址入口点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/address.html');
+                });
+                $('#weituo').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/myWeituo.html');
+                });
+                $('#coupon').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/myCoupon.html');
+                });
+                $('#recharge').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/recharge.html');
+                });
+                $('.myAuction p').off().Touch(function (el) {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html'+$(el).attr('data-href'));
+                });
+                $('#goShaidan').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/myOrder.html?type=payOk');
+                });
+                //消息中心
+                $('#message').off().Touch(function () {
+                    //消息中心入口点击量（xxzxdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId":"个人中心",
+                        "conductCode": "xxzxdjl",
+                        "comductDesc": "消息中心入口点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/messageCenter.html');
+                });
+                $('#kefu').off().Touch(function () {//接入第三方客服
+                    //在线客服入口点击量（zxkfdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId":"个人中心",
+                        "conductCode": "zxkfdjl",
+                        "comductDesc": "在线客服入口点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.kefuNew('h5','来源：h5我的界面');
+                });
+            },
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.mine.init();
+        window.onpageshow = function(event) {//ios从缓存里面返回 页面会触发这个方法
+            if(T.Util.getPara('page')!="mine.html"){return;}
+            T.mine.init();
+        };
+    });
+</script>
+
+

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>登录</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="close_page back_home" id="back"></div>
+    <h1>登录</h1>
+    <span class="navIcon" id="kefu"></span>
+</div>
+<div class="mainContent" id="main">
+    <div id="login-pwd-box">
+        <div class="login-item tel"><input id="loginTel" type="tel" maxlength="11" placeholder="请输入手机号码"><i class="clear"></i></div>
+        <div class="login-item pwd"><input id="loginPwd" type="password" minlength="6" maxlength="16" placeholder="请输入密码"><i class="clear"></i></div>
+        <div class="login-text"><p id="messageLoginBtn">免密快捷登录</p><p id="findPwdBtn">忘记密码</p></div>
+        <div class="btn login-btn login" id="loginBtn">下一步</div>
+        <div class="btn login-btn reg" id="reg-btn">注册送68元大礼包</div>
+        <div class="login-other hide"><h2>第三方账号登录</h2><i class="weixin"></i><i class="qq"></i></div>
+    </div>
+    <div id="login-message-box" class="hide" style="display:none;">
+        <div class="reg-item tel"><input id="loginMessageTel" type="tel" maxlength="11" placeholder="请输入手机号码"><i class="clear"></i></div>
+        <div class="btn login-btn login" id="getLoginMessage">获取手机验证码</div>
+        <div class="login-other hide"><h2>第三方账号登录</h2><i class="weixin"></i><i class="qq"></i></div>
+    </div>
+    <div id="message-box" class="hide" style="display:none;">
+        <h2>验证码已发送至<em id="loginTelText">1xx ---- ****</em></h2>
+        <p>请输入验证码</p>
+        <div id="message-num"><em></em><em></em><em></em><em></em><em></em><em></em></div>
+        <div id="normalBox">
+            <p id="messageTime"><em>60</em>秒后重发验证码<i id="setPasDesc">，或点击<span>设置登录密码</span></i></p>
+            <div id="againBtn" class="reg-btn hide">重新发送</div>
+        </div>
+        <div id="setPasBox" class="hide">
+            <div>
+                <div class="pwdfind-item"><div class="pwdfind-wrapper"><input id="setPwd" type="password" minlength="6" maxlength="16" placeholder="设置登录密码(6~16位字符)"></div><i class="clear"></i></div>
+                <div id="setPasSubmitBtn" class="reg-btn">提 交</div>
+                <p class="colorBlue" id="setPasBoxAgain">重新发送验证码</p>
+            </div>
+        </div>
+        <input id="reqMessage" type="tel" maxlength="6" readonlyunselectable="on">
+    </div>
+</div>
+<div class="mainContent hide" id="mainThird">
+    <div id="pwdfind-box">
+        <div class="pwdfind-item tel"><div class="pwdfind-wrapper"><input id="thirdTel" type="tel" maxlength="11" placeholder="请输入您要绑定的手机号码"></div><i class="clear"></i></div>
+        <div class="pwdfind-item pwd"><div class="pwdfind-wrapper"><input id="thirdPwd" type="password" minlength="6" maxlength="16" placeholder="请输入登录密码(6~16位字符)"></div><i class="clear"></i></div>
+        <div class="pwdfind-item message"><div class="pwdfind-wrapper"><input id="thirdMes" maxlength="6" placeholder="请输入验证码"><div id="getThirdMes">获取验证码</div></div></div>
+    </div>
+    <div class="btn login-btn login" id="pwdfind_submit">提交</div>
+    <div class="btn login-btn reg" id="jumpBind">跳过手机号码绑定</div>
+    <div id="kefuTips">如遇到验证码未收到问题，请点击联系：<span id="kefuOnline">在线客服</span></div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.02"></script>
+<script type="text/javascript" src="../js/md5.js?0.200"></script>
+<script>
+    var ADThirdLoginClick = false;//安卓是否点击过第三方登录
+    var goNewUser = T.Util.getPara('goNewUser');
+    T.login = (function(){
+        var MSG_EVENT = 'LOGIN';
+        var endGetDataFlag = true;
+        //表单前端基本校验
+        var check = {
+            tel:function(val){
+                if(val == ''){
+                    tip('请输入手机号码');
+                }else if(!/^1\d{10}$/.test(val)){
+                    tip('手机号码不正确，请重新输入');
+                }else{
+                    return true;
+                }
+            },
+            pwd:function (val) {
+                if(val == ''){
+                    tip('请输入密码');
+                }else if(val.length<6){
+                    tip('密码长度小于6位');
+                }else {
+                    return true;
+                }
+            },
+            message:function(val){
+                if(val == ''){
+                    tip('请输入短信验证码');
+                }else if(val.length!=6){
+                    tip('请输正确的短信验证码');
+                }else{
+                    return true;
+                }
+            }
+        };
+        var o = {
+            init:function(){
+                o.initPage();
+                o.bindEvent();
+            },
+            //初始化页面
+            initPage:function(){
+                $('.navbar h1').html('登录');
+                var isSetPwd = T.Storage.get('isSetPwd')||{};
+                var lastLoginInfo = T.Storage.get('lastLoginInfo');
+                if(lastLoginInfo){
+                    $("#loginTel").val(lastLoginInfo);
+                    o.isSetPwdInterface(lastLoginInfo);
+                }
+                //第三方登录开关
+                if((Global.isAudit && Global.isAudit == '1')||!T.isNative){
+                    $('.login-other').hide();
+                }else{
+                    if(Global.showWeiXin && Global.showQQ){
+                        if(Global.showWeiXin == '1' && Global.showQQ == '1'){
+                            $('.login-other').show();
+                        }else if(Global.showWeiXin == '1'){
+                            $(".login-other i.qq").hide();
+                            $('.login-other').addClass("single").show();
+                        }else if(Global.showQQ == '1'){
+                            $(".login-other i.weixin").hide();
+                            $('.login-other').addClass("single").show();
+                        }else{
+                            $('.login-other').hide();
+                        }
+                    }else{
+                        $('.login-other').show();
+                    }
+                }
+                //登录页面PV/UV（dl_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId": "dl",
+                    "conductCode": "dl_fwl",
+                    "comductDesc": "登录页面PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //是否设置密码
+            isSetPwdInterface:function(telNum,callBack){
+                if(!check.tel(telNum))return;
+                if(Global.netWorkStatus <= 0){
+                    tip(Global.neterror,'error');
+                    return false;
+                }
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                callBack && tip("获取中...","loading");
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    authError:1,
+                    reqUrl:'/user/services/template/IS_SET_PWD.json?userAcct=' + telNum,
+                    callback:function(data){
+                        pageLoading.hide();
+                        var isSetPwd = T.Storage.get('isSetPwd')||{};
+                        if(data.res_data && data.res_data[0] && data.res_data[0].IS_SET){//设置过密码
+                            isSetPwd[telNum] = data.res_data[0].IS_SET;
+                            T.Storage.set("isSetPwd",isSetPwd);
+                        }
+                        if(!callBack){
+                            endGetDataFlag = true;
+                        }
+                        if(isSetPwd && isSetPwd[telNum] == '1'){
+                            $("#login-pwd-box").addClass("isSetPwd");
+                            $("#loginBtn").text("登录");
+                            $('#setPasDesc').hide();
+                            endGetDataFlag = true;
+                        }else{
+                            $("#login-pwd-box").removeClass("isSetPwd");
+                            $("#loginBtn").text("下一步");
+                            $('#setPasDesc').show();
+                            callBack && callBack();
+                        }
+                    },
+                    errorCallback:function(){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var isSetPwd = T.Storage.get('isSetPwd')||{};
+                        if(isSetPwd && isSetPwd[telNum] == '1'){
+                            $("#login-pwd-box").addClass("isSetPwd");
+                            $("#loginBtn").text("登录");
+                        }else{
+                            $("#login-pwd-box").removeClass("isSetPwd");
+                            $("#loginBtn").text("下一步");
+                            callBack && callBack();
+                        }
+                    }
+                });
+            },
+            //获取验证码
+            getMessageCode:function (telNum,type,callback) {
+                var url = '/user/services/user/sendCode.json';
+                var reqData =
+                    {
+                        "userAcct":telNum,
+                        "event":type
+                    };
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    authError:1,
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        tip('验证码已发送','ok');
+                        try{
+                            MSG_EVENT = data.res_data.value.event;
+                        }catch(e){
+                            tip(Global.neterror,'error');
+                        }
+                        callback(data);
+                        return;
+                    },
+                    errorCallback:function(){
+                        setTimeout(function () {
+                            endGetDataFlag = true;
+                        },1000)
+
+                    }
+                })
+            },
+            //登录
+            logInInterface:function (telNum,type,val,callback,errorCallBack) {
+                if(!check.tel(telNum))return;
+                var reqData = {"userAcct":telNum};
+                if(type=='message'){
+                    if(!check.message(val))return;
+                     reqData.validateCode=val;
+                }
+                if(type=='pwd'){
+                    if(!check.pwd(val))return;
+                    reqData.passWord= md5(val);
+                }
+                var url = '/user/services/user/login.json';
+                tip('登录中','loading');
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    errorType:1,
+                    authError:1,
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        T.Util.clearUserInfo();//清除上一个用户的隐私信息
+                        T.Util.sendToken({"token":data.res_data.value.token});//传递给原生
+                        T.Storage.set('access_token',data.res_data.value.token);//存储密钥
+                        T.Storage.set('lastLoginInfo',telNum);//存储上一次登录信息
+                        T.User.getUInfo(function(json){
+                            pageLoading.hide();
+                            if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) && T.Storage.get('userinfo').isNew=='1' && goNewUser=='1'&& Global.isAudit != '1'){//跳转新手专区
+                                window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                            }else{
+                                callback();
+                            }
+                        });
+                    },
+                    errorCallback:function(data){
+                        pageLoading.hide();
+                        errorCallBack && errorCallBack(data);
+                    }
+                });
+            },
+            //注册
+            regInterface:function (telNum,message,callback,errorCallBack) {
+                if(!check.tel(telNum))return;
+                if(!check.message(message))return;
+                var url = '/user/services/user/regist.json';
+                var reqData =
+                    {
+                        'inviteChannelCode':Global.inviteChannelCode,
+                        "userAcct":telNum,
+                        "validateCode":message
+                    }
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    errorType:'1',
+                    authError:1,
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        T.Util.clearUserInfo();//清除上一个用户的隐私信息
+                        T.Storage.set('access_token',data.res_data.token);
+                        T.Util.sendToken({"token":data.res_data.token,'EVENT':'REG'});//传递给原生
+                        T.User.getUInfo(function () {
+                            if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) &&T.Storage.get('userinfo').isNew=='1' &&goNewUser=='1'&& Global.isAudit != '1'){//跳转新手专区
+                                window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                            }else{
+                                callback();
+                            }
+                        });
+                        return;
+                    },
+                    errorCallback:function(data){
+                        errorCallBack(data)
+                    }
+                })
+            },
+            //倒计时
+            countDown:function () {//倒计时
+                var timeVal = 60;
+                var clear=setInterval(function(){
+                    timeVal--;
+                    $('#messageTime em,#setPasBoxAgain').html(timeVal);
+                    $('#setPasBoxAgain').html('<em>'+timeVal+'</em>秒重新发送验证码');
+                    dds = timeVal;
+                    if(timeVal == 0){
+                        $('#setPasBoxAgain').html('重新发送验证码');
+                        clearInterval(clear);
+                        $('#againBtn').show();
+                        $('#messageTime').hide();
+                    }
+                },1000);
+            },
+            thirdCountDown:function () {
+                var timeVal = 60;
+                var clear=setInterval(function(){
+                    timeVal--;
+                    $('#getThirdMes').html(timeVal+'秒后重发');
+                    dds = timeVal;
+                    if(timeVal == 0){
+                        clearInterval(clear);
+                        $('#getThirdMes').html('获取验证码').removeClass('no');
+                    }
+                },1000);
+            },
+            //获取验证码
+            getThirdMessageCode:function (telNum,type,callback) {
+                if(!check.tel(telNum)) return;
+                var url = '/user/services/user/sendCode.json';
+                var reqData = {
+                    "userAcct":telNum,
+                    "event":type
+                };
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        tip('验证码已发送','ok');
+                        callback(data);
+                        return;
+                    },
+                    errorCallback:function(){
+                        $('#getThirdMes').removeClass('no');
+                    }
+                })
+            },
+            //第三方登录绑定手机号码
+            thirdLoginBind:function (tokenY) {
+                $('.navbar h1').html('绑定手机号码');
+                $("#kefuTips").show();
+                $("#kefu").hide();
+                $('#mainThird').show();
+                $('#main').hide();
+                var httpJumpBindFlag = true;
+                $('#jumpBind').off().Touch(function () {
+                    var reqData={'isBind':2,"token":tokenY,'inviteChannelCode':Global.inviteChannelCode};
+                    T.Util.xmlHttpRequest({
+                        type:'post',
+                        errorType:1,
+                        authError:1,
+                        reqData:reqData,
+                        reqUrl:'/user/services/user/tokenConvert.json',
+                        callback:function(data){
+                            T.Util.clearUserInfo();//清除上一个用户的隐私信息
+                            T.Util.sendToken({"token":data.res_data.value,'EVENT':'REG'});//传递给原生 属于
+                            T.Storage.set('access_token',data.res_data.value);
+                                T.User.getUInfo(function(){
+                                    httpJumpBindFlag=true;
+                                    if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) &&T.Storage.get('userinfo').isNew=='1'&& goNewUser=='1'&& Global.isAudit != '1'){//跳转新手专区
+                                        window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                                    }else{
+                                        T.Util.back();
+                                     }
+                                });
+                        },
+                        errorCallback:function(data){
+                            httpJumpBindFlag=true;
+                            tip(data.msg);
+                        }
+                    });
+                });
+                var httpFlag = true;
+                $('#pwdfind_submit').off().Touch(function (){
+                    var telNum = $('#thirdTel').val().trim();
+                    var mess = $('#thirdMes').val().trim();
+                    var pas = $('#thirdPwd').val().trim();
+                    if(!check.tel(telNum)) return;
+                    if(!check.message(mess)) return;
+                    if(!check.pwd(pas)) return;
+                    var reqData={
+                        'inviteChannelCode':Global.inviteChannelCode,
+                        "userAcct":telNum,
+                        "passWord":md5(pas),
+                        "validateCode":mess,
+                        "token":tokenY
+                    }
+                    if(!httpFlag){return;}
+                    httpFlag = false;
+                    T.Util.xmlHttpRequest({
+                        type:'post',
+                        errorType:1,
+                        authError:1,
+                        reqData:reqData,
+                        reqUrl:'/user/services/user/tokenConvert.json',
+                        callback:function(data){
+                            T.Util.clearUserInfo();//清除上一个用户的隐私信息
+                            T.Util.sendToken({"token":data.res_data.value,'EVENT':'REG'});//传递给原生
+                            T.Storage.set('access_token',data.res_data.value);
+                            T.User.getUInfo(function(){
+                                httpFlag=true;
+                                if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) &&T.Storage.get('userinfo').isNew=='1'&& goNewUser=='1'&& Global.isAudit != '1'){//跳转新手专区
+                                    window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                                }else{
+                                    T.Util.back();
+                                }
+                            });
+                        },
+                        errorCallback:function(data){
+                            httpFlag=true;
+                            tip(data.msg);
+
+                            T.Util.clearUserInfo();
+                            T.Util.sendToken({"token":''});
+                        }
+                    });
+                });
+                $('#getThirdMes').off().Touch(function(el){
+                    if($(el).hasClass('no')){return};
+                    var telNum = $('#thirdTel').val().trim();
+                    o.getThirdMessageCode(telNum,'REG',function () {
+                        $('#getThirdMes').addClass('no');
+                        o.thirdCountDown();
+                    });
+                });
+            },
+            //事件绑定
+            bindEvent:function(){
+                $('#kefu').Touch(function () {
+                    //右上角在线客服点击量（dl_kfdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId": "dl",
+                        "conductCode": "dl_kfdjl",
+                        "comductDesc": "右上角在线客服点击量",
+                        "time": new Date().getTime()
+                    });
+                    //T.Util.kefu('h5','来源：登录页面右上角客服入口|用户输入的手机号码：'+$('#loginTel').val()||$('#loginMessageTel').val());
+                    T.Util.kefuNew('h5','来源：登录页面右上角客服入口|用户输入的手机号码：'+$('#loginTel').val()||$('#loginMessageTel').val());
+                });
+                $('#kefuOnline').Touch(function () {
+                    //T.Util.kefu('h5','来源：登录页面收不到验证码按钮|用户输入的手机号码：'+$('#loginTel').val()||$('#loginMessageTel').val());
+                    T.Util.kefuNew('h5','来源：登录页面收不到验证码按钮|用户输入的手机号码：'+$('#loginTel').val()||$('#loginMessageTel').val());
+                });
+                //页面返回
+                $("#back").off().Touch(function(){
+                    if($('#mainThird').css('display')=='block'){
+                        confirm({html:'您确定要取消绑定吗，将导致绑定失败哦。'
+                            ,cancelText:'取消',cancelFun:function () {
+
+                            },okText:'确定',okFun:function () {
+                                T.Util.sendToken({"token":''});
+                                T.Util.back();
+                            }
+                        });
+                    }else if($('#login-message-box').css('display')=='block'){//免密码登录返回密码登录
+                        $('#login-pwd-box').show().siblings().hide();
+                    }else{
+                        if(T.Util.getParaSearch('needLogin') == 'true'){
+                            T.Util.back({num:2});
+                        }else{
+                            T.Util.back();
+                        }
+                    }
+                });
+                //点击设置密码
+                $('#messageTime').off().Touch(function () {
+                    $('#setPasBox').show();
+                    $('#normalBox').hide();
+                });
+                $('#setPasSubmitBtn').off().Touch(function () {//带设置密码提交
+                    var reqMessage = $('#reqMessage');
+                    var pwd = $('#setPwd').val();
+                    var telNum = $('#loginTel').val().trim();
+                    var message=reqMessage.val().trim();
+                    if(!check.tel(telNum))return;
+                    if(!check.message(message))return;
+                    if(!check.pwd(pwd))return;
+                    if(MSG_EVENT == 'LOGIN'){//登录
+                        var url = '/user/services/user/login.json';
+                        var reqData ={
+                                "userAcct":telNum,
+                                "validateCode":message,
+                                "passWord":md5(pwd)
+                        }
+                        tip('登录中','loading');
+                        T.Util.xmlHttpRequest({
+                            type:'post',
+                            errorType:1,
+                            authError:1,
+                            reqData:reqData,
+                            reqUrl:url,
+                            callback:function(data){
+                                T.Util.clearUserInfo();//清除上一个用户的隐私信息
+                                T.Util.sendToken({"token":data.res_data.value.token});//传递给原生
+                                T.Storage.set('access_token',data.res_data.value.token);
+                                T.User.getUInfo(function(){
+                                    pageLoading.hide();
+                                    if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) &&T.Storage.get('userinfo').isNew=='1'&& goNewUser=='1'&& Global.isAudit != '1'){//跳转新手专区
+                                        window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                                    }else{
+                                        T.Util.back();
+                                    }
+                                });
+                            },
+                            errorCallback:function(data){
+                                pageLoading.hide();
+                                if(data){
+                                    if(data.msg_code=='1001'){
+                                        $('#message-num').find('em').html('');
+                                        reqMessage.val('');
+                                        reqMessage.focus();
+                                    }
+                                    setTimeout(function(){
+                                        tip(data.msg);
+                                    },400);
+                                }
+                            }
+                        });
+                    }else{
+                        var url = '/user/services/user/regist.json';
+                        var reqData =
+                            {
+                                'inviteChannelCode':Global.inviteChannelCode,
+                                "userAcct":telNum,
+                                "validateCode":message,
+                                "passWord":md5(pwd)
+                            }
+                        T.Util.xmlHttpRequest({
+                            type:'post',
+                            errorType:'1',
+                            authError:1,
+                            reqData:reqData,
+                            reqUrl:url,
+                            callback:function(data){
+                                T.Util.clearUserInfo();//清除上一个用户的隐私信息
+                                T.Storage.set('access_token',data.res_data.token);
+                                T.Util.sendToken({"token":data.res_data.token,'EVENT':'REG'});//传递给原生
+                                T.User.getUInfo(function () {
+                                    if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) &&T.Storage.get('userinfo').isNew=='1'&& goNewUser=='1'&& Global.isAudit != '1'){//跳转新手专区
+                                        window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                                    }else{
+                                        T.Util.back();
+                                    }
+                                });
+                                return;
+                            },
+                            errorCallback:function(data){
+                                if(data.msg_code=='1001'){
+                                    $('#message-num').find('em').html('');
+                                    reqMessage.val('');
+                                    reqMessage.focus();
+                                }
+                                tip(data.msg);
+                            }
+                        })
+                    }
+                });
+                //登录、下一步
+                $('#loginBtn').off().Touch(function () {
+                    //下一步按钮点击量（dl_xybdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId": "dl",
+                        "conductCode": "dl_xybdjl",
+                        "comductDesc": "下一步按钮点击量",
+                        "time": new Date().getTime()
+                    });
+                    var telNum = $('#loginTel').val().trim();
+                    if($("#login-pwd-box").is(".isSetPwd")){//登录
+                        var pwd = $('#loginPwd').val().trim();
+                        o.logInInterface(telNum,'pwd',pwd,function () {//登录成功做对应的跳转
+                            T.Util.back();
+                        },function(data) {
+                            setTimeout(function(){
+                                data ? tip(data.msg) : tip(Global.neterror,"error");
+                            },400);
+                        });
+                    }else{//下一步
+                        //先走本地判断
+                        var isSetPwd = T.Storage.get('isSetPwd')||{};
+                        if(isSetPwd && isSetPwd[telNum] == '1'){
+                            $("#login-pwd-box").addClass("isSetPwd");
+                            $("#loginBtn").text("登录");
+                        }else{
+                            $("#login-pwd-box").removeClass("isSetPwd");
+                            $("#loginBtn").text("下一步");
+                            o.isSetPwdInterface(telNum,function(){
+                                o.getMessageCode(telNum,'LOGIN',function () {
+                                    endGetDataFlag = true;
+                                    if(T.isNative && Global.OS=='Android'){
+                                        function getVerifyCodeResult(ev) {
+                                            payHasReturn = true;
+                                           // alert(JSON.stringify(ev.result));
+                                            console.log('EVENT_getVerifyCodeResult'+JSON.stringify(ev.result));
+                                            document.removeEventListener("EVENT_GET_VERIFY_CODE", getVerifyCodeResult, false);
+                                        }
+                                        document.addEventListener("EVENT_GET_VERIFY_CODE", getVerifyCodeResult, false);
+                                        api.getVerifyCode();
+                                    }
+                                    $('#loginTelText').html(telNum.substring(0, 3) + ' ' + telNum.substring(3, 7) + ' ' + telNum.substring(7, 11));
+                                    $('#againBtn').hide();
+                                    $('#messageTime').show();
+                                    $('#message-box').show().siblings().hide();
+                                    var reqMessage = $('#reqMessage');
+                                    o.countDown();
+                                    reqMessage.focus();
+
+                                    reqMessage.off().keyup(function(){
+                                        var numArr = reqMessage.val().split('');
+                                        for(var i=0;i<6;i++){
+                                            $('#message-num').find('em').eq(i).html(numArr[i]);
+                                        }
+                                        if($('#setPasBox').css('display')=='block'){//出现带密码的的时候 不主动提交
+                                            return;
+                                        }
+                                        if(numArr.length>=6){//大于6位自动提交 登录
+                                            if(MSG_EVENT == 'LOGIN'){
+                                                o.logInInterface(telNum,'message',reqMessage.val().trim(),function () {//登录成功做对应的跳转
+                                                    T.Util.back();
+                                                },function (data) {//登录异常
+                                                    if(data){
+                                                        if(data.msg_code=='1001'){
+                                                            $('#message-num').find('em').html('');
+                                                            reqMessage.val('');
+                                                            reqMessage.focus();
+                                                        }
+                                                        setTimeout(function(){
+                                                            tip(data.msg);
+                                                        },400);
+                                                    }
+                                                });
+                                            }else{
+                                                o.regInterface(telNum,reqMessage.val().trim(),function (data) {//注册成功去登录
+                                                    T.Util.back();
+                                                },function (data) {//请求异常
+                                                    if(data.msg_code=='1001'){
+                                                        $('#message-num').find('em').html('');
+                                                        reqMessage.val('');
+                                                        reqMessage.focus();
+                                                    }
+                                                    tip(data.msg);
+                                                });
+                                            }
+                                        };
+                                    });
+                                });
+                            });
+                        }
+                    }
+                },{noRepeat:true});
+                //免密登录
+                $('#getLoginMessage,#againBtn,#setPasBoxAgain').off().Touch(function (el) {
+                    var telNum = T.Util.trim($('#loginMessageTel').val())||T.Util.trim($('#loginTel').val());
+                    //获取验证码
+                    if($(el).attr("id") == 'getLoginMessage'){
+                        if(!check.tel(telNum)) return;
+                    }
+                    if($(el).attr("id") == 'setPasBoxAgain' && $(el).find('em').length>0){
+                        return;
+                    }
+
+                    o.getMessageCode(telNum,'LOGIN',function () {
+                        if(T.isNative && Global.OS=='Android'){
+                            function getVerifyCodeResult(ev) {
+                                payHasReturn = true;
+                                //alert(JSON.stringify(ev.result));
+                                console.log('EVENT_getVerifyCodeResult'+JSON.stringify(ev.result));
+                                document.removeEventListener("EVENT_GET_VERIFY_CODE", getVerifyCodeResult, false);
+                            }
+                            document.addEventListener("EVENT_GET_VERIFY_CODE", getVerifyCodeResult, false);
+                            api.getVerifyCode();
+                        }
+                        $('#loginTelText').html(telNum.substring(0, 3) + ' ' + telNum.substring(3, 7) + ' ' + telNum.substring(7, 11));
+                        $('#againBtn').hide();
+                        $('#messageTime').show();
+                        $('#message-box').show().siblings().hide();
+                        var reqMessage = $('#reqMessage');
+                        o.countDown();
+                        reqMessage.focus();
+                        reqMessage.off().keyup(function(){
+                            var numArr = reqMessage.val().split('');
+                            for(var i=0;i<6;i++){
+                                $('#message-num').find('em').eq(i).html(numArr[i]);
+                            }
+                            if($('#setPasBox').css('display')=='block'){//出现带密码的的时候 不主动提交
+                                return;
+                            }
+                            if(numArr.length>=6){//大于6位自动提交 登录
+                                if(MSG_EVENT == 'LOGIN'){
+                                    o.logInInterface(telNum,'message',reqMessage.val().trim(),function () {//登录成功做对应的跳转
+                                        T.Util.back();
+                                    },function (data) {//登录异常
+                                        if(data){
+                                            if(data.msg_code=='1001' && data.msg=='验证码错误'){
+                                                $('#message-num').find('em').html('');
+                                                reqMessage.val('');
+                                                reqMessage.focus();
+                                                tip(data.msg);
+                                            }else{
+                                                tip(data.msg);
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    o.regInterface(telNum,reqMessage.val().trim(),function (data) {//注册成功去登录
+                                        T.Util.back();
+                                    },function (data) {//请求异常
+                                        if(data.msg_code=='1001'){
+                                            $('#message-num').find('em').html('');
+                                            reqMessage.val('');
+                                            reqMessage.focus();
+                                        }
+                                        tip(data.msg);
+                                    });
+                                }
+                            };
+                        });
+                    });
+                });
+                //第三方登录
+                $('.login-other i').off().Touch(function(el){
+
+                    var str = 'QQ';
+                    if($(el).hasClass('weixin')){
+                       str = 'WEIXIN';
+                    }
+                    //登录页面第三方登录按钮点击量（dl_wxdjl、dl_qqdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId": "dl",
+                        "conductCode": str == 'WEIXIN'?"dl_wxdjl":"dl_qqdjl",
+                        "comductDesc": "登录页面第三方登录按钮点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.thirdLogin(str,function (ev) {
+                        console.log('EVENT_thirdLogin---result:'+JSON.stringify(ev));
+                        if(Global.OS!="Android" ||(Global.OS=="Android"&&T.Util.getAppVersion(T.Util.getAppInfo("appVersion")) > 101)){//ios走回调
+                            if(ev.accessToken.indexOf('-')>-1){//预token
+                                o.thirdLoginBind(ev.accessToken);
+                            }else{//已经绑定过
+                                T.Storage.set('access_token',ev.accessToken);
+                                T.User.getUInfo(function () {
+                                    if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) &&T.Storage.get('userinfo').isNew=='1'&& goNewUser=='1'&& Global.isAudit != '1'){//跳转新手专区
+                                        window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                                    }else{
+                                        T.Util.back();
+                                    }
+                                });
+                            }
+                        }else{
+                            ADThirdLoginClick = true;
+                        }
+                    });
+                });
+                //显示免密登录
+                $("#messageLoginBtn").off().Touch(function(){
+                    var tel = T.Util.trim($("#loginTel").val());
+                    if(tel){
+                        $("#loginMessageTel").val(tel);
+                    }
+                    $('#login-message-box').show().siblings().hide();
+                });
+                //验证码获取焦点
+                $('#message-num').off().Touch(function(){
+                    $('#reqMessage').focus();
+                });
+                //找回密码
+                $("#findPwdBtn").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/findPwd.html');
+                });
+                //注册
+                $("#reg-btn,#reg-btnA").off().Touch(function(){
+                    //注册送68元大礼包按钮点击量（dl_zcdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId": "dl",
+                        "conductCode": "dl_zcdjl",
+                        "comductDesc": "注册送68元大礼包按钮点击量",
+                        "time": new Date().getTime()
+                    });
+                    if(goNewUser=='1'){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/reg.html?from=login&goNewUser=1');
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/reg.html?from=login');
+                    }
+
+                });
+                //文本框输入事件
+                $("input").on("input",function(){
+                    var isSetPwd = T.Storage.get('isSetPwd')||{};
+                    var telNum = $('#loginTel').val().trim();
+                    if(!/^1\d{10}$/.test(telNum)){
+                        $("#login-pwd-box").removeClass("isSetPwd");
+                        $("#loginBtn").text("下一步");
+                    }
+                    if($(this).val().length > 0){
+                        $(this).parent().addClass("writing");
+                    }else{
+                        $(this).parent().removeClass("writing");
+                    }
+                });
+                $("#loginTel").on("focus",function(){
+                    $("#login-pwd-box").removeClass("isSetPwd");
+                    $("#loginBtn").text("下一步");
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+            }
+        }
+        return {
+            thirdLoginBind:o.thirdLoginBind,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.login.init();
+            },function () {//webview再次打开回调函数
+                if(Global.OS=='Android'&&ADThirdLoginClick){//安卓回调不靠谱 走事件监听
+                    ADThirdLoginClick = false;//触发点击之后还原成未点击
+                    var AndroidThirdLogin = setInterval(function () {
+                        T.appToH5.init(function () {//初始化事件回调函数
+                            if(!T.Util.isEmpty(T.Storage.get('access_token'))){
+                                window.clearInterval(AndroidThirdLogin);
+                                var accessToken = T.Storage.get('access_token');
+                                if(accessToken.indexOf('-')>-1){//预token
+                                    T.login.thirdLoginBind(accessToken);
+                                }else{//已经绑定过
+                                    T.Storage.set('access_token',accessToken);
+                                    T.User.getUInfo(function () {
+                                        if(!T.Util.isEmpty(T.Storage.get('userinfo').isNew) && T.Storage.get('userinfo').isNew=='1'&& goNewUser=='1' && Global.isAudit != '1'){//跳转新手专区
+                                            window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html';
+                                        }else{
+                                            T.Util.back();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },500);
+                }
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.login.init();
+        }
+    });
+</script>
+</body>
+</html>

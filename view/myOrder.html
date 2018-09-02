@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的订单</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/myOrder.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>我的订单</h1>
+    <span class="navIcon" id="kefu"></span>
+</div>
+<div class="mainContent" id="main">
+    <div id="content">
+        <div class="menuTab" id="myOrderTab">
+            <div class="tab-item on" data-type="all">全部</div>
+            <div class="tab-item" data-type="waitPay">待付款</div>
+            <div class="tab-item" data-type="waitDelivery">待收货</div>
+            <div class="tab-item" data-type="payOk">已完成</div>
+            <span class="pointer"></span>
+        </div>
+        <div id="myOrderList"><div id="myOrderListWrap">
+            <div class="myOrderList"></div>
+            <div class="myOrderList"></div>
+            <div class="myOrderList"></div>
+            <div class="myOrderList"></div>
+        </div></div>
+        <em class="floatWidget" id="floatkefu"></em>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.myOrder = (function(){
+        var orderObj = {'all':0,'waitPay':1,'waitDelivery':2,'payOk':3};
+        var orderType = T.Util.getPara('type')||'all';
+        var orderIndex = orderObj[orderType];
+        var dropLoad = '';//下拉刷新
+        var pageSize = 10;//分页条目
+        var pageIndex = [1,1,1,1];//分页索引
+        var hasMore = [false,false,false,false];//是否加载更多
+        var endGetDataFlag = true;//是否请求完毕
+        var o = {
+            //程序入口
+            init:function(){
+                pageIndex = [1,1,1,1];//分页索引
+                hasMore = [false,false,false,false];//是否加载更多
+                if(T.Storage.get('noNavbar',1)||T.Util.getPara('noNavbar')=='1'){
+                    $(".floatWidget").addClass("show");
+                }
+                o.tabSwitch();
+                o.bindEvent();
+                //页面PV/UV（wdddfwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"我的订单",
+                    "conductCode": "wdddfwl",
+                    "comductDesc": "页面PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            viewAgain:function () {
+                var needRefreshId ='';
+                if($('.orderItem').length==0){
+                    //token失效触发了登陆 第一次没拉接口 要重新拉接口
+                    T.myOrder.init();
+                    return;
+                }
+                if(!T.Util.isEmpty(T.Storage.get('shaidanSucInfo'))){//晒完的回来检察是否晒单成功
+                    needRefreshId = T.Storage.get('shaidanSucInfo').shaidanNo;
+                    T.Storage.remove('shaidanSucInfo');
+                }
+                if(!T.Util.isEmpty(T.Storage.get('orderAddAddressOK'))){//填写完地址
+                    needRefreshId = T.Storage.get('orderAddAddressOK');
+                    T.Storage.remove('orderAddAddressOK');
+                }
+                if(!T.Util.isEmpty(T.Storage.get('weituoSuc'))){//委托完的回来检察是否委托成功 成功的话 隐藏对应按钮
+                    needRefreshId = T.Storage.get('weituoSuc').orderNo;
+                    T.Storage.remove('weituoSuc');
+                }
+                if(!T.Util.isEmpty(T.Storage.get('paySuc'))){//点击过支付回来 更新状态 并且打上标记
+                    needRefreshId = T.Storage.get('paySuc').paySubmitOrderNo;
+                    $('[data-expect_id="'+T.Storage.get('paySuc').expectId+'"]').attr('data-order_no',needRefreshId);//通过期号id找到对应节点赋值订单号
+                    $('[data-expect_id="'+T.Storage.get('paySuc').expectId+'"]').attr('data-hasGoPay','1');//是否去支付过
+                    T.Storage.remove('paySuc');
+                }
+                if(!T.Util.isEmpty(needRefreshId)){//页面上存在节点则拉取接口更新最新信息
+                    o.getSingeData(needRefreshId);
+                }
+
+            },
+            getSingeData:function (needRefreshId) {//局部更新单个订单接口
+                T.Util.xmlHttpRequest({//局部刷新单个订单
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/product/myAuction.json?page=1&limit=10&type=6&orderNo='+needRefreshId,//
+                    callback:function(data){
+                        var d = data.res_data.value.INFO[0];
+                        var dom = $('[data-expect_id="'+needRefreshId+'"]').length== 0 ? $('[data-order_no="'+needRefreshId+'"]'): $('[data-expect_id="'+needRefreshId+'"]');
+                        dom.find('.orderStatus').html(o.getOrderStatus(d));//刷新状态
+                        dom.find('.recore-footer').html(o.getOrderBtn(d));//刷新按钮
+                        if(d.O_TYPE=='2'){
+                            $('[data-order_no="'+needRefreshId+'"]').attr('data-hasGoPay','0');//已经支付完成
+                            $('[data-order_no="'+needRefreshId+'"]').find('.xuStr').html('实');
+                        }
+                        o.bindMyOrderEvent();//重新绑定
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+
+                    }
+                });
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定下滑加载更多
+                $(window).off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    var nowTab = $(".tab-item.on").index();
+                    if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                        if(hasMore[nowTab]){
+                            o.getMyOrder(true);
+                        }
+                    }
+                });
+                //绑定下拉刷新
+                $('#myOrderList').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        var nowTab = $(".tab-item.on").index();
+                        pageIndex[nowTab] = 1;
+                        o.getMyOrder();
+                    },
+                    threshold : 50
+                });
+                //tab切换
+                $(".tab-item").off().Touch(function(el){
+                    orderType = $(this).attr("data-type");
+                    o.tabSwitch();
+                });
+            },
+            //切换tab
+            tabSwitch:function(){
+                orderIndex = orderObj[orderType];
+                var dom = $("#myOrderList .myOrderList").eq(orderIndex);
+                $(".tab-item").eq(orderIndex).addClass("on").siblings().removeClass("on");
+                $(".pointer").animate({"left":(2.5 * orderIndex + 0.7333333) + "rem"});
+                dom.show().siblings().hide();
+                if(dom.find(".orderItem").length){
+                    $("html,body").removeClass("white");
+                }else{
+                    dom.html('');
+                    o.getMyOrder();
+                }
+            },
+            //获取我的订单
+            getMyOrder:function(fromMore){
+                tip("加载中...","loading");
+                if(orderType == 'all'||orderType == 'waitPay'){
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,
+                        reqUrl:'/commodity/services/product/myAuction.json?page=' + pageIndex[orderIndex] + '&limit=' + pageSize + '&type=' + (orderType=='all'?"6":"7"),//
+                        callback:function(data){
+                            pageLoading.hide();
+                            endGetDataFlag = true;
+                            var d = data.res_data.value.INFO;
+                            if(data.res_data.value.ISEND==2){//还有更多
+                                hasMore[orderIndex] = true;
+                                pageIndex[orderIndex]++;
+                            }else{
+                                hasMore[orderIndex] = false;
+                            }
+                            o.showMyOrder(d,fromMore);
+                        },
+                        errorCallback:function(data,xhr,textStatus){
+                            pageLoading.hide();
+                            endGetDataFlag = true;
+                            if(dropLoad != ''){
+                                dropLoad.resetload();
+                                dropLoad.unlock();
+                                dropLoad.noData(false);
+                                dropLoad = '';//刷新完 还原对象
+                            }
+                            if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                                if(!$(".record-item").length){
+                                    $('#myOrderList .myOrderList').eq(orderIndex).html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                    $("#page-refresh").off().Touch(function(){
+                                        window.location.reload();
+                                    });
+                                }
+                            }else{
+                                setTimeout(function(){
+                                    tip(data ? data.msg : Global.neterror,"error");
+                                },500);
+                            }
+                        }
+                    });
+                }else{
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,
+                        reqUrl:'/order/services/order/payOrder.json?page=' + pageIndex[orderIndex] + '&limit=' + pageSize + '&type=' + (orderType=='waitDelivery'?"2":"3"),//
+                        callback:function(data){
+                            var d = data.res_data.value.INFO;
+                            if(data.res_data.value.ISEND==2){//还有更多
+                                hasMore[orderIndex] = true;
+                                pageIndex[orderIndex]++;
+                            }else{
+                                hasMore[orderIndex] = false;
+                            }
+                            o.showMyOrder(d,fromMore);
+                        },
+                        errorCallback:function(data,xhr,textStatus){
+                            pageLoading.hide();
+                            endGetDataFlag = true;
+                            if(dropLoad != ''){
+                                dropLoad.resetload();
+                                dropLoad.unlock();
+                                dropLoad.noData(false);
+                                dropLoad = '';//刷新完 还原对象
+                            }
+                            if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                                if(!$(".record-item").length){
+                                    $('#myOrderList .myOrderList').eq(orderIndex).html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                    $("#page-refresh").off().Touch(function(){
+                                        window.location.reload();
+                                    });
+                                }
+                            }else{
+                                setTimeout(function(){
+                                    tip(data ? data.msg : Global.neterror,"error");
+                                },500);
+                            }
+                        }
+                    });
+                }
+            },
+            //从dom中提取数据
+            getDomData:function(dataDom){
+                return {
+                    "USER_AUCTION_NUM":dataDom.attr("data-username"),
+                    "COMMODITY_ID":dataDom.attr("data-id"),
+                    "COMMODITY_NAME":dataDom.attr("data-name"),
+                    "EXPECT_ID":dataDom.attr("data-expect_id"),
+                    "POUNDAGE_PRICE":dataDom.attr("data-poundage"),
+                    "AUCTION_PRICE":dataDom.attr("data-auction"),
+                    "ORDER_NO":dataDom.attr("data-order_no"),
+                    "PROMPT":dataDom.attr("prompt"),
+                    "delegatePrice":dataDom.attr("data-delegate"),
+                    "tax":dataDom.attr("data-tax"),
+                    "isentity":dataDom.attr("data-isentity"),
+                    "imgUrl":dataDom.attr("data-src")
+                }
+            },
+            //获取购物类型
+            getOrderType:function(d){
+                //1：商城支付 2：差价购 3：拍中购买  4:新用户优惠购买  -1未支付
+                //ORDER_TYPE  1：商城支付 2：差价购 3：拍中购买  4:新用户优惠购买  -1：未支付
+                if(d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2){//差价购
+                    return {type:'cjg',name:'差价购'};
+                }else if(d.ORDER_TYPE == 1||d.ORDER_TYPE == 4){//商城购
+                    return {type:'mall',name:'商城购'};
+                }else{
+                    return {type:'auction',name:'竞拍购'};
+                }
+            },
+            //获取订单状态
+            getOrderStatus:function(d){
+                //ORDER_STATUS  0:初始  10:已发货  -10:已作废  200:已完成
+                //O_TYPE   1：未支付  2：已支付
+                //AUCTION_STATUS 20 未拍中  30 已拍中
+                if((d.BARGAIN_STATUS&&d.BARGAIN_STATUS==300)||(d.DELEGATE_STATUS=='2')){//点了委托之后
+                    //1：自动审核未打款  2：自动审核已打款  3 待审核  4：审核通过 5：审核不通过 6:审核通过已转账
+                    if(d.DELEGATE_STATUS==4||d.DELEGATE_STATUS==2||d.DELEGATE_STATUS==6){
+                        return '委托成功';
+                    }else if(d.DELEGATE_STATUS==5){
+                        return '等待付款';//委托失败
+                    }else{
+                        return '委托申请中';
+                    }
+                }
+                if(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==-200){//人工审核委托失败
+                    return '等待付款';//委托失败
+                }
+                if(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==400){//人工审核委托成功
+                    return '委托成功';
+                }
+                if(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==-150||(d.ORDER_STATUS&&d.ORDER_STATUS=='-10')){
+                    return '已失效';
+                }
+                if(d.O_TYPE == '1'){
+                    return '等待付款';
+                }else if(d.ORDER_STATUS == '0'){
+                    return '等待发货';
+                }else if(d.ORDER_STATUS == '10'){
+                    return '已发货';
+                }else{
+                    return '';
+                }
+            },
+            //计算订单需支付费用
+            getOrderMoney:function(d){
+                //1：商城支付 2：差价购 3：拍中购买  4:新用户优惠购买  -1差价购
+                if(d.ORDER_MONEY){
+                    return d.ORDER_MONEY;
+                }else if(d.AUCTION_STATUS == 20||d.ORDER_TYPE == 2){//差价购
+                    //市场价 + 运费 - SHOP_TOTAL_GOLD + 虚拟运费
+                    return d.MARKET_PRICE + d.TRANSF_PRICE - (d.SHOP_TOTAL_GOLD||0);
+                }else if(d.ORDER_TYPE == 1||d.ORDER_TYPE == 4){//商城购
+                    //市场价 + 运费
+                    return d.MARKET_PRICE + d.TRANSF_PRICE;
+                }else{//竞拍购
+                    return d.AUCTION_PRICE*(1+(d.AUCTION_POUNDAGE/100||0)) + (d.TRANSF_PRICE||0);
+                }
+            },
+            //获取订单按钮
+            getOrderBtn:function(d){
+                //ORDER_STATUS  0:初始  10:已发货  -10:已作废  200:已完成
+                //O_TYPE   1：未支付  2：已支付
+                //AUCTION_STATUS 20 未拍中  30 已拍中
+                var goBuyBtn = '';
+                if(d.ORDER_TYPE == 3||d.ORDER_TYPE == -1){
+                    goBuyBtn = '<em class="record-btn goAuction">再次竞拍</em>';
+                }else{
+                    goBuyBtn = '<em class="record-btn gobuy">再次购买</em>';
+                }
+                var shareBtn = '';
+                if(!d.IS_SHARE){//未晒过单
+                    shareBtn='<em class="record-btn ' + ((d.ORDER_TYPE == 1||d.ORDER_TYPE == 4||d.ORDER_TYPE == 2)?'pingjia':'shaidan') + '">晒单有奖</em>';
+                }
+                if((d.BARGAIN_STATUS&&d.BARGAIN_STATUS==400) ||(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==300&&(d.DELEGATE_STATUS==4||d.DELEGATE_STATUS==2||d.DELEGATE_STATUS==6))||d.DELEGATE_STATUS==2){//委托成功
+                    return goBuyBtn+shareBtn;
+                }
+                if((d.BARGAIN_STATUS&&d.BARGAIN_STATUS==-200) ||(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==300&&d.DELEGATE_STATUS==5)){//委托失败
+                    return '<em class="record-btn pay">去支付</em>';
+                }
+                if(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==300){//委托申请中
+                    return goBuyBtn;
+                }
+                if(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==100){//可以委托
+                    if(d.ISDELEGATE==1){
+                        return '<em class="record-btn weituo">去委托</em><em class="record-btn pay">去支付</em>';
+                    }else{
+                        return '<em class="record-btn pay">去支付</em>';
+                    }
+                }
+                if(d.BARGAIN_STATUS&&d.BARGAIN_STATUS==-150){
+                    if(d.ORDER_TYPE=='-1'){
+                        return '<em class="record-btn goAuction">再次竞拍</em>';
+                    }else{
+                        return goBuyBtn;
+                    }
+                }
+                if(d.O_TYPE == '1'){//等待付款
+                    if(d.AUCTION_STATUS == 20){
+                        return '<em class="record-btn cjPay">去支付</em>';
+                    }else{
+                        return '<em class="record-btn pay">去支付</em>';
+                    }
+                }else if(d.ORDER_STATUS == '0'){//等待发货
+                    if(!d.IS_EXISTS_ADDRESS||d.IS_EXISTS_ADDRESS==2){//未填写地址
+                        return '<em class="record-btn addAddress">填写地址</em>';
+                    }else{
+                        return goBuyBtn + '<em class="record-btn reminder">我要催单</em>';
+                    }
+                }else if(d.ORDER_STATUS == '10'){//已发货
+                    return '<em class="record-btn sureDelivery">确认收货</em>'+'<em class="record-btn wuliu">' + (d.IS_ENTITY == 1 ? "查看物流":"查看详情") + '</em>' + goBuyBtn;
+                }else{
+                    if(d.ORDER_STATUS&&d.ORDER_STATUS==200){
+                        return shareBtn + goBuyBtn;
+                    }else{
+                        return goBuyBtn;
+                    }
+
+                }
+            },
+            //渲染我的订单
+            showMyOrder:function(d,fromMore){
+                var htmlArr = [];
+                var domObj = $('#myOrderList .myOrderList').eq(orderIndex);
+                for(var i = 0;i < d.length;i++){
+                    var ORDER_TYPE = o.getOrderType(d[i]);
+                    htmlArr.push('<div class="orderItem' + (d[i].ORDER_STATUS==200?" done":"") + '" data-id="'+d[i].COMMODITY_ID+'" data-no="'+d[i].EXPECT_NO+'" data-expect_id="'+d[i].EXPECT_ID+'" data-username="' + d[i].USER_AUCTION_NUM + '" data-poundage = "' + d[i].POUNDAGE_PRICE + '" data-auction="' + d[i].AUCTION_PRICE + '" data-delegate="' + d[i].delegatePrice + '" data-tax="'+ d[i].tax + '" data-isentity="' + d[i].IS_ENTITY + '" PROMPT="'+d[i].PROMPT+'" data-mkMoney="'+d[i].MARKET_PRICE+'" data-ORDER_NO="' + d[i].ORDER_NO + '" data-name="' + d[i].COMMODITY_NAME + '" data-src="' + d[i].COMMODITY_LOGO + '">');
+                    htmlArr.push('<div class="orderHead ' + ORDER_TYPE["type"] + '"><h2 class="orderTitle"><i></i>' + ORDER_TYPE["name"] + '</h2><em class="orderStatus '+(o.getOrderStatus(d[i])=='已失效'?'lose':'')+'">' + o.getOrderStatus(d[i]) + '</em></div>');
+                    //如果是已发货，需要同步获取物流信息
+                    if(d[i].ORDER_STATUS == '10' && d[i].IS_ENTITY==1){
+                        T.Util.xmlHttpRequest({
+                            type:'get',
+                            errorType:'1',
+                            async:false,//同步方式获取物流信息
+                            reqUrl:'/order/services/order/deliveryInfo.json?orderNo='+d[i].ORDER_NO,
+                            callback:function(data){
+                                var d = data.res_data.value;
+                                if(d.LOGISTICS_NAME && d.LOGISTICS_NO){
+                                    T.Util.xmlHttpRequest({
+                                        type:'get',
+                                        errorType:'1',
+                                        async:false,//同步方式获取物流信息
+                                        reqUrl:'/query?type='+d.LOGISTICS_NAME+'&postid='+d.LOGISTICS_NO,
+                                        callback:function(data){
+
+                                        },
+                                        errorCallback:function(data){
+                                            var d = data.data
+                                            if(d&&d.length>1){
+                                                htmlArr.push('<div class="express"><h2 class="expressStatus"><i></i>' + d[0].context.split(";")[0] + '</h2><p class="expressTime">' + d[0].ftime + '</p></div>');
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                            errorCallback:function(data){
+
+                            }
+                        })
+                    }
+                    htmlArr.push('<div class="goodsInfo"><img class="lozad"  src="../img/goods/lazy_load.png" data-src="' + d[i].COMMODITY_LOGO + '"><p>' + (d[i].COMMODITY_TITLE||d[i].COMMODITY_NAME) + '</p></div>');
+                    htmlArr.push('<div class="payInfo"><h2>共' + (d[i].COUNT||1) + '件商品 <i class="'+((o.getOrderStatus(d[i])=='委托成功'||o.getOrderStatus(d[i])=='委托申请中')?'hide':'')+'"><i class="xuStr">' + (d[i].ORDER_MONEY ? '实':'需') + '</i>付款：<em>￥</em><span>' + T.Util.priceFormat(d[i].ORDER_MONEY||d[i].PAY_MONEY) + '</span></i></h2></div>');
+                    if(o.getOrderStatus(d[i])=='等待付款'){
+                        htmlArr.push('<div class="recore-footer">'+ o.getOrderBtn(d[i]) + '<span class="timeWaitPay" data-no="'+d[i].ORDER_NO+'"></span></div></div>');
+                        addTimer('[data-no="'+d[i].ORDER_NO+'"]',Math.ceil(((d[i].EPXPIRES_TIME||d[i].GOLD_EXPIRES_TIME)-(new Date().getTime()+parseInt(T.Storage.get('difTime'))))/1000),'waitPay');
+                    }else{
+                        htmlArr.push('<div class="recore-footer">' + o.getOrderBtn(d[i]) + '</div></div>');
+                    }
+
+                }
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+                domObj.show().siblings().hide();
+                if(htmlArr.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? domObj.append(htmlArr.join('')) : domObj.html(htmlArr.join(''));
+                }else if(!fromMore){
+                    $("html,body").addClass("white");
+                    domObj.html('<li class="nodata order"><i></i><h2>暂无订单哦~</h2><div class="btn">立即去竞拍</div></li>');
+                    $(".nodata .btn").off().Touch(function(){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                    });
+                }
+                pageLoading.hide();
+                endGetDataFlag = true;
+                lozad().observe();
+                o.bindMyOrderEvent();
+            },
+            //绑定我的订单事件
+            bindMyOrderEvent:function(){
+                $('.sureDelivery').off().Touch(function(el){// 确认收货
+                    confirm({className:'sureDelivery',html:'您是否已收到该订单商品？'
+                        ,cancelText:'未收货',cancelFun:function () {
+
+                        },okText:'已收货',okFun:function () {
+                            var d = o.getDomData($(el).parent().parent());
+                            T.Util.xmlHttpRequest({
+                                type:'get',
+                                errorType:1,
+                                reqUrl:'/order/services/order/finishOrder.json?orderNo=' + d["ORDER_NO"],//确认收货接口
+                                callback:function(data){
+                                    $(el).parent().parent().addClass('done');
+                                    o.getSingeData(d["ORDER_NO"]);
+                                    o.bindMyOrderEvent();
+                                    tip('确认收货成功');
+                                },
+                                errorCallback:function(data){
+                                    console.log('确认收货异常');
+                                }
+                            });
+                        }
+                    });
+                });
+                $(".orderItem .goodsInfo").off().Touch(function(el){
+                    if($(el).parent().attr('data-hasGoPay')==1){//未及时到账的订单 不让点击进订单详情
+                        alert('订单交易待确认，请勿重复支付',function () {
+                            o.getSingeData($(el).parent().attr('data-order_no'));
+                        });
+                    }else{
+                        var d = o.getDomData($(el).parent());
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/orderDetail.html?orderNo=' + d["ORDER_NO"] + '&expectId=' + d["EXPECT_ID"]);
+
+                    }
+                    });
+                $(".cjPay,.pay").off().Touch(function(el){//差价购和去付款跳转支付页面
+                        if($(el).parent().parent().attr('data-hasGoPay')==1){
+                              alert('订单交易待确认，请勿重复支付',function () {
+                                  o.getSingeData($(el).parent().parent().attr('data-order_no'));
+                              });
+                        }else{
+                            var d = o.getDomData($(el).parent().parent());
+                            var payType = $(el).hasClass('cjPay')?'auctionFail':'auctionSuc';
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/pay.html?commodityId='+d.COMMODITY_ID+'&expectId='+d.EXPECT_ID+'&NEW_ORDER_NO='+d.ORDER_NO+'&auctionPrice='+d.AUCTION_PRICE+'&payType='+payType+'&isentity='+d.isentity);
+
+                        }
+                   });
+                $('.wuliu').off().Touch(function(el){
+                    var d = o.getDomData($(el).parent().parent());
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/queryExpress.html?ORDER_NO='+d['ORDER_NO']+'&IS_ENTITY='+d['isentity']+'&prompt='+d['PROMPT']);
+                });
+                $(".weituo").off().Touch(function(el){
+                    var d = o.getDomData($(el).parent().parent());
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/weituoAuction.html?commodityId=' + d.COMMODITY_ID + '&orderNo='+d['ORDER_NO']+'&id='+d.EXPECT_ID+'&tax='+d.tax+'&delegatePrice='+d.delegatePrice+'&auctionPrice='+$(el).parent().parent().attr("data-auction")+'&marketPrice='+($(el).parent().parent().attr("data-mkMoney")*1).toFixed(2));
+                });
+                $(".shaidan").off().Touch(function(el){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/addShaidan.html?id='+$(el).parent().parent().attr('data-id')+'&orderNo='+$(el).parent().parent().attr('data-ORDER_NO')+'&type=pingjia');
+                });
+                $(".addAddress").off().Touch(function(el){//去填写地址
+                    if($(el).parent().parent().attr('data-isentity')==0){//不是实物
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setOrderInfo.html?orderNo='+$(el).parent().parent().attr('data-ORDER_NO')+'&prompt='+$(el).parent().parent().attr('PROMPT'));
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?orderNo='+$(el).parent().parent().attr('data-ORDER_NO'));
+                }});
+                $(".goAuction").off().Touch(function(el){
+                    //竞拍商品“再次竞拍”按钮的点击量（ddjpdjl）
+                    T.Util.setUserBehaviorList({
+                        "busId":"我的订单",
+                        "conductCode": "ddjpdjl",
+                        "comductDesc": "竞拍商品“再次竞拍”按钮的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).parent().parent().attr('data-id')+'&expectNo='+$(el).parent().parent().attr('data-no')+'&isNext=1');
+                });
+
+                $(".pingjia").off().Touch(function(el){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/addShaidan.html?id='+$(el).parent().parent().attr('data-id')+'&orderNo='+$(el).parent().parent().attr('data-ORDER_NO')+'&type=pingjia');
+                });
+                /*$(".auction").off().Touch(function(el){//继续竞拍
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).parent().parent().attr('data-id')+'&expectNo=1&isNext=1');
+                });*/
+                $(".gobuy").off().Touch(function(el){//继续购买
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+$(el).parent().parent().attr('data-id'));
+                });
+                $("#kefu").off().Touch(function(){
+                    //T.Util.kefu("h5",'来源：我的订单右上角入口');
+                    T.Util.kefuNew("h5",'来源：我的订单右上角入口');
+                });
+                //催单
+                $(".reminder").off().Touch(function(el){
+                    var d = o.getDomData($(el).parent().parent());
+                    //T.Util.kefu("h5",'来源：我的订单催单按钮|订单号：'+d.ORDER_NO+'|商品名称：'+d.COMMODITY_NAME+'|商品ID：'+d.COMMODITY_ID);
+                    var obj = {
+                        eventId : d.ORDER_NO,
+                        title: d.COMMODITY_NAME,
+                        content :"订单号:"+d.ORDER_NO,
+                        imageUrl : d.imgUrl,
+                        url : T.Util.getRootPath()+'/'+Global.webRoot+'/view/orderDetail.html?orderNo='+d.ORDER_NO+'&expectId='+d.EXPECT_ID+'&white=1&userId='+T.Storage.get('userinfo').userId,
+                        memo : "对应商品ID:"+d.COMMODITY_ID
+                    }
+                    T.Util.kefuNew("h5",'来源：我的订单催单按钮',obj);
+                });
+            }
+        }
+        return {
+            viewAgain:o.viewAgain,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.myOrder.init();
+            }, function () {//webview再次打开回调函数
+                    //再次回来还是么有token 直接回退一级 兼容token失效回退不了
+                if(T.Util.isEmpty(T.Storage.get('userinfo'))){
+                    T.Util.back();
+                    return;
+                }else {
+                    T.myOrder.viewAgain();
+                }
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.myOrder.init();
+        }
+    });
+</script>
+</body>
+</html>

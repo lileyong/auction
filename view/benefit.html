@@ -1,0 +1,204 @@
+<style>
+    .navbar {
+        margin: auto;
+        width: 10rem;
+        left: calc(50% - 5rem);
+    }
+
+    #content {
+        position: relative;
+    }
+
+    #banner {
+        margin: auto;
+        width: 10rem;
+        height: 5.333333rem;
+    }
+
+    #banner img {
+        width: 100%;
+        height: 100%;
+    }
+
+    #benefit-wrapper {
+        width: 100%;
+        background-color: #f5f5f5;
+    }
+
+    #benefit-list {
+        position: relative;
+        top: -0.4rem;
+        margin: auto;
+        width: 9.333333rem;
+        border-radius: 0.16rem;
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    #benefit-list .benefit-item {
+        position: relative;
+        margin:0 0.2666667rem;
+        height: 3.733333rem;
+        border-bottom: 0.013334rem solid #eee;
+        overflow: hidden;
+    }
+
+    #benefit-list .benefit-item img {
+        position: absolute;
+        top: 0.4rem;
+        width: 2.933333rem;
+        height: 2.933333rem;
+    }
+
+    #benefit-list .benefit-item h2 {
+        margin-top: 0.44rem;
+        padding-left: 3.1866667rem;
+        padding-right: 0.2266667rem;
+        line-height: 0.426667rem;
+        font-size: 0.32rem;
+        color: #333;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #benefit-list .benefit-item p.desc {
+        padding: 0.066667rem 0.493333rem 0.066667rem 3.1866667rem;
+        line-height: 0.533333rem;
+        height: 1.433333rem;
+        font-size: 0.293333rem;
+        color: #ff5e0e;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #benefit-list .benefit-item p.price {
+        padding-left: 3.1866667rem;
+        line-height: 0.56rem;
+        font-size: 0.4rem;
+        color: #f72f2f;
+    }
+
+    #benefit-list .benefit-item p.price em{
+        position:relative;
+        top:-0.0266667rem;
+        margin-right:0.04rem;
+        font-size:0.32rem;
+    }
+</style>
+<div class="content" id="content">
+    <div id="benefit-box">
+        <div id="banner"></div>
+        <div id="benefit-wrapper">
+            <div id="benefit-list"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    T.benefit = (function(){
+        var titleList = {'gsh':'购实惠','ash':'爱生活','pss':'品时尚'};
+        var type = T.Util.getPara('type')||'gsh';
+        var tagCode = type=='gsh'?'9':type=='ash'?'7':'8';
+        var dropLoad = '';//下拉刷新
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//分页步长
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        //主对象
+        var o = {
+            init:function(){
+                o.initPage();
+                o.getShopTagCode();
+                o.bindEvent();
+            },
+            //初始化页面
+            initPage:function(){
+                $("title,#navtitle").text(titleList[type]);
+                $("#banner").html('<img src="../img/goods/icon_' + type + '.png">');
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定下滑加载更多
+                $(window).off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+35;
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                        if(hasMore){
+                            o.getShopTagCode(true);
+                        }
+                    }
+                });
+                //绑定下拉刷新
+                $('#benefit-box').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getShopTagCode();
+                    },
+                    threshold : 50
+                });
+            },
+            //获取商品信息
+            getShopTagCode:function (fromMore) {//商场首页 7够实惠 8爱生活 9品好货
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/shop/tagCode.json?page=' + pageIndex + '&limit=' + pageSize + '&tag='+tagCode,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var htmlArr=[],d=data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND=="2"){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        for(var i=0;i<d.length;i++){
+                            htmlArr.push('<div class="benefit-item" data-id="'+d[i].COMMODITY_ID+'">\
+                                <img src="'+d[i].COMMODITY_LOGO+'">\
+                                <h2>'+d[i].COMMODITY_TITLE+'</h2>\
+                            <p class="desc">'+d[i].COMMODITY_NAME+'</p>\
+                                <p class="price"><em>¥</em>'+d[i].MARKET_PRICE+'</p>\
+                            </div>');
+                        }
+                        if(htmlArr.length){
+                            fromMore ? $('#benefit-list').append(htmlArr.join('')) : $('#benefit-list').html(htmlArr.join(''));
+                        }
+                        $('.benefit-item').off().Touch(function (el) {
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+$(el).attr('data-id'));
+                        });
+                    },
+                    errorCallback:function(){
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                    }
+                })
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.benefit.init();
+    });
+</script>
+
+

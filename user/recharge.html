@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>充值</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/recharge.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>充值</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="recharge-box">
+        <div id="recharge-account"><h2>用户昵称：<em id="account">--</em></h2><p><span id="account-type">账户拍币</span>：<em id="balance">--</em><span class="coinunit">拍币</span></p></div>
+        <div id="recharge-amount">
+            <h2 id="recharge-title">请输入充值金额<span id="advert"></span></h2>
+            <div id="recharge-input"><input type="number" id="recharge-money" value="10" maxlength="10" onkeypress="return T.Util.numReg($(this).val(),String.fromCharCode(event.keyCode))"><i class="clear"></i></div>
+            <div id="recharge-quick" class="hide">
+                <em>10<span class="coinunit">拍币</span></em><em>20<span class="coinunit">拍币</span></em><em>50<span class="coinunit">拍币</span></em><em>100<span class="coinunit">拍币</span></em><em>500<span class="coinunit">拍币</span></em><em>1000<span class="coinunit">拍币</span></em>
+            </div>
+            <div id="payinfo" class="hide">
+                <h2 class="payitem">获得总币：<em id="gain-money">10.00拍币</em></h2>
+                <h2 class="payitem">优惠立减：<em id="cut-money">0.6拍币</em></h2>
+                <h2 class="payitem">需支付：<em id="pay-money">0.6拍币</em></h2>
+            </div>
+        </div>
+        <div id="recharge-list" class="hide"></div>
+        <div id="recharge-text" class="hide">
+            <p>注：充值后不支持提现操作。</p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script type="text/javascript" src="../js/base64.js?v=1.0.0"></script>
+<script type="text/javascript" src="../js/recharge.js?v=1.0.0"></script>
+</body>
+</html>

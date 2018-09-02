@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>帮助中心</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <meta name="format-detection" content="telephone=no">
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>帮助中心</h1>
+</div>
+<div class="mainContent" id="main">
+    <!--首页-->
+    <div id="help-main" style="display:none;">
+        <div class="help-list" data-page="help-main">
+            <h2 class="title">联系我们</h2>
+            <div class="list-obj"><p>您可以通过帮助中心查到遇到的问题，或通过以下的方式联系我们。</p></div>
+            <div class="list-obj" id="kftel"><h3>人工客服：<a href="tel://400-081-6066">400-081-6066</a></h3></div>
+            <div class="list-obj" id="kfonline"><h3>在线客服：<i></i></h3></div>
+            <div class="list-obj"><h3>服务时间: 周一至周日 8:00-22:00</h3></div>
+        </div>
+        <div class="help-list" data-page="help-main">
+            <h2 class="title">热点问题</h2>
+            <div class="list-item" data-problem="how_to_auction"><h3>如何竞拍？</h3></div>
+            <div class="help-item" id="how_to_auction">
+                <p>注册会员后，选择心仪商品可使用平台的赠币或充值拍币进行出价，当倒计时归零时，即竞拍成功，即可依最终的竞拍价购买商品。</p>
+            </div>
+            <div class="list-item" data-problem="how_to_weituo"><h3>如何委托售卖？</h3></div>
+            <div class="help-item" id="how_to_weituo">
+                <p>委托售卖旨在提升用户竞拍体验，全网唯一首创的在线委托售卖模式。</p>
+                <p>用户竞拍成功取得商品的购买权之后，可设置委托价，委托平台对此商品进行售卖。为更方便用户，在委托成功后，平台即可按委托价打款到用户的委托账户，用户可在个人中心-我的委托-提现，进行提现操作。</p>
+            </div>
+            <div class="list-item" data-problem="how_to_diffpurchase"><h3>如何进行差价购？</h3></div>
+            <div class="help-item" id="how_to_diffpurchase">
+                <p>竞拍结束后，未能成功拍下商品的用户，平台按商品设置的返币比例返还出价拍币转赠为购物币，可使用转赠的购物币购买此商品，用户可通过补差价的方式获取此商品有所有权。</p>
+            </div>
+            <div class="list-item" data-problem="how_to_purchase"><h3>如何在商城购买商品？</h3></div>
+            <div class="help-item" id="how_to_purchase">
+                <p>平台除竞拍外，还提供商城购买商品，在商城页面选择商品，即可进行商品购买。如竞拍过此商品，还可使用购物币优惠抵扣。</p>
+            </div>
+            <div class="list-item" data-problem="rule_of_auction"><h3>竞拍的规则</h3></div>
+            <div class="help-item" id="rule_of_auction">
+                <p>a） 商品竞拍以起拍价为基础，每出价一次消耗一定数量的拍币或赠币。</p>
+                <p>b）每出价一次，商品的价格上涨一次，以设定的上涨幅度进行递增。</p>
+                <p>c）当倒计时归零时，即获取了商品的最终购买权，在三天内可按此最终竞拍价支付商品即取得了该商品所有权。</p>
+                <p>d）如未能成功拍下商品，则平台按商品设置的返币比例返还出价的拍币，转赠为购物币，可使用购物币进行购买此商品。</p>
+            </div>
+            <div class="list-item" data-problem="is_auction_charge"><h3>竞拍是否收费？</h3></div>
+            <div class="help-item" id="is_auction_charge">
+                <p>竞拍不成功不收费，按商品设置的返币比例返还未拍中用户的出价费，转赠为购物币，可使用购物币购买此商品。</p>
+            </div>
+            <div class="list-item" data-problem="is_support_drawing"><h3>是否支持提现？</h3></div>
+            <div class="help-item" id="is_support_drawing">
+                <p>拍币、赠币、购物币不支持提现操作，委托账户可支持提现。</p>
+                <p>用户竞拍成功取得商品的购买权之后，可出委托价委托平台售卖，如售卖成功后，平台打款到委托账户，可在个人中心-我的委托-提现，进行提现操作。</p>
+            </div>
+        </div>
+        <div id="help-category">
+            <h2 class="title">问题分类</h2>
+            <div class="category-item" id="auction" data-page="help-auction"><i></i><h3>竞拍与售卖</h3></div>
+            <div class="category-item" id="account" data-page="help-account"><i></i><h3>注册账户</h3></div>
+            <div class="category-item" id="recharge" data-page="help-recharge"><i></i><h3>充值提现</h3></div>
+            <div class="category-item" id="express" data-page="help-express"><i></i><h3>发货说明</h3></div>
+            <div class="category-item" id="share" data-page="help-share"><i></i><h3>晒单与评价</h3></div>
+            <div class="category-item" id="other" data-page="help-other"><i></i><h3>其它问题</h3></div>
+        </div>
+    </div>
+    <!--竞拍与售卖-->
+    <div id="help-auction" style="display:none;">
+        <div class="help-list" data-page="help-auction">
+                <h2 class="title">竞拍与售卖</h2>
+                <div class="list-item" data-problem="pai_coin"><h3>拍币</h3></div>
+                <div class="help-item" id="pai_coin">
+                    <p>用于竞拍的虚拟货币，充值1拍币需支付1元，可用于所有商品的竞拍，以及支付购买商品。</p>
+                </div>
+                <div class="list-item" data-problem="donate_coin"><h3>赠币</h3></div>
+                <div class="help-item" id="donate_coin">
+                    <p>仅用于竞拍时出价，可通过平台的活动奖励获取，如使用赠币出价竞拍时，未能拍中商品，则不返购物币。</p>
+                </div>
+                <div class="list-item" data-problem="shop_coin"><h3>购物币</h3></div>
+                <div class="help-item" id="shop_coin">
+                    <p>竞拍失败时，平台为奖励用户，在竞拍过程中产生的出价费一次性返还为购物币，购物币仅可购买此商品，7天有效。</p>
+                </div>
+                <div class="list-item" data-problem="stop_auction_time"><h3>停拍时段</h3></div>
+                <div class="help-item" id="stop_auction_time">
+                    <p>为保证用户的作息时间，每日03:00~07:00为停拍时段，在凌晨03:00前已进入竞拍倒计时的商品可继续竞拍，未能进入倒计时的商品，延至07:00开始竞拍。</p>
+                </div>
+                <div class="list-item" data-problem="weituo_auction"><h3>委托售卖</h3></div>
+                <div class="help-item" id="weituo_auction">
+                    <p>竞拍成功的用户获取到商品购买权后，可委托平台进行售卖此商品，用户设置委托价，如委托成功，则直接打款至用户的委托账户，可直接提现到银行卡。</p>
+                </div>
+                <div class="list-item" data-problem="start_auction_price"><h3>起拍价</h3></div>
+                <div class="help-item" id="start_auction_price">
+                    <p>起拍价为发布拍品时需要设置的一个起始价格，即是最低起拍价。</p>
+                </div>
+                <div class="list-item" data-problem="abort_auction"><h3>流拍</h3></div>
+                <div class="help-item" id="abort_auction">
+                    <p>拍品发布后在倒计时归零时无人出价，则该拍品流拍，自动进入下一个拍品。</p>
+                </div>
+                <div class="list-item" data-problem="add_price_range"><h3>加价幅度</h3></div>
+                <div class="help-item" id="add_price_range">
+                    <p>加价幅度指参与竞拍的用户为了超越前一个用户的出价，在当前竞拍价基础上增加系统设定的最低加价金额。</p>
+                </div>
+                <div class="list-item" data-problem="auction_delay"><h3>出价延时</h3></div>
+                <div class="help-item" id="auction_delay">
+                    <p>当拍品的时间在设定的倒计时内，如有人出价，则倒计时自动从开始倒计时。</p>
+                </div>
+                <div class="list-item" data-problem="auction_endtime"><h3>竞拍倒计时</h3></div>
+                <div class="help-item" id="auction_endtime">
+                    <p>拍品发布时设定的一个时间段，在此时间段内可进行竞拍。</p>
+                </div>
+                <div class="list-item" data-problem="auction_price"><h3>成交价</h3></div>
+                <div class="help-item" id="auction_price">
+                    <p>当竞拍倒计时归零时产生的竞拍价，即为最终成交价。</p>
+                </div>
+                <div class="list-item" data-problem="auction_fees"><h3>出价费</h3></div>
+                <div class="help-item" id="auction_fees">
+                    <p>每次竞拍时，需支付一定数量的拍币作为出价费（出价费在竞拍页面可以查看到），如商品未能成功拍中，不收取出价费，在竞拍结束后，则一次性返还为购物币。</p>
+                </div>
+                <div class="list-item" data-problem="differ_purchase"><h3>差价购</h3></div>
+                <div class="help-item" id="differ_purchase">
+                    <p>如竞拍失败，竞拍过程中产生的出价费一次性返还为购物币，差价购买此商品时，可使用此购物币进行抵扣。仅需支付商品市场价格与购物币的差价，即支付价格= 商品市场价格 -  购物币。</p>
+                </div>
+                <div class="list-item" data-problem="weituo_price"><h3>委托价</h3></div>
+                <div class="help-item" id="weituo_price">
+                    <p>竞拍成功的用户，在全部订单-委托售卖 设置委托，委托商品时，可设置商品委托价。如委托价格过高会导致委托失败，每个商品仅有一次委托机会。</p>
+                </div>
+                <div class="list-item" data-problem="weituo_aucount"><h3>委托账户与拍币的兑换</h3></div>
+                <div class="help-item" id="weituo_aucount">
+                    <p>如委托账户有金额，可以按1:1的兑换为拍币。</p>
+                </div>
+            </div>
+    </div>
+    <!--注册账户-->
+    <div id="help-account" style="display:none;">
+        <div class="help-list" data-page="help-account">
+                <h2 class="title">注册账户</h2>
+                <div class="list-item" data-problem="login_type"><h3>支持那些方式注册登录？</h3></div>
+                <div class="help-item" id="login_type">
+                    <p>支持微信、QQ、手机号码注册登录，手机注册需验证验证码，第三方注册时需进行一次授权操作即可</p>
+                </div>
+                <div class="list-item" data-problem="change_nickname"><h3>用户昵称的修改</h3></div>
+                <div class="help-item" id="change_nickname">
+                    <p>昵称只有一次修改机会，之后不可再去修改。</p>
+                </div>
+                <div class="list-item" data-problem="use_of_identityinfo"><h3>实名信息的用途</h3></div>
+                <div class="help-item" id="use_of_identityinfo">
+                    <p>为保障用户的安全，在委托、或提现的操作时，需要进行实名信息的认证，并作为唯一的凭证。</p>
+                </div>
+                <div class="list-item" data-problem="limit_of_reg"><h3>注册时有什么限制</h3></div>
+                <div class="help-item" id="limit_of_reg">
+                    <p>不支持未满18年的未成年人操作。</p>
+                </div>
+                <div class="list-item" data-problem="confirm_my_identityinfo"><h3>如何确认我填写的实名信息</h3></div>
+                <div class="help-item" id="confirm_my_identityinfo">
+                    <p>可通过个人中心-身份信息 查看，为保障安全，部分信息作为了隐藏。</p>
+                </div>
+                <div class="list-item" data-problem="change_telnum"><h3>我能更换手机号码吗</h3></div>
+                <div class="help-item" id="change_telnum">
+                    <p>暂不支持手机号码更换。</p>
+                </div>
+                <div class="list-item" data-problem="account_interflow"><h3>微信、QQ登录与手机号码登录能互通吗</h3></div>
+                <div class="help-item" id="account_interflow">
+                    <p>微信、QQ的用户绑定手机号码后，即可使用手机号码进行登录，账户互通。</p>
+                </div>
+                <div class="list-item" data-problem="find_password"><h3>如何找回密码</h3></div>
+                <div class="help-item" id="find_password">
+                    <p>可通过登录页面-忘记密码找回失去的密码。</p>
+                </div>
+            </div>
+    </div>
+    <!--充值提现-->
+    <div id="help-recharge" style="display:none;">
+        <div class="help-list" data-page="help-recharge">
+                <h2 class="title">充值提现</h2>
+                <div class="list-item" data-problem="how_to_recharge"><h3>如何充值？</h3></div>
+                <div class="help-item" id="how_to_recharge">
+                    <p>登录账户后，可在个人中心-充值 页面进行充值。</p>
+                </div>
+                <div class="list-item" data-problem="recharge_type"><h3>支持那些充值方式？</h3></div>
+                <div class="help-item" id="recharge_type">
+                    <p>平台支持微信、支付宝等第三方平台充值。</p>
+                </div>
+                <div class="list-item" data-problem="recharge_not_toaccoun"><h3>充值后没有到账怎么办？</h3></div>
+                <div class="help-item" id="recharge_not_toaccoun">
+                    <p>充值是即时到账，偶尔会因为网络原因出现延时的情况，若出现未到账的情况，请联系客服，我们会第一时间为您核查处理。</p>
+                </div>
+                <div class="list-item" data-problem="can_i_drawing"><h3>充值后能否提现？</h3></div>
+                <div class="help-item" id="can_i_drawing">
+                    <p>目前充值拍币后，不支持任何形式的提现操作。</p>
+                </div>
+                <div class="list-item" data-problem="how_to_drawing"><h3>委托成功后如何提现？</h3></div>
+                <div class="help-item" id="how_to_drawing">
+                    <p>可在个人中心-我的委托 -提现 ，进行操作提现。</p>
+                    <p>注：提现的银行卡开户名，与账户填写的真实姓名必须为同一人。</p>
+                </div>
+                <div class="list-item" data-problem="range_of_coin"><h3>拍币，赠币，购物币的有效期限</h3></div>
+                <div class="help-item" id="range_of_coin">
+                    <p>拍币、赠币长期有效；购返的购物币有7天的有效期，逾期失效。</p>
+                </div>
+            </div>
+    </div>
+    <!--发货说明-->
+    <div id="help-express" style="display:none;">
+        <div class="help-list" data-page="help-express">
+                <h2 class="title">发货说明</h2>
+                <div class="list-item" data-problem="is_certified_products"><h3>货物是正品吗？</h3></div>
+                <div class="help-item" id="is_certified_products">
+                    <p>所有货物通过官方采购，保证全场100%商品为官方渠道的品牌正品。</p>
+                </div>
+                <div class="list-item" data-problem="express_time"><h3>支付后什么时候能发货？</h3></div>
+                <div class="help-item" id="express_time">
+                    <p>18点之前提交的订单，一般在当天处理，18点之后的订单第二天上午处理；最迟不会超过三个工作日。</p>
+                </div>
+                <div class="list-item" data-problem="goods_afloat"><h3>未收到商品怎么回事？</h3></div>
+                <div class="help-item" id="goods_afloat">
+                    <p>请保证您填写的收货地址是准确的，以及配送过程中，请您保持联系方式畅通。若确认邮寄信息无误，长时间未到货，请联系客服处理。</p>
+                </div>
+                <div class="list-item" data-problem="deal_of_objection"><h3>商品异议的处理</h3></div>
+                <div class="help-item" id="deal_of_objection">
+                    <p>a、所有商品在国家三包规则的范围内，经生产厂家指定或特约售后服务中心检测异议的问题属实，可以选择换货或维护。为了保证在国家规定的15日保修期内，不耽误您的使用，建议发现问题后尽快联系客服处理。</p>
+                    <p>b、所有收到商品的用户，建议收到快递时，亲自签收并当面验货，如有问题，请不要签收，并与快递员交涉，拒签退回。</p>
+                    <p>c、收到商品后，发现质量有问题，请不要私自处理，未使用的情况下，保留好包装并第一时间与客服联系，如商品有破损或丢失，我们无法为你办理退货手续。</p>
+                    <p>d、掌上乐购的所有商品保证正品，可享受厂家全国联保服务，按国家三包政策，针对所有送出的商品履行保修、换货和退货的义务。</p>
+                </div>
+                <div class="list-item" data-problem="exchange_goods"><h3>商品可退换吗？</h3></div>
+                <div class="help-item" id="exchange_goods">
+                    <p>非质量问题不可退货，非国家三包范围内不给予退换货。请亲自签收并当面验货，如运输途中发现破损，请不要签收，可拒签退回。</p>
+                </div>
+                <div class="list-item" data-problem="express_progress"><h3>如何查询快递进度？</h3></div>
+                <div class="help-item" id="express_progress">
+                    <p>可在全部订单- 订单状态中，查看快递的进度</p>
+                </div>
+            </div>
+    </div>
+    <!--晒单与评价-->
+    <div id="help-share" style="display:none;">
+        <div class="help-list" data-page="help-share">
+                <h2 class="title">晒单与评价</h2>
+                <div class="list-item" data-problem="share_order"><h3>晒单</h3></div>
+                <div class="help-item" id="share_order">
+                    <p>竞拍成功后，可进行商品的晒单分享，晒单分享可享受系统的赠币奖励。可在个人中心-我拍中-晒单，进行晒单操作，晒单经过审核成功后，即可获取系统奖励的赠币。</p>
+                </div>
+                <div class="list-item" data-problem="evaluate"><h3>评价</h3></div>
+                <div class="help-item" id="evaluate">
+                    <p>在商城购买商品或差价购购买商品成功后，可对商品与服务进行评价。请在 “个人中心-全部订单-评价”，进行评价操作。</p>
+                </div>
+                <div class="list-item" data-problem="rights_of_photo"><h3>晒单照片的使用权</h3></div>
+                <div class="help-item" id="rights_of_photo">
+                    <p>用户晒单后，本平台与用户共同拥有晒单照片的所有权，可用于商业目的复制、展示与传播权利，同时会保护用户的隐私与形象，不得有损用户利益的行为，用户有晒单行为即说明同意此条款。</p>
+                </div>
+                <div class="list-item" data-problem="see_shaidan"><h3>去哪里查看晒单</h3></div>
+                <div class="help-item" id="see_shaidan">
+                    <p>审核通过后，可在个人中心- 我的晒单中查看</p>
+                </div>
+            </div>
+    </div>
+    <!--其他问题-->
+    <div id="help-other" style="display:none;">
+        <div class="help-list" data-page="help-other">
+                <h2 class="title">其他问题</h2>
+                <div class="list-item" data-problem="no_message_code"><h3>手机收不到验证码</h3></div>
+                <div class="help-item" id="no_message_code">
+                    <p>请确认手机是否正常接收短信，是否有欠费、停机等，短信发送过程中存在延迟的可能，若手机状态正常，长时间未收到短信，请联系客服处理。</p>
+                </div>
+            </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.helpCenter = (function(){
+        var o = {
+            init:function(){
+                o.initHashChange();
+                o.bindEvent();
+                //页面的PV/UV（xszd_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"新手指导",
+                    "conductCode": "xszd_fwl",
+                    "comductDesc": "页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            initHashChange:function(){
+                if("onhashchange" in window){
+                    window.addEventListener ? window.addEventListener("hashchange", hasChange, false) : window.attachEvent("onhashchange",hasChange);
+                }
+                function hasChange(){
+                    var page = T.Util.getParaHash('page')||'help-main';
+                    var problem = T.Util.getParaHash('problem');
+                    $("#" + page).show().siblings().hide();
+                    if(problem){
+                        $(".second-level").show().siblings().hide();
+                        $("#" + problem).show().siblings().hide();
+                    }else{
+                        $(".one-level").show().siblings().hide();
+                    }
+                }
+                hasChange();
+            },
+            bindEvent:function(){
+                //客服电话
+                $("#kftel").off().Touch(function(){
+                    var url = 'tel://400-081-6066';
+                    if(Global.isiOS){
+                        T.Util.openWindow(url,{isExterior:1});
+                    }else{
+                        window.location.href = url;
+                    }
+                });
+                //在线客服
+                $("#kfonline").off().Touch(function(){
+                    //T.Util.kefu('h5','来源：帮助中心页面');
+                    T.Util.kefuNew('h5','来源：帮助中心页面');
+                });
+                //查看问题详情
+                $(".help-list .list-item").off().Touch(function(){
+                    $(this).siblings(".list-item").removeClass("slidedown").next().removeClass("show");
+                    $(this).toggleClass("slidedown").next().toggleClass("show");
+                });
+                //查看问题分类
+                $(".category-item").off().Touch(function(){
+                    var page = $(this).attr("data-page");
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/helpCenter.html#page=' + page);
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.helpCenter.init();
+            }, function () {//webview再次打开回调函数
+
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.helpCenter.init();
+        }
+    });
+</script>
+</body>
+</html>

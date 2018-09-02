@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>第三方客服跳转中间页</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/main.js"></script>
+    <script type="text/javascript" src="../js/md5.js"></script>
+    <script>
+        $(document).ready(function () {
+            if (T.isNative) {
+                T.appToH5.init(function () {//初始化事件回调函数
+                    //T.Util.kefu('native', '来源：原生我的界面');
+                    T.Util.kefuNew('native', '来源：原生我的界面');
+                }, function () {//webview再次打开回调函数
+
+                }, function () {//webview消失第一视角回调函数
+
+                }, function () {//app退到系统后台回调函数
+
+                }, function () {//app退到系统后台后重新回到app触发的函数
+
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "v1",
+  "version": "1.0.0",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-less": "^3.4.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-minify-html": "^1.0.6",
+    "gulp-postcss": "^7.0.1",
+    "gulp-sequence": "^1.0.0",
+    "gulp-sourcemaps": "^2.6.2",
+    "gulp-uglify": "^3.0.0",
+    "gulp-zip": "^4.1.0",
+    "gulp.spritesmith": "^6.8.0",
+    "matchdep": "latest",
+    "ngmshell": "latest",
+    "postcss-bem": "^0.4.1",
+    "postcss-cssnext": "^3.0.2",
+    "postcss-mixins": "^6.2.0",
+    "postcss-nested": "^3.0.0",
+    "postcss-px2rem": "^0.3.0",
+    "postcss-simple-vars": "^4.1.0",
+    "shelljs": "latest"
+  },
+  "dependencies": {
+    "gulp-css-spriter": "^0.4.0",
+    "gulp-htmlmin": "^4.0.0",
+    "gulp-zip": "^4.1.0"
+  }
+}

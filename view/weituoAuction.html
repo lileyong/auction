@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>委托售卖</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/weituoAuction.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>委托售卖</h1>
+    <span class="navIcon" id="navInfo"></span>
+</div>
+<div class="mainContent" id="main">
+    <div id="weituoAuction-box">
+        <div id="weituoBox">
+            <div id="weituoQuan"><h2>委托券</h2><p></p></div>
+            <div id="weituo-price"><h2>委托金额</h2><em>￥</em><input type="number" id="userPrice" onKeypress="return T.Util.numReg($(this).val(),String.fromCharCode(event.keyCode))"></div>
+            <div id="weituo-gain"><h2>委托所得</h2><p class="hide"><span id="weituoGain"></span></p></div>
+        </div>
+        <p id="weituoText">
+            <span id="defaultText" class="hide">请合理设置委托价，价格过高将导致委托失败。</span>
+            <span id="focusText" class="hide">本次委托扣除费用<i></i><em id="servicePrice">¥-.--</em>；</span>
+        </p>
+        <div id="aggree-protocol"><i class="checked"></i><span>我已阅读并同意</span><em>《委托协议》</em></div>
+        <div id="weituo-submit">委托</div>
+        <div class="hide">
+            什么是委托手续费？
+            委托售卖由第三方机构进行鉴定与估值，一旦委托成功，则由第三方服务机构收取委托价的 <em id="tax"></em>%作为委托手续费。
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+
+    T.weituo = (function(){
+        var id = T.Util.getPara('id');
+        var orderNo = T.Util.getPara('orderNo');
+        var commodityId = T.Util.getPara('commodityId');
+        var tax = T.Util.getPara('tax');//委托手续费
+        var auctionPrice = T.Util.getPara('auctionPrice');
+        var marketPrice = T.Util.getPara('marketPrice');//市场价 默认
+        var endGetDataFlag = true;//接口是否请求完毕
+        var poundageInfo = null;//手续费信息
+
+        var o = {
+            //程序入口
+            init:function(){
+                $('#initPrice').html('¥'+Number(T.Util.getPara('delegatePrice')).toFixed(2));
+                $('#tax').html(tax);
+                $('#userPrice').val(marketPrice);
+                $('#focusPrice').html('¥'+Number(marketPrice).toFixed(2));
+                o.getWeituoFees();//计算委托费用
+                o.getWeituoQuan();//获取委托券列表
+                o.getPoundage();//获取商品手续费
+                o.bindEvent();
+            },
+            //计算委托费用
+            getWeituoFees:function(){
+                var weituoFees = 0;
+                if(poundageInfo){
+                    weituoFees =  $("#userPrice").val() * poundageInfo.ENTRUST_POUNDAGE / 100 + auctionPrice * (1 + poundageInfo.servicePrice / 100);
+                    $('#servicePrice').html('¥'+T.Util.priceFormat(weituoFees));
+                    if($("#userPrice").val() > 0){
+                        $("#weituoGain").html(T.Util.priceFormat($("#userPrice").val()-(weituoFees.toFixed(2))*1)+'<i>元</i>');
+                    }else{
+                        $("#weituoGain").html("--");
+                    }
+                    $("#weituo-gain p").show();
+                    $('#focusText').show().siblings().hide();
+                }else{
+                    o.getPoundage(function(){
+                        weituoFees =  $("#userPrice").val() * poundageInfo.ENTRUST_POUNDAGE / 100 + auctionPrice * (1 + poundageInfo.servicePrice / 100);
+                        $('#servicePrice').html('¥'+(weituoFees).toFixed(2));
+                        if($("#userPrice").val() > 0){
+                            $("#weituoGain").html(T.Util.priceFormat($("#userPrice").val()-(weituoFees.toFixed(2)*1))+'<i>元</i>');
+                        }else{
+                            $("#weituoGain").html("--");
+                        }
+                        $("#weituo-gain p").show();
+                        $('#focusText').show().siblings().hide();
+                    });
+                }
+            },
+            //判断充值活动是否下线
+            hasRechargeActivity:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/user/services/template/ACTIVITY_IS_INVITE.json?code=PAY_LOTTERY',
+                    callback:function(data){
+                        var hasRechargeActivity = false;
+                        if(data.res_data && data.res_data[0]){
+                            hasRechargeActivity = data.res_data[0].STATUS;
+                        }
+                        confirm({
+                            html:'<h2>暂无委托券，不可委托售卖</h2><p style="color:#ee332b;">' + (hasRechargeActivity ? "现参与活动可领取委托券哦~" : "参与竞拍即有机会获得委托券哦~") + '</p>',
+                            cancelText:'关闭',
+                            okText:(hasRechargeActivity?'前往获取':'前往竞拍'),
+                            okFun:function () {
+                                if(hasRechargeActivity){
+                                    //“委托页面”无委托券时提示参与活动弹窗“前往获取”按钮点击量（jpjlhq_djl）
+                                    T.Util.setUserBehaviorList({
+                                        "busId":"委托",
+                                        "conductCode": "jpjlhq_djl",
+                                        "comductDesc": "“委托页面”无委托券时提示参与活动弹窗“前往获取”按钮点击量",
+                                        "time": new Date().getTime()
+                                    });
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/recharge.html');
+                                }else{
+                                    //“委托页面”无委托券时提示参与竞拍弹窗“前往竞拍”按钮点击量（jpjlqw_djl）
+                                    T.Util.setUserBehaviorList({
+                                        "busId":"委托",
+                                        "conductCode": "jpjlqw_djl",
+                                        "comductDesc": "“委托页面”无委托券时提示参与竞拍弹窗“前往竞拍”按钮点击量",
+                                        "time": new Date().getTime()
+                                    });
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                                }
+                            }
+                        });
+                    },
+                    errorCallback:function(data){
+                        tip(data ? data.msg : Global.neterror,"error");
+                    }
+                })
+            },
+            //事件绑定
+            bindEvent:function(){
+                //文本框输入
+                $('#userPrice').on('input',function () {
+                    var money = $('#userPrice').val();
+                    //输入校正
+                    if(!T.money) T.money = "";
+                    if(money.length > T.money.length){
+                        //移除非数字
+                        if(!money.slice(-1).match(/[0-9.]/)){
+                            $(this).val(T.money);
+                            return false;
+                        }
+                        //限制输入两位小数
+                        if((String(money).match(/\./g) && String(money).match(/\./g).length >= 2)){
+                            $(this).val(T.money);
+                            return false;
+                        }else if(String(money).match(/\d\.\d{3}/)){
+                            $(this).val(T.money);
+                            return false;
+                        }
+                    }
+                    T.money = money = $(this).val();
+
+                    if(money>0){
+                        $('#focusPrice').html('¥'+Number(money).toFixed(2));
+                        o.getWeituoFees();
+                    }else{
+                        $("#weituoGain").html("--");
+                        $('#defaultText').show().siblings().hide();
+                    }
+                });
+                //委托
+                $("#weituo-submit").off().Touch(function(){
+                    //委托页面“委托”按钮点击量（jpjlwt_djl）
+                    T.Util.setUserBehaviorList({
+                        "busId":"委托",
+                        "conductCode": "jpjlwt_djl",
+                        "comductDesc": "委托页面“委托”按钮点击量",
+                        "time": new Date().getTime()
+                    });
+                    if(T.Util.isEmpty($('#userPrice').val())){tip('请输入委托价格');return;}
+                    if($('.checked').length==0){tip('请阅读并同意《委托协议》');return;}
+                    if(!endGetDataFlag){return;}
+                    endGetDataFlag = false;
+                    var _url = '/commodity/services/delegate/delegateBuy?money='+$('#userPrice').val()+'&isSuggest=1&expectId='+id;
+                    if(T.Util.isEmpty()){
+                        _url = _url+'&orderNo='+orderNo;
+                    }
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,
+                        reqUrl:_url,
+                        callback:function(data){
+                            T.Storage.set('weituoSuc',{'orderNo':orderNo});
+                            alert('您的委托申请已提交，委托成功后可直接提现!',function () {
+                                window.location.href= T.Util.getRootPath()+'/'+Global.webRoot+'/user/myWeituo.html';
+                            },'查看我的委托');
+                        },
+                        errorCallback:function(data){
+                            endGetDataFlag = true;
+                            if(data){
+                                if(data.msg_code=='1006'){//请完善身份证信息后再来委托
+                                    confirm({html:'请完善身份证信息后再来委托哦!',okFun:function () {
+                                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/identityInfo.html');
+                                    }});
+                                }else if(data.msg_code == '1021'){
+                                    o.hasRechargeActivity();
+                                }else{
+                                    tip(data.msg);
+                                }
+                            }
+                        }
+                    })
+                });
+                //委托手续费提示
+                $("#navInfo").off().Touch(function(){
+                    var confirmObj = {
+                        className:'alert left',
+                        html:"",
+                        okText:"我知道了"
+                    }
+                    if(poundageInfo){
+                        confirmObj.html = '<h2>什么是委托价及委托所得？</h2><p>委托价：用户在竞拍成功后，把商品委托给第三方机构的商品价格。<br>委托所得：委托价扣除委托手续费（委托价' + poundageInfo.ENTRUST_POUNDAGE + '%）以及应支付给平台的最终竞拍价及竞拍手续费（竞拍价' + poundageInfo.servicePrice + '%）。</p>';
+                        confirm(confirmObj);
+                    }else{
+                        o.getPoundage(function(){
+                            confirmObj.html = '<h2>什么是委托价及委托所得？</h2><p>委托价：用户在竞拍成功后，把商品委托给第三方机构的商品价格。<br>委托所得：委托价扣除委托手续费（委托价' + poundageInfo.ENTRUST_POUNDAGE + '%）以及应支付给平台的最终竞拍价及竞拍手续费（竞拍价' + poundageInfo.servicePrice + '%）。</p>';
+                            confirm(confirmObj);
+                        });
+                    }
+                });
+            },
+            //获取委托券列表
+            getWeituoQuan:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/delegate/couponList.json?couponType=1&type=1&page=1&limit=10',//type 1 未使用 2 已使用 3 已过期
+                    callback:function(data){
+                        var d = data.res_data.value.INFO;
+                        if(d && d.length){
+                            $("#weituoQuan p").removeClass("nocard").text('已选择1张券');
+                        }else{
+                            $("#weituoQuan p").addClass("nocard").text('暂无委托券');
+                        }
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        tip(data ? data.msg : Global.neterror);
+                    }
+                });
+            },
+            //获取竞拍、委托手续费
+            getPoundage:function(callBack){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/template/QUERY_PRODUCT_INFO.json?commodityId='+commodityId+'&expectId='+id,
+                    callback:function(data){
+                        poundageInfo = data.res_data[0];
+                        //显示费用明细
+                        $("#focusText").off().Touch(function(el) {
+                            var money = $("#userPrice").val();
+                            var weituo = money * poundageInfo.ENTRUST_POUNDAGE / 100;
+                            var auction = auctionPrice * poundageInfo.servicePrice / 100;
+                            confirm({
+                                className:'alert left weituo',
+                                html:"<h2>把商品委托售卖给第三方机构，成功后需扣除如下的费用：</h2><p>委托手续费：<em>￥" + Number(weituo).toFixed(2) + "</em></p><p>最终竞拍价：<em>￥" + Number(auctionPrice).toFixed(2) + "</em></p><p>竞拍手续费：<em>￥" + (auction*1).toFixed(2) + "</em></p>",
+                                okText:"我知道了"
+                            });
+                        });
+                        callBack && poundageInfo && callBack(poundageInfo);
+                    },
+                    errorCallback:function(data){
+                        data.msg && tip(data.msg);
+                    }
+                });
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.weituo.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.weituo.init();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+html,body{background-color:#000;}
+#viewer {
+  position: fixed;
+  z-index: 9998;
+  left: calc(50% - 5rem);
+  top: 0;
+  width: 10rem;
+  height: 100%;
+  background-color: #000;
+  transition: all 0.5s ease-out;
+  -webkit-transition: all 0.5s ease-out;
+  overflow:hidden;
+}
+
+#viewer .navbar {
+  z-index: 9998;
+  background-color: #141417;
+  opacity: 0.99;
+  transition: all 0.4s ease-out;
+  -webkit-transition: all 0.4s ease-out;
+  overflow:hidden;
+}
+
+#viewer .navbar.slideUp {
+  top:-1.2rem;
+  height:1.2rem;
+  padding:0;
+  opacity:0.4;
+  transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+}
+
+#viewer #viewBox {
+  position: absolute;
+  left: calc(50% - 5rem);
+  top: 0;
+  width: 10rem;
+  height:100%;
+}
+
+#viewer #viewBox #imgList {
+  height: 100%;
+  overflow: hidden;
+}
+
+#viewer #viewBox .imgitem {
+  float: left;
+  display: table;
+  width: 10rem;
+  height: 100%;
+}
+
+#viewer #viewBox .imgitem .imgcell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#viewer #viewBox .imgitem img {
+  position:relative;
+  display:block;
+  width: 100%;
+}
+
+#viewer #deleteBox {
+  position: fixed;
+  left: calc(50% - 5rem);
+  bottom: 0;
+  width: 10rem;
+  height: 4.56rem;
+  background-color: #cacaca;
+  transition: all 0.5s ease-out;
+  -webkit-transition: all 0.5s ease-out;
+}
+
+#viewer #deleteBox.hidden {
+  height: 0;
+  overflow: hidden;
+}
+
+#viewer #deleteBox h2 {
+  width: 100%;
+  height: 1.72rem;
+  text-align: center;
+  line-height: 1.72rem;
+  border: 0.013333rem solid #ccc7c3;
+  font-size: 0.32rem;
+  color: #929292;
+}
+
+#viewer #deleteBox .deleteBtn {
+  width: 100%;
+  height: 1.333333rem;
+  text-align: center;
+  line-height: 1.333333rem;
+  font-size: 0.453333rem;
+  color: #333;
+}
+
+#viewer #deleteBox #deleteOk {
+  color: #ee332b;
+  border-bottom: 0.16rem solid #737373;
+}
+
+#viewer.hidden {
+  position: fixed;
+  left: calc(50% + 5rem);
+  top: 0;
+  width: 0rem;
+  overflow: hidden;
+  transition: all 0.1s ease-in;
+  -webkit-transition: all 0.1s ease-in;
+}
+
+#viewer.hidden .navbar {
+  left: calc(50% + 5rem);
+  width: 0rem;
+  padding:0;
+  overflow: hidden;
+}
+
+#viewer.hidden #viewBox {
+  left: calc(50% + 5rem);
+  width: 0rem;
+  overflow: hidden;
+}

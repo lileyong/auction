@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>出价记录</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        /*出价记录样式*/
+        #bidrecord-table{width:100%;border-collapse:collapse;border-spacing:0;}
+        #bidrecord-table td{height:1.07rem;text-align:left;line-height:0.48rem;font-size:0.35rem;color:#999;border-bottom:1px solid #f5f5f5;background-color:#fff;}
+        #bidrecord-table td.red{color:#f72f2f;}
+        #bidrecord-table td:first-child{padding-left:0.45rem;width:0.93rem;}
+        #bidrecord-table td:nth-child(3){width:1.4rem;}
+        #bidrecord-table td:last-child{padding-right:0.45rem;text-align:right;}
+        #bidrecord-table td img{position:relative;top:0.05rem;width:0.67rem;height:0.67rem;border-radius:50%;}
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>出价记录</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="bidrecord-box">
+        <table cellspacing="0" cellpadding="0" id="bidrecord-table" border="0">
+            <tbody id="bidRecordBox"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    var dropLoad = '';
+    var  pageNum = 1;
+    var endGetDataFlag = true,hasMore=false;
+    var lastAuctionPrice = 0;
+    function loadMoreData() {//滑到底部加载更多
+        var scrollTop = $(this).scrollTop()+5;
+        var scrollHeight = $(document).height();
+        var windowHeight = $(this).height();
+        if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+            if(!hasMore)return;//没有更多 不请求数据
+            T.bidRecord.getPriceRecord();
+        }
+    }
+    T.bidRecord = (function(){
+        var expectId = T.Util.getPara('id');//商品期次对应的Id
+        var allCount = T.Util.getPara('allCount');
+        var o = {
+            //程序入口
+            init:function(){
+                o.getPriceRecord();
+            },
+            getPriceRecord:function () {
+                endGetDataFlag = false;
+                var _url = '/order/services/order/priceRecord.json?expectId='+expectId+'&allCount='+allCount+'&limit=20&page='+pageNum;
+                if(pageNum>1){
+                    _url = _url + '&lastAuctionPrice='+lastAuctionPrice;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:_url,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var htmlArr=[],d=data.res_data.value.INFO;
+                        for(var i=0,j=d.length;i<j;i++){
+                            htmlArr.push('<tr><td><img src="'+d[i].USER_PIC+'"></td><td>'+(d[i].NICK_NAME||d[i].USER_MOBILE)+'</td><td class="'+((i==0&&pageNum==1)?"red":"")+'">'+((i==0&&pageNum==1)?"领先":"出局")+'</td><td>'+(d[i].AUCTION_ADDR||"未知区域")+'</td><td>￥'+d[i].AUCTION_PRICE.toFixed(2)+'</td></tr>');
+                            if(i==0&&pageNum==1){lastAuctionPrice=d[i].AUCTION_PRICE};
+                        }
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageNum++;
+                            $(".loaded").remove();
+                        }else{
+                            hasMore = false;
+                        }
+                        if(dropLoad != ''){
+                            $('#bidRecordBox').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(htmlArr.length){
+                            $("html,body").removeClass("white");
+                            $('#bidRecordBox').append(htmlArr.join(''));
+                            if(!hasMore && !$('#bidrecord-box .loaded').length){
+                                $('#bidrecord-box').append('<h2 class="loaded">' + ($('#bidRecordBox tr').length >= 100 ? '已加载最近100条记录':'已加载全部数据') + '</h2>');
+                            }
+                        }else{
+                            $("html,body").addClass("white");
+                            $('#bidRecordBox').append('<tr><td rowspan="5" class="nodata"><i></i><h2>暂无记录</h2></td></tr>');
+                        }
+                        o.bindEvent();
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(data){
+                            tip(data.msg,'error');
+                        }
+                    }
+                })
+            },
+            //事件绑定
+            bindEvent:function(){
+                $(window).off().scroll(loadMoreData);//绑定下滑加载更多
+                $('#main').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageNum = 1;
+                        lastAuctionPrice = 0;
+                        o.getPriceRecord();
+                    },
+                    threshold : 50
+                });
+            }
+        }
+        return {
+            getPriceRecord:o.getPriceRecord,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.bidRecord.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.bidRecord.init();
+        }
+    });
+</script>
+</body>
+</html>

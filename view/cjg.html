@@ -1,0 +1,277 @@
+<style>
+    .cjg-item{position:relative;padding:0 0.4rem;height:3.73333333333rem;background-color:#fff;border-bottom:0.2666666rem solid #f5f5f5;overflow:hidden;}
+
+    .cjg-item:last-child{border-bottom:none;}
+    .cjg-item img{position:absolute;left:0.45rem;top:0.24rem;width:2rem;height:2rem;}
+    .cjgDiv{margin-left: 2.56rem;height: 2.6666666666rem;}
+    .cjgTitle{color: #666;font-size: 0.34666666rem;padding-top: 0.4rem;height: 0.96rem;overflow: hidden;}
+    .cjgCont{position: relative;font-size: 0.32rem;margin-top: .3rem;}
+    .marketPrice{position: absolute;top:0;right: 0;color: #999;text-decoration:line-through;}
+
+    .cjgDjs{height: 1.066666rem;line-height: 1.066666rem;border-top:1px solid #f5f5f5;position: relative;color: #666;}
+    .cjgDjs p:first-child{padding-left: .4rem;}
+    .cjgDjs i{position: absolute;width:0.333333rem;height:0.42rem;top:0.3333rem;left:0;background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAeCAMAAAAIG46tAAAAOVBMVEUAAACampqampqbm5ujo6OZmZmZmZmZmZmampqZmZmampqampqZmZmbm5uampqampqcnJyampqZmZlZgiVsAAAAEnRSTlMA5NkjDJPs88e+sYFkVEk/MbXl6iDRAAAAtElEQVQoz62TSw7DIAxEDZh/Qsjc/7BV0go3BXnVt0ueZA2DoT/Qa7Yx2lz7pHaLgd0fyiXA+OaYXfMGSE7cEWA2+dwMwjEcUJi+4AJ8rAvw9INHeE9OKDRRkO6cMDxLNrgyW4ws5yl2gyXqMOMHQIJBpwq/lh6VMtpaNmSycGvpYCmC15IRn/LiFPkYG24pYyWQIIHqVKwcZZQgSAlSnyD1KcVrV6ZetrYm6oLpq6kvtf4cXp/EC53P8v/2AAAAAElFTkSuQmCC') no-repeat;background-size: 0.333333rem auto;}
+    .cjgDjs em{color:#e00e0e; }
+    .payBtn{position: absolute;top:0.13333333rem;right: 0;border:1px solid #e00e0e;width: 2.4rem;height: 0.8rem;line-height: 0.8rem;border-radius: 0.4rem;text-align: center;color:#e00e0e;font-size: 0.373333rem;}
+    </style>
+
+<div class="content" id="content">
+    <div id="latestdeal-box">
+        <div id="cjg-list"></div>
+    </div>
+    <div class="clearboth"></div>
+</div>
+<script type="text/javascript">
+    T.cjg = (function(){
+        var page = T.Util.getParaHash('page');
+        var dropLoad = '';
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//分页条目
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+        var cjgGoPayFlag = false;
+        var cjgGoPayCommodityId = '';
+        var cjgGoPayExpectId = '';
+        var o = {
+            //程序入口
+            init:function(){
+                o.initPage();//初始化页面
+                o.getCjgData();//获取差价购记录
+                o.bindEvent();//事件绑定
+            },
+            getCommodityInfo:function () {
+                var _url = '/commodity/services/template/QUERY_PRODUCT_INFO.json?commodityId='+cjgGoPayCommodityId+'&expectId='+cjgGoPayExpectId;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:_url,
+                    callback:function(data){
+                        var d = data.res_data[0];
+                        if(d.SUPER_MONEY && d.SUPER_MONEY>0){//还存在购物币 刷新购物币 和 购买价
+                            $('.cjgShopInfo[data-id="'+cjgGoPayCommodityId+'"][data-EXPECT_ID="'+cjgGoPayExpectId+'"]').parent().find(".freeGold").html(d.SUPER_MONEY);//重新赋值购物币
+                            $('.cjgShopInfo[data-id="'+cjgGoPayCommodityId+'"][data-EXPECT_ID="'+cjgGoPayExpectId+'"]').parent().find(".needPay").html(((d.MARKET_PRICE-d.SUPER_MONEY<0)?'0':(d.MARKET_PRICE-d.SUPER_MONEY).toFixed(2)));//重新赋值需要支付多少钱
+                            addTimer('#'+cjgGoPayCommodityId,Math.ceil((d.NEAR_EXPIRES_TIME-(new Date().getTime()+parseInt(T.Storage.get('difTime'))))/1000),'cjg');//重新倒计时
+                        }else{//没有购物币了
+                            $('.cjgShopInfo[data-id="'+cjgGoPayCommodityId+'"][data-EXPECT_ID="'+cjgGoPayExpectId+'"]').parent().remove();
+                            if($('.cjg-item').length==0){
+                                $("#cjg-list").html('<div class="nodata"><i></i><h2>暂无数据~</h2></div>');
+                            }
+                        }
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            viewAgain:function () {
+                if(cjgGoPayFlag){//点击了差价购立即购买
+                    o.getCommodityInfo();
+                }
+            },
+            //初始化页面
+            initPage:function(){
+                if(!T.isNative){$(".clearboth").addClass("h5");}
+                //页面的PV/UV（sycjg_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId": "差价购",
+                    "conductCode": "sycjg_fwl",
+                    "comductDesc": "页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //加载缓存
+            loadCache:function(){
+                var content = T.Storage.get("latestDeal");
+                if(content){
+                    $("#content").html(content);
+                }
+                $('.dropload-up').remove();
+            },
+            //事件绑定
+            bindEvent:function(){
+                $(window).off().scroll(o.loadMoreData);//绑定下滑加载更多
+                $('#content').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getCjgData();
+                    },
+                    threshold : 50
+                });
+                $('#navInfo').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=cjgRule.html');
+                });
+            },
+            //绑定最新成交事件
+            bindLatestDealEvent:function(){
+                $('.cjgShopInfo').off().Touch(function(el){
+                    //各个商品查看详情的点击量（sycjg_djlxq001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId":$(el).data("id"),
+                        "conductCode": "sycjg_djlxq" + $(el).data("id"),
+                        "comductDesc": "各个商品查看详情的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).attr('data-id')+'&isNext=1');
+                });
+                //参与竞拍
+                $(".payBtn").off().Touch(function(el){
+                    //各个商品点击“立即购买”的点击量（sycjg_djlgm001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId":$(el).data("id"),
+                        "conductCode": "sycjg_djlgm" + $(el).data("id"),
+                        "comductDesc": "各个商品点击“立即购买”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    if($(el).hasClass('goAuction')){//去竞拍
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).attr('data-id')+'&isNext=1');
+                    }else{//去购买
+                        var payType = 'cjgPage';
+                        cjgGoPayFlag = true;
+                        cjgGoPayCommodityId = $(el).attr('data-id');
+                        cjgGoPayExpectId = $(el).attr('data-EXPECT_ID');
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/pay.html?commodityId='+$(el).attr('data-id')+'&expectId='+$(el).attr('data-EXPECT_ID')+'&NEW_ORDER_NO='+$(el).attr('data-order_no')+'&payType='+payType);
+                    }
+                });
+            },
+            //日期格式化
+            timeFormat:function(time){
+                if(typeof time == 'string'){
+                    return new Date(time.replace(/-/g,'/')).format("yyyy-MM-dd hh:mm");
+                }else if(typeof time == 'number'){
+                    return new Date(time).format("yyyy-MM-dd hh:mm");
+                }else{
+                    return '--:--';
+                }
+            },
+            //获取差价购记录
+            getCjgData:function(fromMore){
+                tip('加载中...','loading');
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/product/myAuction.json?type=5&page=' + pageIndex + '&limit=' + pageSize,//type 0:全部 1：正在拍 2：我拍中 3：未拍中 4：待付款
+                    callback:function(data){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                            $(".loaded").remove();
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showCjg(d,fromMore);
+                        T.Util.showGoodsRecommend();//显示推荐商品
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".cjg-item").length){
+                                $("#cjg-list").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //计算节省比例
+            getSaveRatio:function(item){
+                if(item.BARGAIN_MONEY && item.MARKET_PRICE){
+                    return (100 - item.BARGAIN_MONEY / item.MARKET_PRICE * 100).toFixed(2)
+                }else{
+                    return '0.00';
+                }
+            },
+            //渲染差价购记录
+            showCjg:function(data,fromMore){
+                var html = [];
+                $.each(data,function(i,item){
+                    var m = '--';
+                    if(!item.TOTAL_GOLD){
+                        m = item.MARKET_PRICE?item.MARKET_PRICE:'--';
+                    }else{
+                        m =((item.MARKET_PRICE-item.TOTAL_GOLD)<0?0:(item.MARKET_PRICE-item.TOTAL_GOLD).toFixed(2));
+                    }
+                    html.push('<div class="cjg-item">\
+                        <div class="cjgShopInfo" data-id="'+item.COMMODITY_ID+'" data-EXPECT_ID="'+item.EXPECT_ID+'" data-order_no="'+item.ORDER_NO+'"><img class="userphoto lozad" src="'+item.COMMODITY_LOGO+'">\
+                        <div class="cjgDiv">\
+                        <div class="cjgTitle">'+(item.COMMODITY_TITLE||item.COMMODITY_NAME)+'</div>\
+                    <div class="cjgCont"><p class="payPrice">购买价 ¥<span class="needPay">'+m+'</span></p><p class="marketPrice">市场价 ¥'+(item.MARKET_PRICE?item.MARKET_PRICE.toFixed(2):"--")+'</p></div>\
+                    </div></div>\
+                    <div class="cjgDjs">');
+
+                    if(item.EXPIRES_GOLD===0 && item.NEAR_EXPIRES_TIME>0){//已过期
+                        html.push('<p><i></i>可用购物币<span class="freeGold">'+item.TOTAL_GOLD+'</span>个：<em>已失效</em></p><p class="payBtn goAuction" data-id="'+item.COMMODITY_ID+'" data-EXPECT_ID="'+item.EXPECT_ID+'">去竞拍</p>\
+                        </div>\
+                        </div>');
+                    }else if(item.EXPIRES_GOLD>0 && item.NEAR_EXPIRES_TIME>0){//有购物币
+                        html.push('<p><i></i>可用购物币<span class="freeGold">'+item.TOTAL_GOLD+'</span>个：<em id="'+item.COMMODITY_ID+'">---</em></p><p class="payBtn" data-id="'+item.COMMODITY_ID+'" data-EXPECT_ID="'+item.EXPECT_ID+'" data-order_no="'+item.ORDER_NO+'">立即购买</p>\
+                        </div>\
+                        </div>');
+                        addTimer('#'+item.COMMODITY_ID,Math.ceil((item.NEAR_EXPIRES_TIME-(new Date().getTime()+parseInt(T.Storage.get('difTime'))))/1000),'cjg');
+                    }else{//没有购物币
+                        html.push('<p class="hide"><i></i>可用购物币<span class="freeGold">'+item.TOTAL_GOLD+'</span>个：<em>---</em></p><p class="payBtn" data-id="'+item.COMMODITY_ID+'" data-EXPECT_ID="'+item.EXPECT_ID+'" data-order_no="'+item.ORDER_NO+'">立即购买</p>\
+                        </div>\
+                        </div>');
+                    }
+
+                    });
+                if(dropLoad != ''){
+                    $("#cjg-list").html('');
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+                if(html.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? $("#cjg-list").append(html.join("")) : $("#cjg-list").html(html.join(""));
+                    if(!hasMore && !$("#cjg-list .loaded").length){
+                       // $("#cjg-list").append('<h2 class="loaded">已加载最近100条成交记录</h2>');
+                    }
+                }else{
+                    if(!fromMore){
+                        $("html,body").addClass("white");
+                        $("#cjg-list").html('<div class="nodata"><i></i><h2>暂无数据~</h2></div>');
+                    }
+                }
+                o.bindLatestDealEvent();
+            },
+            //滑到底部加载更多
+            loadMoreData:function(){
+                if(T.Util.getPara('page')!='cjg.html'){return;}
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(!hasMore)return;//没有更多 不请求数据
+                    o.getCjgData(true);
+                }
+            }
+        }
+        return {
+            viewAgain:o.viewAgain,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.cjg.init();
+    });
+</script>
+
+
+

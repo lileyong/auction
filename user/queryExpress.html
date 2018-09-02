@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>详情</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/buy.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>详情</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="express-box" style="display:none;">
+        <div id="userinfo">
+            <h2 id="userName"><!--王小二--></h2>
+            <p id="tel"><!--132****4668--></p>
+            <p id="address"><!--广东省深圳市南山区科技园--></p>
+        </div>
+        <div id="expresslist" class="hide"></div>
+        <div id="orderinfo">
+            <div class="orderitem"><h2>商品订单号：</h2><p id="ORDER_NO">--</p></div>
+            <div class="orderitem"><h2>成交时间：</h2><p id="PAY_TIME">--</p></div>
+            <div class="orderitem hide" id="orderDescBox"><h2>商品备注：</h2><p id="orderDesc">--</p></div>
+            <div class="orderitem hide" id="logisticsNoBox"><h2>物流订单号：</h2><p id="LOGISTICS_NO">--</p></div>
+            <div class="orderitem hide" id="logisticsNameBox"><h2>物流公司：</h2><p id="LOGISTICS_NAME">--</p></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.queryExpress = (function(){
+        var ORDER_NO = T.Util.getPara('ORDER_NO');
+        var IS_ENTITY = T.Util.getPara('IS_ENTITY');
+        var prompt = T.Util.getPara('prompt');//1:手机  2:QQ  3:会员  4:邮箱'
+        var o = {
+            //程序入口
+            init:function(){
+                o.getOrderInfo();
+            },
+            getOrderInfo:function () {
+                tip("加载中...","loading");
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:'1',
+                    reqUrl:'/order/services/order/deliveryInfo.json?orderNo='+ORDER_NO,
+                    callback:function(data){
+                        pageLoading.hide();
+                        var d = data.res_data.value;
+                        $('#ORDER_NO').html(ORDER_NO);
+                        $('#PAY_TIME').html(new Date(d.PAY_TIME*1).format('YYYY-MM-dd hh:mm'));
+                        if(d.PAY_DESC && !T.Util.isEmpty(d.PAY_DESC)){
+                            $('#orderDesc').html(d.PAY_DESC);
+                            $('#orderDescBox').show();
+                        }
+                        if(IS_ENTITY==1){
+                            $('#userName').html(d.USER_NAME);
+                            $('#tel').html(d.USER_PHONE);
+                            var address = d.AREA ? (d.AREA + d.USER_ADDR) : d.USER_ADDR;
+                            $('#address').html(address);
+                            if(d.LOGISTICS_NAME && d.LOGISTICS_NO){
+                                o.getInfo(d.LOGISTICS_NAME,d.LOGISTICS_NO);
+                                $('#LOGISTICS_NO').html(d.LOGISTICS_NO);
+                                $('#LOGISTICS_NAME').html(d.LOGISTICS_NAME_CN);
+                            }else{
+                                $('#expresslist').html('<div class="nodata"><i></i><h2>暂无物流信息</h2></div>');
+                                $('#LOGISTICS_NO').html('准备发货中');
+                                $('#LOGISTICS_NAME').html('准备发货中');
+                            }
+                            $('#expresslist').show();
+                            $('#logisticsNoBox,#logisticsNameBox').show();
+                            $('#logisticsNoBox').off().Touch(function () {
+                                T.Util.copyToClipboard($('#LOGISTICS_NO').html());
+                            });
+                        }else{
+                            var str = '会员号:';
+                            if(prompt=='1'){
+                                str = '手机号:';
+                            }else if(prompt=='2'){
+                                str = 'QQ号:';
+                            }else if(prompt=='4'){
+                                str = '邮箱地址:';
+                            }else{
+                                str = '会员号:';
+                            }
+                            $('#tel').html(str+d.ORDER_INFO).css({'margin-top':'0','line-height':'2rem','font-size':'.5rem'}).siblings().hide();
+                        }
+                        $("#express-box").show();
+                    },
+                    errorCallback:function(data){
+                        tip(data.msg||Global.neterror);
+                        pageLoading.hide();
+                    }
+                })
+            },
+            getInfo:function (LOGISTICS_NAME,LOGISTICS_NO) {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:'1',
+                    reqUrl:'/query?type='+LOGISTICS_NAME+'&postid='+LOGISTICS_NO,
+                    callback:function(data){
+
+                    },
+                    errorCallback:function(data){
+                        var htmlArr=[];
+                        var d = data.data
+                        if(d&&d.length>0){
+                            for(var i=0 ;i<d.length;i++){
+                                var ftimeArr = d[i].ftime.split(' ');
+                                var timeStr = '';
+                                if(new Date(d[i].ftime).toDateString() === new Date(new Date().getTime()+parseInt(T.Storage.get('difTime'))).toDateString()){//当天
+                                    var timeStr = '上午';
+                                    if(ftimeArr[1].split(':')[0]>=12){
+                                        timeStr = '下午';
+                                    }
+                                }else{
+                                    timeStr = ftimeArr[0].split('-')[1]+'-'+ftimeArr[0].split('-')[2];
+                                }
+                                if(i==0&&data.state==3){//已签收
+                                    htmlArr.push('<div class="express-item success"><div class="express-time"><h2>'+timeStr+'</h2><p>'+ftimeArr[1]+'</p></div>\
+                                            <div class="express-status"><h2>已签收</h2><p>'+d[i].context+'</p></div></div>');
+                                }else{
+                                    htmlArr.push('<div class="express-item"><div class="express-time"><h2>'+timeStr+'</h2><p>'+ftimeArr[1]+'</p></div>\
+                                            <div class="express-status"><h2>运输中</h2><p>'+d[i].context+'</p></div></div>');
+                                }
+                            }
+                        }else{
+                            htmlArr.push('<div class="nodata"><i></i><h2>暂无物流信息</h2></div>')
+                        }
+                        $('#expresslist').html(htmlArr.join(''));
+                    }
+                })
+            },
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+$(document).ready(function () {
+    if (T.isNative) {
+        T.appToH5.init(function () {//初始化事件回调函数
+            T.queryExpress.init();
+        }, function () {//webview再次打开回调函数
+            T.queryExpress.init();
+        }, function () {//webview消失第一视角回调函数
+
+        }, function () {//app退到系统后台回调函数
+
+        }, function () {//app退到系统后台后重新回到app触发的函数
+
+        });
+    } else {
+        T.queryExpress.init();
+    }
+});
+</script>
+</body>
+</html>

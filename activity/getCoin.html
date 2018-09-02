@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#d8313a;">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>免费领赠币</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        #bg {
+            position: absolute;
+            display: block;
+            width:100%;
+        }
+
+        #getCoinList {
+            position: relative;
+            padding-top: 7.733333rem;
+        }
+
+        .getCoinItem {
+            position: relative;
+            margin: 0 auto 0.266667rem auto;
+            width: 9.493333rem;
+            height: 2.693333rem;
+        }
+
+        .getCoinItem .getCoinBtn {
+            position: absolute;
+            right: 0.6rem;
+            top: 1.346667rem;
+            display: inline-block;
+            width: 2.666667rem;
+            height: 0.933333rem;
+            text-align: center;
+            line-height: 0.906667rem;
+            border-radius: 0.466667rem;
+            background-color: #f8534b;
+            font-size: 0.4rem;
+            color: #fff;
+        }
+
+        .getCoinItem .getCoinBtn.disabled{
+            background-color: #999;
+        }
+
+        /*规则样式*/
+        #rule {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        #rule #showRule {
+            position: absolute;
+            right: 0.266667rem;
+            top: 0;
+            width:0.8533334rem;
+            height:1.12rem;
+        }
+
+        #rule #ruleBox {
+            width: 100%;
+            height: 0;
+            background-color: #ff6041;
+            border-radius: 0 0 0.106667rem 0.106667rem;
+            line-height: 0.453333rem;
+            font-size: 0.293333rem;
+            color: #333333;
+            overflow: hidden;
+            transition: all ease-out 0.3s;
+            -webkit-transition: all ease-out 0.3s;
+        }
+
+        #rule.show {
+            width: 100%;
+            height: 100%;
+        }
+
+        #rule.show #ruleBox {
+            height: 10.4rem;
+        }
+
+        #rule #ruleBox #ruleTitle {
+            display: block;
+            margin: 0.546667rem auto 0 auto;
+            width: 8.306667rem;
+            height: 1.08rem;
+        }
+
+        #rule #ruleBox #ruleText {
+            padding: 0.4rem;
+            height:9.6rem;
+            line-height: 0.64rem;
+            font-size: 0.3733333rem;
+            color:#fff;
+        }
+
+        #rule #ruleBox #ruleTextWrap{
+            height:9.6rem;
+            overflow: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #rule #ruleUp {
+            display:none;
+            float: right;
+            margin-right: 0.266667rem;
+            width:0.8533334rem;
+            height:1.12rem;
+        }
+
+    </style>
+</head>
+<body id="zuli">
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>免费领赠币</h1>
+</div>
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <img id="bg" src="../img/activity/getCoin/bg.png">
+        <div id="getCoinList">
+            <div class="getCoinItem" id="reg"></div>
+            <div class="getCoinItem" id="newAuction"></div>
+            <div class="getCoinItem" id="auction"></div>
+            <div class="getCoinItem" id="sign"><em class="getCoinBtn">去签到</em></div>
+            <div class="getCoinItem" id="share"><em class="getCoinBtn">去分享</em></div>
+            <div class="getCoinItem" id="invite"><em class="getCoinBtn">去邀请</em></div>
+            <div class="getCoinItem" id="shaidan"><em class="getCoinBtn">去评论</em></div>
+        </div>
+        <div id="rule">
+            <img src="../img/activity/getCoin/ruledown.png" id="showRule">
+            <div id="ruleBox">
+                <div id="ruleText"><div id="ruleTextWrap">
+                    <p>1、为了让用户更方便、快速的获得赠币，完成对应的任务项即可免费领取赠币；</p>
+                    <p>2、各任务项的规则具备说明如下，每项的规则可具体到对应活动页面查看；</p>
+                    <p>a、每注册成为一个新用户时，即会得到5赠币；</p>
+                    <p>b、每个新用户在新手专享页面连续拍同一个商品3次及以上即可获取1赠币；</p>
+                    <p>c、每个用户首次竞拍成功并完成付款，可获得2赠币；</p>
+                    <p>d、每次进行签到，可获取至少1赠币，还会有惊喜奖励哦；</p>
+                    <p>e、每日进行一次分享，可获得1赠币</p>
+                    <p>f、每日邀请好友，当天可获取最高30赠币/天</p>
+                    <p>g、对拍中的订单进行晒单，根据晒单内容可获得赠币；</p>
+                    <p>3、所有赠送的奖励依赠币的方式发放，可在"个人中心-帐户明细-赠币"查看；</p>
+                    <p>4、如存在恶意、非法手段作弊的用户，平台将有权取消资格，或要求用户提供认证信息进行核实，包括不限于提供手持身份证信息照片或视频等信息，并惩罚并收回不利所得的商品。</p>
+                </div></div>
+            </div>
+            <img src="../img/activity/getCoin/ruleup.png" id="ruleUp">
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.getCoin = (function(){
+
+        var o = {
+            init:function(){
+                o.getTaskList();
+                o.bindEvent();
+                //banner内每个页面的PV/UV（banner_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"banner",
+                    "conductCode": "banner_fwl",
+                    "comductDesc": "banner内每个页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //事件绑定
+            bindEvent:function(){
+                var userinfo = T.Storage.get('userinfo');
+                $(".getCoinItem").off().Touch(function(){
+                    //各个任务按钮的点击量（banner_rw1、banner_rw2...按顺序以此类推）
+                    T.Util.setUserBehaviorList({
+                        "busId":"新手任务",
+                        "conductCode": "banner_rw"+($(this).index()+1),
+                        "comductDesc": "各个任务按钮的点击量",
+                        "time": new Date().getTime()
+                    });
+                    var id = $(this).attr("id");
+                    if($(this).find("em").is(".disabled")){
+                        return false;
+                    }else if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/reg.html?from=activity&goNewUser=1');
+                    }else if(id == 'reg'){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/reg.html?from=activity&goNewUser=1');
+                    }else if(id == 'newAuction'){
+                        if($(this).find("em").is(".finish")){
+                            o.receiveCoin();
+                        }else{
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUser.html');
+                        }
+                    }else if(id == 'auction'){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                    }else if(id == 'sign'){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/sign.html');
+                    }else if(id == 'share'){
+                        T.Util.thirdShare({
+                            "type":"native",
+                            "title":T.Util.getShareText()["title"],
+                            "description":T.Util.getShareText()["description"],
+                            "icon":T.Util.getAppLogo(),
+                            "url":T.Util.getDownloadUrl()
+                        },function(result){
+
+                        });
+                    }else if(id == 'invite'){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/invite.html');
+                    }else if(id == 'shaidan'){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/myOrder.html?type=payOk');
+                    }
+                });
+                //显示规则
+                $("#showRule").off().Touch(function(){
+                    $("#showRule").hide();
+                    $("#ruleUp").show();
+                    $("#rule").addClass("show");
+                    T.Util.preventDefault();
+                });
+                //收起规则
+                $("#ruleUp").off().Touch(function(){
+                    $("#showRule").show();
+                    $("#ruleUp").hide();
+                    $("#rule").removeClass("show");
+                    T.Util.unPreventDefault();
+                });
+                //点击空白区域收起规则
+                $("#rule").bind("touchstart",function(ev){
+                    if($(ev.target).is("#rule")){
+                        $("#showRule").show();
+                        $("#ruleUp").hide();
+                        $("#rule").removeClass("show");
+                        T.Util.unPreventDefault();
+                    }
+                });
+            },
+            //获取任务列表
+            getTaskList:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/info/taskList.json',
+                    callback:function(data){
+                        var value = data.res_data.value||[];
+                        $.each(value,function(i,item){
+                            if(item.TYPE == 1){//新人注册享5赠币
+                                $("#reg").html('<em class="getCoinBtn' + (item.COU&&item.COU>=1?' disabled':'') + '">' + (item.COU&&item.COU>=1?' 已领取':'去注册') + '</em>');
+                            }else if(item.TYPE == 2){//首次拍中付款送2赠币
+                                $("#auction").html('<em class="getCoinBtn' + (item.COU&&item.COU>=1?' disabled':'') + '">' + (item.COU&&item.COU>=1?' 已领取':'去竞拍') + '</em>');
+                            }else if(item.TYPE == 7){//新手页连续拍同一商品3次
+                                $("#newAuction").html('<em class="getCoinBtn' + (item.IS_FINISH&&item.IS_FINISH==1?' finish':'') + (item.IS_RECIVE&&item.IS_RECIVE==1?' disabled':'') + '">' + (item.COU&&item.COU>=1?' 已领取':'来领取') + '</em>');
+                            }
+                        });
+                    },
+                    errorCallback:function(data){
+                        tip(data.msg);
+                    }
+                });
+            },
+            //领取奖励
+            receiveCoin:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/info/reciveTaskReward.json?taskId=7',
+                    callback:function(data){
+                        tip("领取成功！");
+                        $("#newAuction .getCoinBtn").addClass("disabled");
+                    },
+                    errorCallback:function(data){
+                        tip(data.msg);
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.getCoin.init();
+            },function () {//webview再次打开回调函数
+                T.getCoin.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.getCoin.init();
+        }
+    });
+</script>
+</body>
+</html>

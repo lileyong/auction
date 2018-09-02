@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>选择银行卡</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>选择银行卡</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="selectbankcard-box">
+        <h2 class="head">银行卡</h2>
+        <div id="bankcard-list">
+            <!--<div class="bankcard-item default"><h2>工商银行（尾号：8888）</h2><p>储蓄卡</p></div>
+            <div class="bankcard-item"><h2>招商银行（尾号：8888）</h2><p>储蓄卡</p></div>
+            <div class="bankcard-item invalid"><h2>农村信用社（尾号：8888）</h2><p>储蓄卡</p></div>-->
+        </div>
+        <div id="addbankcard" style="display:none;"><h2>添加银行卡</h2></div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.selectBankCard = (function(){
+        var o = {
+            //程序入口
+            init:function(){
+                o.loadCache();
+                o.getBankCardList();
+                o.bindEvent();
+            },
+            //加载本地缓存
+            loadCache:function(){
+                var bankCardList = T.Storage.get('bankCardList');
+                if(bankCardList && bankCardList.length){
+                    o.showBankCard(bankCardList);
+                }
+            },
+            //获取用户银行卡列表
+            getBankCardList:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/bankCardList.json',
+                    callback:function(json){
+                        var data = json.res_data.value.INFO;
+                        o.showBankCard(data);
+                        T.Storage.set('bankCardList',data);
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            //渲染用户银行卡列表
+            showBankCard:function(data){
+                var htmlArr = [];
+                for(var i=0;i<data.length;i++){
+                    var clsStr = parseInt(data[i].IS_VALIDATE) == 1 ? (parseInt(data[i].IS_DEFAULT) == 1 ? 'default' : '') : 'invalid';
+                    htmlArr.push('<div class="bankcard-item '+clsStr+'" data-id=' + data[i].ID + '><h2>'+data[i].BANK_CNAME+'（尾号：'+data[i].CARD_NO+'）</h2><p>储蓄卡</p></div>');
+                }
+                $('#bankcard-list').html(htmlArr.join(''));
+                //勾选选中的银行卡
+                var select_id = T.Util.getPara('select_id');
+                if(select_id){
+                    for(var i = 0;i < $(".bankcard-item").length;i++){
+                        if($(".bankcard-item").eq(i).attr("data-id") == select_id){
+                            $(".bankcard-item").eq(i).addClass("default").siblings().removeClass("default");
+                        }
+                    }
+                }
+                if(data.length){
+                    $(".head,#bankcard-list,#addbankcard").show();
+                }else{
+                    $(".head,#bankcard-list").hide();
+                    $("#addbankcard").show();
+                }
+                //超过5张不再显示添加按钮
+                if(data.length < 5){
+                    $("#addbankcard").show();
+                }else{
+                    $("#addbankcard").hide();
+                }
+                o.bindEvent();
+            },
+            //事件绑定
+            bindEvent:function(){
+                //添加银行卡
+                $('#addbankcard').off().Touch(function (el) {
+                    var userinfo = T.Storage.get('userinfo');
+                    if(userinfo.realName && userinfo.idCard){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/addBankCard.html');
+                    }else{
+                        confirm({html:"请先进行实名认证",okFun:function(){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/identityInfo.html');
+                        },cancelFun:function(){
+                            T.Util.back();
+                        }});
+                    }
+                });
+                //选择银行卡
+                $(".bankcard-item").not(".invalid").off().Touch(function(){
+                    $(this).addClass("default").siblings().removeClass("default");
+                    T.Storage.set('selectedCard',$(this).attr("data-id"))
+                    T.Util.back();
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.selectBankCard.init();
+            }, function () {//webview再次打开回调函数
+                T.selectBankCard.init();
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.selectBankCard.init();
+        }
+    });
+</script>
+</body>
+</html>

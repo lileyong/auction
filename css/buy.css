@@ -1,0 +1,193 @@
+/*晒单页样式*/
+#shareorder-box{background-color:#fff;}
+.shareorder-item{position:relative;min-height:2rem;margin:0 0.45rem;background-color:#fff;border-bottom:1px solid #dfdfdf;overflow:hidden;}
+.shareorder-item .userphoto{position:absolute;top:0.33rem;width:1.33rem;height:1.33rem;}
+.shareorder-item:last-child{border-bottom:none;}
+.shareorder-item .username{padding-left:1.63rem;margin-top:0.067rem;line-height:1rem;font-size:0.37rem;color:#f72f2f;}
+.shareorder-item .comment{padding-left:1.63rem;line-height:0.53rem;font-size:0.37rem;color:#333;}
+.shareorder-item p{padding-left:1.63rem;line-height:0.45rem;font-size:0.32rem;color:#999;}
+.shareorder-item .goods{margin-top:0.053rem;}
+.shareorder-item .imglist img{width:2.3rem;height:2.3rem;margin:0.2rem 0.19rem 0.11rem 0;}
+.shareorder-item .imglist img:first-child{padding-left:1.63rem;}
+.shareorder-item .imglist img:last-child{margin-right:0;}
+.shareorder-item .bottom-info{position:relative;top:-0.07rem;overflow:hidden;}
+.shareorder-item .bottom-info p{line-height:0.73rem;font-size:0.32rem;}
+.shareorder-item .bottom-info p:first-child{float:left;}
+.shareorder-item .bottom-info p:last-child{float:right;color:#008aff;}
+
+/*我的委托页样式*/
+#myweituo-head{position:relative;height:2.92rem;border-bottom:1px solid #f72f2f;background-color:#fff;overflow:hidden;}
+#myweituo-head h2{margin-top:0.28rem;text-align:center;line-height:0.45rem;font-size:0.32rem;color:#666;}
+#myweituo-head p{text-align:center;line-height:0.93rem;font-size:0.64rem;color:#f72f2f;}
+#myweituo-head em{display:inline-block;width:2.13rem;height:0.67rem;text-align:center;line-height:0.67rem;font-size:0.35rem;color:#fff;border-radius:0.335rem;}
+#myweituo-head em#drawing{position:absolute;left:calc(50% - 2.73rem);bottom:0.4rem;background-color:#ffab03;}
+#myweituo-head em#exchange{position:absolute;left:calc(50% + 0.6rem);bottom:0.4rem;background-color:#f72f2f;}
+#myweituo-list{margin-top:0.15rem;}
+.myweituo-item{position:relative;height:2.67rem;background-color:#fff;border-bottom:1px solid #f5f5f5;overflow:hidden;}
+.myweituo-item img{position:absolute;left:0.45rem;top:0.335rem;width:2rem;height:2rem;}
+.myweituo-item h2{padding-left:2.93rem;line-height:0.67rem;font-size:0.37rem;color:#666;}
+.myweituo-item h2.price{margin-top:0.64rem;}
+.myweituo-item i{position:absolute;right:0.53rem;top:0.47rem;display:inline-block;width:1.73rem;height:1.73rem;}
+.myweituo-item i.doing{background:url(../img/usercenter/weituo_doing.png) 0 0 / 100% 100% no-repeat;}
+.myweituo-item i.success{background:url(../img/usercenter/weituo_success.png) 0 0 / 100% 100% no-repeat;}
+.myweituo-item i.failed{background:url(../img/usercenter/weituo_failed.png) 0 0 / 100% 100% no-repeat;}
+
+/*查询快递进度页样式*/
+#express-box #userinfo {margin-bottom: 0.266667rem;width: 100%;min-height: 2rem;background-color: #fff;overflow: hidden;}
+#express-box #userinfo h2 {float: left;margin-top: 0.333333rem;padding-left: 0.453333rem;line-height: 0.533333rem;font-size: 0.4rem;color: #333333;}
+#express-box #userinfo p#tel {float: left;margin-top: 0.333333rem;padding-left: 0.533333rem;line-height: 0.533333rem;font-size: 0.4rem;color: #333333;}
+#express-box #userinfo p#address {position: relative;clear: both;padding: 0.186667rem 0.24rem 0.1866667rem 1.04rem;line-height: 0.533333rem;font-size: 0.346667rem;color: #666666;overflow: hidden;}
+#express-box #userinfo p#address:before {content: '';position: absolute;left: 0.346667rem;top: 0.2rem;display: inline-block; background: url('../img/sprite.png') no-repeat -2.48rem -11.146667rem;background-size: 13.226667rem 11.946667rem;width: 0.533333rem;height: 0.533333rem;}
+#express-box #expresslist {margin-bottom: 0.266667rem;padding-top: 0.56rem;background-color: #fff;}
+#express-box .express-item{height:2rem;}
+#express-box .express-item .express-time{float:left;position:relative;width:2.35rem;height:100%;}
+#express-box .express-item .express-time h2{position:relative;top:-0.11rem;text-align:center;line-height:0.53rem;font-size:0.37rem;color:#999;}
+#express-box .express-item .express-time p{position:relative;top:-0.11rem;text-align:center;line-height:0.53rem;font-size:0.27rem;color:#999;}
+#express-box .express-item .express-time:before{content:'';position:absolute;left:2.13rem;top:0;display:inline-block;width:2px;height:2rem;background-color:#efefef;}
+#express-box .express-item .express-time:after{content:'';position:absolute;left:1.95rem;top:0;display:inline-block;width:0.4rem;height:0.4rem;background:url(../img/usercenter/express_ing.png) 0 0 / 100% 100% no-repeat;}
+#express-box .express-item.success .express-time:after{background:url(../img/usercenter/express_ok.png) 0 0 / 100% 100% no-repeat;}
+#express-box .express-item.success *{color:#f72f2f!important;}
+#express-box .express-item .express-status{float:left;width:calc(100% - 2.35rem);height:100%;}
+#express-box .express-item .express-status h2{position:relative;top:-0.11rem;padding-left:0.37rem;line-height:0.53rem;font-size:0.4rem;color:#999;}
+#express-box .express-item .express-status p{position:relative;top:-0.11rem;padding-left:0.37rem;margin-top:0.13rem;line-height:0.53rem;font-size:0.32rem;color:#999;}
+#express-box .orderitem {clear: both;padding-left: 0.453333rem;line-height: 0.533333rem;font-size: 0.32rem;color: #666666;background-color: #fff;overflow: hidden;}
+#express-box .orderitem h2 {float: left;}
+#express-box .orderitem p {float: left;}
+#express-box #orderinfo{background-color:#fff;padding:0.2rem 0;}
+
+/*添加晒单页样式*/
+#addshaidan-box {
+    background-color: #fff;
+    overflow: hidden;
+}
+
+#addshaidan-textarea {
+    position: relative;
+    width: 100%;
+    height: 5.013333rem;
+    background-color: #F6F6F6;
+}
+
+#shaidan-comment {
+    padding: 0.4rem 0.45rem;
+    width: 100%;
+    height: 4.013333rem;
+    line-height: 0.53rem;
+    background-color: transparent;
+    font-size: 0.37rem;
+    color: #333;
+    border: none;
+}
+
+#shaidan-comment::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: #a5a5a5;
+}
+
+#shaidan-comment:-moz-placeholder,
+textarea:-moz-placeholder {
+    color: #a5a5a5;
+}
+
+#shaidan-comment::-moz-placeholder,
+textarea::-moz-placeholder {
+    color: #a5a5a5;
+}
+
+#shaidan-comment:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+    color: #a5a5a5;
+}
+
+#shaidanTips {
+    position: absolute;
+    right: 0.426667rem;
+    bottom: 0.266667rem;
+    padding-left: 0.733333rem;
+    padding-right: 0.32rem;
+    max-width: calc(100% - 1.9066667rem);
+    line-height: 0.56rem;
+    background-color: #BFBFBF;
+    border-radius: 0.28rem;
+    font-size: 0.32rem;
+    color: #666666;
+}
+
+#shaidanTips:before {
+    content: '';
+    position: absolute;
+    left: 0.32rem;
+    top: 0.1rem;
+    display: inline-block;
+    width: 0.28rem;
+    height: 0.36rem;
+    background: url(../img/usercenter/shaidanTips.png) -0.06rem -0.02rem / 0.4rem 0.4rem no-repeat;
+}
+
+#shaidanTips em {
+    color: #fd2b2b;
+}
+
+#addshaidan-imglist {
+    margin: 0 0.45rem;
+    min-height: 2.11rem;
+    overflow: hidden;
+}
+
+#addshaidan-imglist .imgitem {
+    position: relative;
+    float: left;
+    position: relative;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin: 0.546667rem 0.21rem 0.546667rem 0;
+}
+
+#addshaidan-imglist .imgitem:last-child {
+    margin-right: 0;
+}
+
+#addshaidan-imglist .imgitem .delete {
+    position: absolute;
+    right: -0.24rem;
+    top: -0.24rem;
+    display: inline-block;
+    width: 0.48rem;
+    height: 0.48rem;
+    background: url(../img/usercenter/deleteImg.png) 0 0 / 100% 100% no-repeat;
+}
+
+#addshaidan-imglist .imgitem img {
+    width: 100%;
+    height: 100%;
+}
+
+#addshaidan-star {
+    margin: 0 0.45rem;
+    height: 0.613333rem;
+}
+
+#addshaidan-star h2 {
+    float: left;
+    line-height: 0.613333rem;
+    font-size: 0.426667rem;
+    color: #666;
+}
+
+#addshaidan-star p {
+    float: left;
+    margin-left: 0.173333rem;
+    height: 100%;
+}
+
+#addshaidan-star p i {
+    float: left;
+    display: block;
+    width: 0.613333rem;
+    height: 100%;
+    background: url(../img/usercenter/star_white.png) left center / 0.44rem 0.426667rem no-repeat;
+}
+
+#addshaidan-star p i.star {
+    background: url(../img/usercenter/star_red.png) left center / 0.44rem 0.426667rem no-repeat;
+}

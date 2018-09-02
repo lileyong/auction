@@ -1,0 +1,408 @@
+<style>
+    #auctionlist-box {
+        overflow: hidden;
+    }
+
+    #auctionlist-tab {
+        position: fixed;
+        z-index: 99;
+        width: 10rem!important;
+        height: 1.066667rem;
+        background-color: #fff;
+        border-bottom: 0.0533333rem solid #f5f5f5;
+        overflow: hidden;
+    }
+
+    #auctionlist-tabwrapper {
+        margin: 0 0.453333rem;
+        height: 1.066667rem;
+        overflow: hidden;
+        white-space:nowrap;
+    }
+
+    #auctionlist-tab em {
+        float: left;
+        display: inline-block;
+        min-width: 1.026667rem;
+        line-height: 1.066667rem;
+        padding-right: 0.4rem;
+        font-size: 0.373333rem;
+        color: #666;
+    }
+    #auctionlist-tab em.on{color: #f72f2f;}
+    #auctionlist-tab em:last-child {
+        padding-right: 0;
+    }
+
+    #auctionlist {
+        margin-top: 1.08rem;
+    }
+
+</style>
+<div class="content" id="content">
+    <div id="auctionlist-box">
+        <div id="auctionlist-tab" style="display:none;"><div id="auctionlist-tabwrapper"></div></div>
+        <div id="auctionlist">
+            <ul class="shopBox" id="shopBox"></ul>
+        </div>
+    </div>
+</div>
+<script>
+    T.auctionList = (function(){
+        var titleList = {'hot':'全部热拍','pre':'预约拍','collect':'我的收藏','intelligent':'智能推荐','my':'我在拍'};
+        var type = T.Util.getPara('type')||'hot';
+        var isLoadIscroll = false;//是否加载iscroll插件
+        var dropLoad = '';
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//请求条目
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+        var colId = '';
+
+        var o = {
+            init:function(){
+                pageIndex = 1;//分页索引
+                $("title,#navtitle").text(titleList[type]);
+                if(type=='hot'||type=='intelligent'||type=='pre'){
+                    o.getShopType();
+                }else{
+                    $('#auctionlist-tab').hide();
+                    $('#auctionlist').css('margin-top',0);
+                    if(type=='collect'){
+                        o.getMyFavorite();
+                    }else if(type=='my'){
+                        o.getMyAuction();
+                    }
+                }
+                o.bindEvent();
+                //页面的PV/UV（sywzp_fwl）
+                var conductCode = {'hot':'zzrp_fwl','pre':'syyyp_fwl','collect':'wdsc_fwl','intelligent':'zntj_fwl','my':'sywzp_fwl'};
+                T.Util.setUserBehaviorList({
+                    "busId":"PV/UV",
+                    "conductCode": conductCode[type],
+                    "comductDesc": "页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            bindEvent:function(){
+                $(window).off().scroll(o.loadMoreData);//绑定下滑加载更多
+                $('#auctionlist').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        if(type=='collect'){
+                            o.getMyFavorite();
+                        }else if(type=='my'){
+                            o.getMyAuction();
+                        }else{
+                            o.getShopType();
+                        }
+
+                    },
+                    threshold : 50
+                });
+                $("#auctionlist-tabwrapper em").off().Touch(function(el){
+                    if($(el).hasClass("on")){return;}
+                    o.tabSwitch($(el).index());
+                });
+            },
+            //加载iscroll插件
+            loadIscroll:function(callback){
+                if(!isLoadIscroll){
+                    T.Util.jsLoad('../js/iScroll.js',function(){
+                        isLoadIscroll = true;
+                        callback && callback();
+                    });
+                }else{
+                    callback && callback();
+                }
+            },
+            tabScroll:function(startX){
+                $("#auctionlist-tab").width(window.innerWidth);
+                var tabs = $("#auctionlist-tabwrapper em");
+                var width = 68;
+                $.each(tabs,function(i,item){
+                    width += item.offsetWidth;
+                });
+                $("#auctionlist-tabwrapper").css({width:width});
+                window.auctionListScroll = new iScroll('#auctionlist-tab', {bounce: true,scrollX:true,scrollY: false,startX:startX});
+                auctionListScroll.refresh();
+                setTimeout(function() {
+                    auctionListScroll.refresh();
+                },200);
+            },
+            //加载更多数据
+            loadMoreData:function(){
+                if(T.Util.getPara('page')!='auctionList.html'){return;}
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(hasMore){
+                        if(type=='collect'){
+                            o.getMyFavorite(true);
+                        }else if(type=='my'){
+                            o.getMyAuction(true);
+                        }else{
+                            o.getAuctionList(true);
+                        }
+                    }
+                }
+            },
+            getShopType:function (fromMore) {//
+                tip("加载中...","loading");
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/shop/shopType.json?type='+(type=='hot'?3:type=='pre'? 4:2)+'&page='+pageIndex+'&limit=10',//商城类别列表1：//商城 2智能推荐 3/热拍 4/预约拍
+                    callback:function(data){
+                        var htmlArr=[],d=data.res_data.value.COL_LIST;
+                        for(var i=0;i<d.length;i++){
+                            if(i==0){htmlArr.push('<em' + (colId?'':' class="on"') + '>全部</em>')};
+                            htmlArr.push('<em data-id="'+d[i].COLUMN_ID+'"' + (colId && colId==d[i].COLUMN_ID ?' class="on"':'') + '>'+d[i].COLUMN_NAME+'</em>');
+                        }
+                        if(htmlArr.length) {
+                            var style = $('#auctionlist-tabwrapper').attr("style");
+                            var translateX = T.Util.getTranslate("#auctionlist-tabwrapper")[0]||0;
+                            $('#auctionlist-tab').show();
+                            $('#auctionlist-tabwrapper').html(htmlArr.join('')).attr("style",style).show();
+                        }else{
+                            $('#auctionlist-tab').hide();
+                        }
+                        o.loadIscroll(function(){
+                            o.tabScroll(translateX);
+                        });
+                        $('#auctionlist-tabwrapper em').off().Touch(function (el) {
+                            if($(el).hasClass('on')){return;}
+                            $("#intelligentBox").hide();
+                            $(el).addClass('on').siblings().removeClass('on');
+                            $('#shopBox').html('');
+                            pageIndex = 1;
+                            colId = $(el).attr('data-id');
+                            o.getAuctionList();
+                        });
+                        if(colId){
+                            o.getAuctionList(fromMore);
+                        }else{
+                            pageLoading.hide();
+                            var  info  = data.res_data.value.INFO;
+                            if(data.res_data.value.ISEND==2){//还有更多
+                                hasMore = true;
+                                pageIndex++;
+                            }else{
+                                hasMore = false;
+                            }
+                            o.showAuctionList(info,fromMore);
+                        }
+                        if(type=='my'||type=='pre'||type=='collect'){
+                            T.Util.showGoodsRecommend();
+                        }
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $("#auctionlist-box").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                })
+            },
+            //获取竞拍列表
+            getAuctionList:function(fromMore){
+                endGetDataFlag = false;
+                tip('加载中...','loading');
+                var _url = '/commodity/services/shop/shopType.json?type='+(type=='hot'? 3:type=='pre'? 4:2)+'&page='+pageIndex+'&limit=10';
+                if(colId && !T.Util.isEmpty(colId)){
+                    _url = _url+'&colId='+colId;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:_url,
+                    callback:function(json){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var data = json.res_data.value.INFO;
+                        if(json.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showAuctionList(data,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $("#auctionlist-box").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染竞拍列表
+            showAuctionList:function(data,fromMore){
+                var htmlArr = T.Util.doShopListHtml(data);
+                if(dropLoad != ''){
+                    $('#shopBox').html('');
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+                if(htmlArr.length){
+                    $("html,body").removeClass("white");
+                    $('#shopBox').addClass(T.Util.getPara("type")).append(htmlArr.join(""));
+                    T.Util.shopListClick();
+                }else{
+                    if(!fromMore){
+                        $("html,body").addClass("white");
+                        $('#shopBox').addClass(T.Util.getPara("type")).html('<li class="nodata ' + T.Util.getParaHash('type') + '"><i></i><h2>暂无数据~</h2>' + (type == 'hot' ? '' : '<div class="btn">立即去竞拍</div>') + '</li>');
+                        $(".nodata .btn").off().Touch(function(){
+                            var conductCode = "",comductDesc = "";
+                            var type = T.Util.getPara('type');
+                            if(type == 'my'){
+                                conductCode = "sywzp_ljjp";
+                                comductDesc = "无“我在拍”商品时，“立即去竞拍”的点击量";
+                            }else if(type == "collect"){
+                                conductCode = "wdsc_ljjp";
+                                comductDesc = "无收藏商品时，“立即去竞拍”按钮点击量";
+                            }
+                            //“立即去竞拍”的点击量
+                            T.Util.setUserBehaviorList({
+                                "busId":"我在拍",
+                                "conductCode": conductCode,
+                                "comductDesc": comductDesc,
+                                "time": new Date().getTime()
+                            });
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                        });
+                    }
+                }
+                $("#intelligentBox").show();
+                lozad().observe();
+            },
+            getMyAuction:function (fromMore) {//获取我在拍的商品
+                tip("加载中...","loading");
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type: 'get',
+                    errorType: 1,
+                    reqUrl: '/commodity/services/product/myAuction.json?page=' + pageIndex + '&limit=10&type=1',//type 0:全部 1：正在拍 2：我拍中 3：未拍中 4：待付款
+                    callback: function (data) {
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO;
+                        if (data.res_data.value.ISEND == 2) {//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        } else {
+                            hasMore = false;
+                        }
+                        o.showAuctionList(d,fromMore);
+                        if(type=='my'||type=='pre'||type=='collect'){
+                            T.Util.showGoodsRecommend();
+                        }
+                    },
+                    errorCallback: function (data,xhr,textStatus) {
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $("#auctionlist-box").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            getMyFavorite:function (fromMore) {//获取我收藏的商品
+                tip("加载中...","loading");
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/product/myFavorite.json?page='+pageIndex+'&limit=10',
+                    callback:function(data){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var d=data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showAuctionList(d,fromMore);
+                        if(type=='my'||type=='pre'||type=='collect'){
+                            T.Util.showGoodsRecommend();
+                        }
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $("#auctionlist-box").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                })
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.auctionList.init();
+    });
+</script>
+
+

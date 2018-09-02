@@ -1,0 +1,355 @@
+.icon-favorite {
+  background: url('../img/sprite.png') no-repeat -0.8rem -11.146667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.586667rem;
+  height: 0.586667rem;
+  display: inline-block;
+}
+.icon-favoriteOn {
+  background: url('../img/sprite.png') no-repeat -11.88rem -10.266667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.586667rem;
+  height: 0.586667rem;
+  display: inline-block;
+}
+.pageType p:nth-child(1) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem -4.666667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p.on:nth-child(5) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem -9.333333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p.on:nth-child(1) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem -6.533333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p:nth-child(2) em {
+  background: url('../img/sprite.png') no-repeat -10.84rem -4rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p.on:nth-child(2) em {
+  background: url('../img/sprite.png') no-repeat -10.84rem -6.8rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p:nth-child(3) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem 0;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p.on:nth-child(3) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem -0.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p:nth-child(4) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem -1.866667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p.on:nth-child(4) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem -7.466667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.pageType p:nth-child(5) em {
+  background: url('../img/sprite.png') no-repeat -11.88rem -8.4rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.icon-icon-daipai {
+  background: url('../img/sprite.png') no-repeat -10.84rem -3.12rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.746667rem;
+  height: 0.613333rem;
+  display: inline-block;
+}
+.icon-index1 {
+  background: url('../img/sprite.png') no-repeat 0 -10.4rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.066667rem;
+  height: 0.48rem;
+  display: inline-block;
+}
+
+.icon-index11 {
+  background: url('../img/sprite.png') no-repeat -6.906667rem -11.146667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.426667rem;
+  height: 0.48rem;
+  display: inline-block;
+}
+
+.icon-index12 {
+  background: url('../img/sprite.png') no-repeat -4.053333rem -11.146667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.453333rem;
+  height: 0.48rem;
+  display: inline-block;
+}
+
+.icon-index13 {
+  background: url('../img/sprite.png') no-repeat -4.773333rem -11.146667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.453333rem;
+  height: 0.48rem;
+  display: inline-block;
+}
+
+.icon-index14 {
+  background: url('../img/sprite.png') no-repeat -6.053333rem -7.6rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.453333rem;
+  height: 0.293333rem;
+  display: inline-block;
+}
+
+.icon-index2 {
+  background: url('../img/sprite.png') no-repeat -8.92rem -5.88rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: inline-block;
+}
+
+.icon-index3 {
+  background: url('../img/sprite.png') no-repeat -1.466667rem -8.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: inline-block;
+}
+
+.icon-index4 {
+  background: url('../img/sprite.png') no-repeat 0 -8.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: inline-block;
+}
+
+.icon-index5 {
+  background: url('../img/sprite.png') no-repeat -2.933333rem -8.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: inline-block;
+}
+
+.icon-index6 {
+  background: url('../img/sprite.png') no-repeat -4.4rem -8.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: inline-block;
+}
+
+.icon-index7 {
+  background: url('../img/sprite.png') no-repeat -6.213333rem -11.146667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.426667rem;
+  height: 0.48rem;
+  display: inline-block;
+}
+
+.icon-index8 {
+  background: url('../img/sprite.png') no-repeat -4.986667rem -7.6rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.8rem;
+  height: 0.293333rem;
+  display: inline-block;
+}
+
+.icon-leaduserflag {
+  background: url('../img/sprite.png') no-repeat -3.306667rem 0;
+  background-size: 13.226667rem 11.946667rem;
+  width: 5.346667rem;
+  height: 1.36rem;
+  display: inline-block;
+}
+
+.icon-malltitle_left {
+  background: url('../img/sprite.png') no-repeat -8.92rem -3.213333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.653333rem;
+  height: 1.066667rem;
+  display: inline-block;
+}
+
+.icon-malltitle_right {
+  background: url('../img/sprite.png') no-repeat -8.92rem -4.546667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 1.653333rem;
+  height: 1.066667rem;
+  display: inline-block;
+}
+
+.icon-mine1 {
+  background: url('../img/sprite.png') no-repeat -8.453333rem -8.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.773333rem;
+  height: 0.773333rem;
+  display: inline-block;
+}
+
+.icon-mine10 {
+  background: url('../img/sprite.png') no-repeat -10.84rem -8.666667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.icon-mine11 {
+  background: url('../img/sprite.png') no-repeat -10.84rem -7.733333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.icon-mine12 {
+  background: url('../img/sprite.png') no-repeat -1.653333rem -11.146667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.56rem;
+  height: 0.56rem;
+  display: inline-block;
+}
+
+.icon-mine13 {
+  background: url('../img/sprite.png') no-repeat -12.813333rem -7.146667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.186667rem;
+  height: 0.32rem;
+  display: inline-block;
+}
+
+.icon-mine14 {
+  background: url('../img/sprite.png') no-repeat -10.84rem -5.866667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.icon-mine15 {
+  background: url('../img/sprite.png') no-repeat -10.84rem -4.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.icon-mine2 {
+  background: url('../img/sprite.png') no-repeat -10.84rem -2.08rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.773333rem;
+  height: 0.773333rem;
+  display: inline-block;
+}
+
+.icon-mine3 {
+  background: url('../img/sprite.png') no-repeat -9.493333rem -8.933333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.773333rem;
+  height: 0.773333rem;
+  display: inline-block;
+}
+
+.icon-mine4 {
+  background: url('../img/sprite.png') no-repeat -10.84rem 0;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.773333rem;
+  height: 0.773333rem;
+  display: inline-block;
+}
+
+.icon-mine5 {
+  background: url('../img/sprite.png') no-repeat -10.84rem -1.04rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.773333rem;
+  height: 0.773333rem;
+  display: inline-block;
+}
+
+.icon-mine7 {
+  background: url('../img/sprite.png') no-repeat -11.88rem -5.6rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.icon-mine8 {
+  background: url('../img/sprite.png') no-repeat -11.88rem -3.733333rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+
+.icon-mine9 {
+  background: url('../img/sprite.png') no-repeat -11.88rem -2.8rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 0.666667rem;
+  height: 0.666667rem;
+  display: inline-block;
+}
+.icon-xptd1 {
+  background: url('../img/sprite.png') no-repeat 0 0;
+  background-size: 13.226667rem 11.946667rem;
+  width: 3.04rem;
+  height: 3.04rem;
+  display: inline-block;
+}
+
+.icon-xptd2 {
+  background: url('../img/sprite.png') no-repeat -3.306667rem -3.306667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 3.04rem;
+  height: 1.626667rem;
+  display: inline-block;
+}
+
+.icon-xptd3 {
+  background: url('../img/sprite.png') no-repeat 0 -3.306667rem;
+  background-size: 13.226667rem 11.946667rem;
+  width: 3.04rem;
+  height: 1.626667rem;
+  display: inline-block;
+}

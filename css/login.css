@@ -1,0 +1,76 @@
+body{background-color:#f5f5f5;}
+.navbar .close_page{width:1.5rem;height:1.2rem;position: absolute;left: 0;top: 0.5066667rem;background-image: url(../img/usercenter/icon_close.png);background-repeat: no-repeat;background-size:0.4rem 0.4rem;background-position: center center}
+.mainContent{overflow:hidden;padding-top: 0.8rem;}
+.submitOk {margin: 1.04rem auto;display: none;width: 9.093333rem;height: 1.066667rem;text-align: center;line-height: 1.066667rem;border-radius: 0.053333rem;background-color: #ee332b;font-size: 0.4rem;color: #fff;}
+.noNavbar .submitOk {display: block;}
+
+/*登录页样式*/
+.login-item{position:relative;height:1.6rem;margin:0 0.45rem;font-size:0.37rem;}
+.login-item.pwd{height:0;overflow:hidden;transition:all 0.3s ease-out;-webkit-transition:all 0.3s ease-out;}
+.login-item input{padding-left:1.17rem;outline:none;border:1px solid #d9d9d9;width:100%;height:1.31rem;border-radius:0.08rem;font-size:0.37rem;}
+.login-item.tel:before{content:'';position: absolute;left:0.4rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_tel.png) center center / 0.43rem 0.61rem no-repeat;}
+.login-item.pwd:before{content:'';position: absolute;left:0.4rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_pwd.png) center center / 0.43rem 0.61rem no-repeat;}
+.login-item.writing .clear{content:'';position: absolute;right:0;top:0;display:inline-block;width:1.3rem;height:1.31rem;background: url(../img/usercenter/icon_cha.png) center center / 0.4rem 0.4rem no-repeat;}
+.login-text{position:relative;margin:0 0.45rem 0 0.45rem;height:0;overflow:hidden;transition:all 0.3s ease-out;-webkit-transition:all 0.3s ease-out;}
+.login-text p:first-child{float:left;padding-left:0.37rem;line-height:0.6rem;font-size:0.35rem;color:#1c70fa;}
+.login-text p:last-child{float:right;padding-right:0.37rem;line-height:0.6rem;font-size:0.35rem;color:#1c70fa;}
+#login-pwd-box.isSetPwd .login-item.pwd{height:1.6rem;}
+#login-pwd-box.isSetPwd .login-text{height:0.6rem;}
+.login-btn{margin:0 0.45rem 0.4rem 0.45rem;height:1.07rem;border-radius:0.08rem;text-align:center;line-height:1.07rem;font-size:0.45rem;}
+.login-btn.login{border:1px solid #f72f2f;background-color:#f72f2f;color:#fff;margin-top: .6rem;}
+.login-btn.reg{border:1px solid #f72f2f;background-color:transparent;color:#ee332b;}
+.login-other{position:absolute;left:calc(50% - 5rem);bottom:0;width:10rem;height:3.52rem;}
+.login-other h2{position:relative;text-align:center;line-height:0.53rem;font-size:0.35rem;color:#999;}
+.login-other h2:before{content:'';position:absolute;left:0.45rem;top:0.26rem;display:inline-block;width:3.07rem;height:1px;background-color:#d9d9d9;}
+.login-other h2:after{content:'';position:absolute;right:0.45rem;top:0.26rem;display:inline-block;width:3.07rem;height:1px;background-color:#d9d9d9;}
+.login-other i{margin-top:0.16rem;display:inline-block;width:50%;height:1.07rem;background:url(../img/usercenter/icon_wechat.png) center center / 1.07rem 1.07rem no-repeat;}
+.login-other.single i{width:100%;background-position:center center!important;}
+.login-other i:nth-child(2){background:url(../img/usercenter/icon_wechat.png) 3.13rem center / 1.07rem 1.07rem no-repeat;}
+.login-other i:nth-child(3){background: url("../img/usercenter/icon_qq.png") 0.8rem center / 1.07rem 1.07rem no-repeat;}
+.login-other p{text-align:center;line-height:0.6rem;font-size:0.35rem;color:#43b034;}
+
+/*注册页样式*/
+.reg-item{position:relative;margin:0 0.45rem;height:1.33rem;font-size:0.37rem;}
+.reg-item input{padding-left:1.17rem;outline:none;border:1px solid #d9d9d9;width:100%;height:100%;font-size:0.37rem;box-sizing:border-box;-webkit-box-sizing:border-box;border-radius:0.08rem;}
+.reg-item.tel:before{content:'';position: absolute;left:0.4rem;top:0;display:inline-block;width:0.37rem;height:1.31rem;background: url(../img/usercenter/icon_tel.png) center center / 0.37rem 0.59rem no-repeat;}
+.reg-item.writing .clear{content:'';position: absolute;right:0;top:0;display:inline-block;width:1.3rem;height:1.31rem;background: url(../img/usercenter/icon_cha.png) center center / 0.4rem 0.4rem no-repeat;}
+.reg-text{padding-left:0.45rem;line-height:0.75rem;font-size:0.35rem;color:#ee332b;}
+.reg-btn{margin:0.61rem 0.45rem 0 0.45rem;height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.45rem;color:#fff;background-color:#f75757;border-radius:0.08rem;}
+
+/*验证码输入页样式*/
+#message-box{position:relative;margin-top:0.4rem;overflow:hidden;}
+#message-box h2{text-align:center;line-height:0.53rem;margin-bottom:0.03rem;font-size:0.35rem;color:#666;}
+#message-box h2 em{margin-left:0.13rem;font-size:0.4rem;font-weight:bold;color:#333;}
+#message-box p{text-align:center;line-height:0.53rem;font-size:0.32rem;color:#999;}
+#message-box p span{color:#1c70fa;}
+#setPasBox p{color:#1c70fa;}
+#message-box #message-num{margin:0.4rem auto 0.27rem auto;overflow:hidden;}
+#message-box #message-num em{position:relative;float:left;margin-right:0.13rem;display:inline-block;width:1.2rem;height:1.2rem;text-align:center;line-height:1.2rem;font-size:0.77rem;color:#333;border:1px solid #d9d9d9;background-color:#fff;border-radius:0.11rem;}
+#message-box #message-num em:first-child{margin-left:calc(50% - 4rem);}
+#message-box #reqMessage{position:absolute;left:calc(50% - 3.94rem);top:1.466667rem;padding:0 0.546667rem;width:7.9rem;height:1.093333rem;opacity:0;letter-spacing:1.2rem;}
+
+/*密码管理页样式*/
+.mainContent{padding-top:0.4rem;}
+#pwdfind-box{/*margin-top:0.4rem;*/border-top:1px solid #d9d9d9;border-bottom:1px solid #d9d9d9;}
+.pwdfind-item{position:relative;width:100%;height:1.33rem;background-color:#fff;font-size:0.37rem;}
+.pwdfind-wrapper{margin-left:0.45rem;height:100%;border-bottom:1px solid #d9d9d9;box-sizing:border-box;-webkit-box-sizing:border-box;}
+.pwdfind-item:last-child .pwdfind-wrapper{border-bottom:none;}
+.pwdfind-item input{padding-left:0.8rem;width:calc(100% - 0.8rem);height:100%;font-size:0.37rem;color:#333;}
+.pwdfind-item.message input{width:calc(100% - 3.65rem);}
+.pwdfind-item.tel:before{content:'';position: absolute;left:0.45rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_tel.png) center center / 0.43rem 0.61rem no-repeat;}
+.pwdfind-item.pwd:before{content:'';position: absolute;left:0.45rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_pwd.png) center center / 0.43rem 0.61rem no-repeat;}
+.pwdfind-item.message:before{content:'';position: absolute;left:0.45rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_message.png) center center / 0.43rem 0.61rem no-repeat;}
+.pwdfind-item.writing .clear{content:'';position: absolute;right:0;top:0;display:inline-block;width:1.3rem;height:1.31rem;background: url(../img/usercenter/icon_cha.png) center center / 0.4rem 0.4rem no-repeat;}
+.pwdfind-item.message:after{display:none;}
+.pwdfind-item.message #getMessage{position:absolute;right:0.45rem;top:0.27rem;width:2.4rem;height:0.8rem;text-align:center;line-height:0.8rem;font-size:0.4rem;color:#fff;border-radius:0.08rem;background-color:#f72f2f;}
+.pwdfind-item.message #getMessage.no{background: #666;}
+.pwdfind-text{padding:0 0.45rem;text-align:right;line-height:0.8rem;text-decoration:underline;font-size:0.35rem;color:#1c70fa;}
+.pwdfind-btn{margin:0.67rem 0.45rem;height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.45rem;color:#fff;background-color:#f72f2f;border-radius:0.08rem;}
+
+#setPasBox .pwdfind-item{width: 7.9rem;left: calc(50% - 3.94rem);}
+#setPasBox .pwdfind-wrapper{margin-left: 0rem;border: 1px solid #d9d9d9;}
+.bindDesc{background: #f5f5f5;color: #999;height: 0.66667rem;line-height: 0.66667rem;padding-left:  0.45rem;}
+#mainThird{padding-top: 0;}
+.pwdfind-item.message #getThirdMes{position:absolute;right:0.45rem;top:0.27rem;width:2.4rem;height:0.8rem;text-align:center;line-height:0.8rem;font-size:0.4rem;color:#fff;border-radius:0.08rem;background-color:#f72f2f;}
+.pwdfind-item.message #getThirdMes.no{background: #666;}
+.jumpBind{text-align:center;line-height:0.53rem;font-size:0.32rem;color:#1c70fa;margin-top: -.3rem;}

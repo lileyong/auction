@@ -1,0 +1,132 @@
+<link rel="stylesheet" type="text/css" href="../css/buy.css">
+<div class="content" id="content">
+    <div id="shareorder-box"></div>
+</div>
+<script>
+    var dropLoad = '';
+    var  pageNum = 1;
+    var endGetDataFlag = true,hasMore=false;
+    function loadMoreData() {//滑到底部加载更多
+        var scrollTop = $(this).scrollTop()+5;
+        var scrollHeight = $(document).height();
+        var windowHeight = $(this).height();
+        if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+            if(!hasMore)return;//没有更多 不请求数据
+            o.getAcctData();
+        }
+    }
+    T.shaidan = (function(){
+        var o = {
+            //程序入口
+            init:function(){
+                o.bindEvent();
+                o.getShareOrder();
+            },
+            getShareOrder:function () {
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    needToken:'no',
+                    reqUrl:'/order/services/order/shareOrder.json?page='+pageNum+'&limit=10',
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var htmlArr=[],d=data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageNum++;
+                        }else{
+                            hasMore = false;
+                        }
+                        for(var i=0,j=d.length;i<j;i++){
+                            htmlArr.push('<div class="shareorder-item">\
+                            <img class="userphoto" src="../img/usercenter/photo.png">\
+                            <h2 class="username">'+(d[i].NICK_NAME || d[i].USER_ACCT)+'</h2>\
+                            <h3 class="comment">'+d[i].SHARE_TITLE+'</h3>\
+                        <p class="goods">'+d[i].SHARE_DESC+'</p>\
+                        <p class="price">成交价：￥'+d[i].AUCTION_PRICE+'</p>\
+                        <div class="imglist">\
+                            <img src="http://pmres.yz314.com:8080//hd/1508836840884.png">\
+                            <img src="http://pmres.yz314.com:8080//hd/1508836840884.png">\
+                            <img src="http://pmres.yz314.com:8080//hd/1508836840884.png">\
+                            </div>\
+                            <div class="bottom-info" data-id="'+d[i].COMMODITY_ID+'"><p>2017-12-28 13:52</p><p>我也要拍>></p></div>\
+                        </div>');
+                        }
+                        htmlArr.push('<div class="shareorder-item">\
+                            <img class="userphoto" src="../img/usercenter/photo.png">\
+                            <h2 class="username">前端假数据</h2>\
+                            <h3 class="comment">太棒了~简直不能再赞~赞赞赞~！！！</h3>\
+                        <p class="goods">30元电话充值卡 全网通用</p>\
+                        <p class="price">成交价：￥6.6</p>\
+                        <div class="imglist">\
+                            <img src="http://pmres.yz314.com:8080//hd/1508836840884.png">\
+                            <img src="http://pmres.yz314.com:8080//hd/1508836840884.png">\
+                            <img src="http://pmres.yz314.com:8080//hd/1508836840884.png">\
+                            </div>\
+                            <div class="bottom-info" data-id="1001"><p>2017-12-28 13:52</p><p>我也要拍>></p></div>\
+                        </div>');
+                        if(dropLoad != ''){
+                            // console.log('end');
+                            $('#shareorder-box').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        $('#shareorder-box').append(htmlArr.join(''));
+                        $('.bottom-info').off().Touch(function (el) {
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).attr('data-id'));
+                        });
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(data){
+                            tip(data.msg || data.result_msg);
+                        }
+                    }
+                })
+            },
+            //事件绑定
+            bindEvent:function(){
+                $(window).off().scroll(loadMoreData);//绑定下滑加载更多
+                $('#content').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageNum = 1;
+                        o.getShareOrder();
+                    },
+                    threshold : 50
+                });
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.shaidan.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.shaidan.init();
+        }
+    });
+
+</script>

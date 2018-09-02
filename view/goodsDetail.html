@@ -1,0 +1,1968 @@
+<style>
+    /*状态控制*/
+    #goodsdetail-box.preauction #auctionstatus{display:none;}
+    #goodsdetail-box.preauction #leadeuser{display:none;}
+    #goodsdetail-box.preauction #goodsrecord{display:none;}
+
+    #goodsdetail-box.auction #auctionpre{display:none;}
+    #goodsdetail-box.auction #auctionstatus{display:block;}
+    #goodsdetail-box.auction #leaduserflag{display:block;}
+
+    #detailsfoot.preauction #auction-submit-box{display:none;}
+    #detailsfoot.preauction #auction-other-box{display:block;}
+    #detailsfoot.auction #auction-other-box{display:none;}
+    #detailsfoot.auction #auction-submit-box{display:block;}
+
+    /*banner*/
+    #goodsdetail-box{background-color:#f5f5f5;opacity:0;}
+    #goodsbanner{position:relative;width:100%;height:4rem;overflow:hidden;}
+    #goodsbanner #imglist{height:4rem;background: #fafafa;}
+    #goodsbanner #imglist img{position:relative;float:left;width:100%;height:100%;}
+    #goodsbanner #indicator{position:absolute;left:calc(50% - 0.45rem);bottom:0;height:0.64rem;text-align:center;}
+    #goodsbanner #indicator em{float:left;margin:0.24rem 0.07rem;display:inline-block;width:0.16rem;height:0.16rem;background-color:#e5e5e5;border-radius:50%;}
+    #goodsbanner #indicator em.on{background-color:#fd2b2b;}
+    /*price*/
+    #goodsprice{height:1.3333333rem;background-color:#f72f2f;position: static;width: 10rem;}
+    #goodsprice.fixed{position: fixed;top:1.6933333rem;z-index: 10;}
+    #goodsprice .current-price{position:relative;float:left;padding-left:.45333rem;width:4.55rem;font-size:0.72rem;color:#fff;height: 1.34rem;overflow: hidden;}
+    #goodsprice .current-price p{margin-top:.2rem;font-size:0.32rem;line-height:0.32rem;}
+    #priceBox{position: relative;}
+    #priceBox em{position: absolute;font-size: 0.4rem;bottom: 0.1rem;}
+    #priceBox div{margin-left: .45rem;}
+    .market-price{float:left;height:1.3333333rem;text-align:center;line-height:0.48rem;font-size:0.373333rem;color:#fff;}
+    .market-price del:first-child{display:block;margin-top:0.2rem;}
+    .market-price.last{float: right;background: #fff;width: 2.66666666rem;color:#999;padding-right:0.45rem;text-align: right;position: relative}
+    .market-price.last span:first-child{display:block;margin-top:0.2rem;}
+    .market-price.last:before {
+        position: absolute;
+        content: '';
+        left: 0;
+        top: 0;
+        width: 0;
+        height: 0;
+        border-top: 0.6666666rem solid #fff;
+        border-left: 0.4rem solid #f72f2f;
+        border-bottom:  0.66666666rem solid #fff;
+    }
+    /*desc*/
+    #goodsdesc{position:relative;padding-left:0.45rem;padding-top:0.2133333rem;padding-right:0.21rem;min-height:1.3066667rem;line-height:0.4533333rem;font-size:0.35rem;color:#666;background-color:#fff;overflow:hidden;box-sizing:border-box;-webkit-box-sizing:border-box;width: 100%;text-overflow: ellipsis;display: -webkit-box; -webkit-line-clamp: 3;-webkit-box-orient: vertical;}
+    #goodsdesc em{position:relative;top:-0.0266667rem;height:0.37rem;text-align:center;line-height:0.37rem;margin-right:0.2rem;padding:0 0.0933333rem;font-size:0.24rem;color:#ff1e1e;border:1px solid #ff3636;border-radius:0.0533333rem;}
+    #goodsdesc img{position:relative;top:0.0533334rem;margin-right:0.2rem;height: 0.4rem;}
+    #goodsdesc h2{display:inline;}
+    #goodsdesc span{margin-left:0.2rem;display:inline;line-height:0.4533333rem;font-size:0.293333rem;color:#999;}
+    /*status*/
+    #auctionstatus{background-color:#fff;overflow:hidden;text-align: center;}
+    #auctionstatus h2{text-align:center;height:100%;line-height:1.9466667rem;font-size:1.2rem;font-weight:bold;color:#333;}
+    #auctionstatus h2 i.end{display:inline-block;background: url('../img/sprite.png') no-repeat -6.4rem -5.2rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 1.733333rem;
+        height: 1.733333rem;}
+    #auctionstatus #auctionendtime{margin-top:0.24rem;text-align: center;}
+    .preAuctionCutDownDesc{color: #666666;display: none;font-size: 0.32rem;margin-top: -.4rem;margin-bottom: .4rem;}
+    /*auctionpre*/
+    #auctionpre{height:3rem;background-color:#fff;}
+    #auctionpre h2{text-align:center;line-height:1.48rem;font-size:0.8rem;font-weight:bold;color:#333;}
+    #auctionpre p.total{text-align:center;line-height:0.4rem;font-size:0.32rem;color:#666;}
+    #auctionpre p.now{text-align:center;line-height:0.76rem;font-size:0.3733333rem;color:#333;}
+    #auctionpre p.now em{color:#f72f2f;}
+    /*leaduser*/
+    #leadeuser{position:relative;height:5.6rem;background-color:#fff;overflow:hidden;display: none;}
+    #leadeuser img#leaduserflag{margin:auto;margin-top:0.12rem;display:block;width:5.33rem;height:1.36rem;}
+    #leadeuser img#crown{position:absolute;left:3.98rem;top:1.53rem;width:1.653333rem;height:1.32rem;}
+    #leadeuser img#leaduser,.leaduserDiv{margin:auto;margin-top:0.4266667rem;display:block;width:1.6rem;height:1.6rem;border-radius: 50%;position: relative;}
+    .leaduserDiv.Isme:after{content:'';position:absolute;right:0;bottom: 0;display:inline-block;width:0.56rem;height:0.56rem;background:url(../img/goods/icon_Isme.png) 0 0 / 100% 100% no-repeat;}
+    #leadeuser h2{text-align:center;line-height:1.2rem;font-size:0.43rem;color:#f72f2f;}
+    #leadeuser h2 em{font-size:0.35rem;color:#333;}
+    #leadeuser p{text-align:center;line-height:0.4rem;font-size:0.32rem;color:#666;}
+    #leadeuser p em{color:#f72f2f;}
+    #record-foot{height: .8rem;}
+    /*goodsrecord*/
+    #goodsrecord{margin:0.2666667rem 0;background-color:#fff;}
+    #goodsrecord #record-head{height:0.8rem;border-bottom:1px solid #f5f5f5;}
+    #goodsrecord #record-head p{position:relative;float:left;width:33.33%;text-align:center;line-height:0.8rem;font-size:0.3733333rem;color:#999;}
+    #goodsrecord #record-head p:after{content:'';position:absolute;right:0;top:0.2rem;display:inline-block;width:1px;height:0.4rem;background-color:#e7e7e7;}
+    #goodsrecord #record-head p em{margin:0 0.12rem;color:#333;}
+    #auctionlist{min-height:1.0666667rem;max-height:3.2rem;border-bottom:1px solid #f5f5f5;}
+    #auctionlist .auctionlist-item{position:relative;height:1.0666667rem;line-height:1.0666667rem;font-size:0.32rem;color:#999;}
+    #auctionlist .auctionlist-item img{position:absolute;left:0.8rem;top:0.2rem;width:0.67rem;height:0.67rem;border-radius: 50%;}
+    #auctionlist .auctionlist-item em{float:left;display:inline-block;height:100%;}
+    #auctionlist .auctionlist-item em:nth-of-type(1){padding-left:1.96rem;width:2.51rem;overflow: hidden;text-overflow: ellipsis;}
+    #auctionlist .auctionlist-item em:nth-of-type(2){width:1.48rem;}
+    #auctionlist .auctionlist-item em:nth-of-type(3){width:2.2rem;white-space: nowrap;overflow: hidden; text-overflow: ellipsis;}
+    #goodsrecord #record-foot p{position:relative;line-height:0.8rem;font-size:0.32rem;color:#999;}
+    #goodsrecord #record-foot p:first-child{float:left;padding-left:0.45rem;color:#333;}
+    #goodsrecord #record-foot p:first-child em{margin-left:0.8rem;color:#999;}
+    #goodsrecord #record-foot p:last-child{float:right;padding-right:0.88rem;}
+    #goodsrecord #record-foot p:last-child:after{position:absolute;right:0.45rem;top:0.05rem;content:'';display:inline-block;width:0.17rem;height:0.69rem;background:url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;}
+    .yxhMoney,.cjgMoney{height: 0.8rem;line-height: .8rem;color: #666;padding:0 0.45333333rem;border-top:1px solid #f5f5f5;font-size: 0.32rem;position: relative; }
+    .yxhMoney em{background: #0068ff;color: #fff;width: 1.333333rem;height: 0.533333rem;line-height: 0.533333rem;text-align:center;top:0.133333rem;border-radius: .2666666rem;display: inline-block;position: absolute;right: 0.45333333rem;}
+    .cjgMoney em{position: absolute;right: 0.45333333rem;color: #333;}
+    /*argument*/
+    #goodsargument{margin-top:0.27rem;padding:0 0.45rem 0.2rem 0.45rem;background-color:#fff;overflow:hidden;}
+    #goodsargument h2.appname{position:relative;margin-left:-0.45rem;padding:0 0.45rem;width:100%;height:0.79rem;line-height:0.79rem;border-bottom:1px solid #f5f5f5;}
+    #goodsargument h2.appname img{float:left;margin:0.13rem auto;height:0.5333rem;}
+    #goodsargument h2.appname span{float:left;padding-left:0.1866667rem;font-weight:bold;font-size:0.32rem;color:#333;}
+    #goodsargument h2.appname .auctionHouse{display: inline-block;position: absolute;right: .4rem;width: 2.48rem;height: 0.53333333333rem}
+
+    #goodsargument p img{display:block;margin:0.4rem auto 0.22rem auto;width:8.93rem;height:0.8rem;}
+    #auctioner{position:relative;height:1.96rem;}
+    #auctioner img{position:absolute;left:0;top:0.52rem;width:1.07rem;height:1.07rem;}
+    #auctioner h2{padding-left:1.333333rem;padding-top:0.4933333rem;height:0.4533333rem;line-height:0.4533333rem;font-size:0.3733333rem;color:#333;}
+    #auctioner h2 em{position:absolute;margin-left:0.13rem;display:inline-block;width:2.45rem;height:0.4533333rem;text-align:center;line-height:0.4533333rem;border:1px solid #f72f2f;box-sizing:border-box;-webkit-box-sizing:border-box;font-size:0.32rem;color:#f72f2f;overflow:hidden;}
+    #auctioner p.serial{margin-top:0.2666667rem;padding-left:1.333333rem;line-height:0.48rem;font-size:0.32rem;color:#999;}
+    #auctioner p.serial em{margin-left:0.13rem;}
+    #auctioner p.quality{position:absolute;right:-0.1rem;top:0;width:3.36rem;height:100%;}
+    #auctioner p.quality em{position:relative;float:left;padding-left:0.4rem;width:50%;height:0.32rem;line-height:0.32rem;font-size:0.2933333rem;color:#f72f2f;box-sizing:border-box;-webkit-box-sizing:border-box;white-space: nowrap;}
+    #auctioner p.quality em:before{content:'';position:absolute;left:0;top:0;display:inline-block;border-radius:50%;background: url('../img/sprite.png') no-repeat -12.813333rem -5.386667rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.32rem;
+        height: 0.32rem;}
+    #auctioner p.quality em:nth-child(1){margin-top:0.6rem;}
+    #auctioner p.quality em:nth-child(2){margin-top:0.6rem;}
+    #auctioner p.quality em:nth-child(3){margin-top:0.41rem;}
+    #auctioner p.quality em:nth-child(4){margin-top:0.41rem;}
+    #quality{margin:0.4rem auto 0.2666667rem auto;width:8.9333334rem;height:0.8rem;border-radius:0.4rem;background-color:#fff2f2;}
+    #quality em{position:relative;float:left;padding-left:0.52rem;display:inline-block;width:1.9733334rem;line-height:0.8rem;font-size:0.32rem;color:#f72f2f;box-sizing:border-box;-webkit-box-sizing:border-box;}
+    #quality em:before{content:'';position:absolute;left:0;top:0.24rem;display:inline-block;border-radius:50%;background: url('../img/sprite.png') no-repeat -12.813333rem -4.8rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.32rem;
+        height: 0.32rem;}
+    .argument-item{position:relative;float:left;width:50%;line-height:0.67rem;font-size:0.32rem;}
+    #quality em:first-child{margin-left:0.4rem;}
+    .argument-item:nth-child(1){margin-top:0.22rem;}
+    .argument-item:nth-child(2){margin-top:0.22rem;}
+    .argument-item h2{float:left;width:1.92rem;}
+    .argument-item:nth-of-type(odd) h2{width:2.61rem;}
+    .argument-item:nth-of-type(even) h2{padding-left:0.5333334rem;}
+    .argument-item h2 i{position:absolute;margin-left:0.0933334rem;top:0.1733334rem;display:inline-block;width:0.32rem;height:0.32rem;background:url(../img/goods/fees_tip.png) 0 0 / 100% 100% no-repeat;}
+    .argument-item p{float:left;color:#999;}
+    /*details*/
+    #detailstab{position:relative;margin-top:0.27rem;height:1.07rem;border:1px solid #f5f5f5;background-color:#fff;}
+    #detailstab em{float:left;display:inline-block;width:25%;height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.37rem;color:#999;}
+    #detailstab em.on{color:#f72f2f;}
+    #detailstab i{position:absolute;bottom:0;left:calc(12.5% - 0.53rem);display:inline-block;width:1.07rem;height:0.08rem;border-radius:0.04rem;background-color:#f72f2f;}
+    #detailcontent .detail-item{min-height:1.9333333rem;margin-bottom:1.35rem;background-color:#fff;}
+    #detailcontent .detail-item#detail img{display:block;width:100%;height:100%;}
+    #collect{position: absolute; right: 0;top:0;height: 1.333333rem;  width: 1.2rem;  z-index: 3;  text-align: center;}
+    #collect i{margin-top: .3rem;}
+    /*foot*/
+    #detailsfoot{position:fixed;bottom:-1px;width:10rem;background-color:#fff;border-top:1px solid #dfdfdf;z-index: 10;box-shadow:0 -0.1066667rem 0.2133333rem 0 rgba(28,31,33,0.1);}
+    #detailsfoot .collect{float:left;width:1.2rem;height:100%;text-align: center;background-color:#fff;color: #666;font-size:0.27rem;border-right: 1px solid #dfdfdf;}
+    #detailsfoot #daipai i{display: inline-block;margin-top: 0.193333rem;}
+    #detailsfoot #download i {display: inline-block;margin-top: 0.166667rem;width: 0.64rem;height: 0.64rem;background: url(../img/goods/download.png) 0 0 / 100% 100% no-repeat;}
+    #sharerInfo,#download,#detailsfoot #goIndex{display:none;}
+    .noNavbar #detailsfoot #daipai{display: none;}
+    .noNavbar #sharerInfo,.noNavbar #download,.noNavbar #detailsfoot #goIndex{display: inline-block;}
+    #download{background: url("../img/goods/goAppDownLoad.png") 0 0 / 100% 100% no-repeat;position: fixed;top:1.4rem;right: calc(50% - 5rem);width: 2.32rem;height: 0.93333333333rem;z-index: 4;}
+    #sharerInfo{height: 0.93333333rem;line-height: 0.93333333rem;position: fixed;top:1.4rem;left: 0;background: #4b4b4b;color:#fff;border-top-right-radius: .5rem;  border-bottom-right-radius: .5rem;  padding-right: .3rem;}
+    #sharerInfo img{width: 0.586666rem;height: 0.586666rem;border-radius: 50%;vertical-align: middle;margin: 0 .2rem;}
+    #kefuBox i{content: ''; margin: auto; margin-top: 0.266667rem; margin-bottom: .1rem; display: block; background: url(../img/goods/icon_kefu1.png) no-repeat; background-size: 0.453333rem 0.49rem; width: 0.453333rem;height: 0.49rem;}
+    #goIndex i{margin-top: .15rem;background: url(../img/sprite.png) no-repeat -11.88rem -4.666667rem; background-size: 13.226667rem 11.946667rem;  width: 0.666667rem;  height: 0.666667rem;  display: inline-block;}
+    #detailsfoot #addsub{position:absolute;left:2.48rem;top:0;width:3.4667rem;margin-top:.35rem;margin-left: .346666rem;text-align: center;}
+    #kpNum{color: #999;margin-top: .05rem;display: none;}
+    #detailsfoot #addsub.kpNum{margin-top:.1rem;}
+    #detailsfoot #addsub.kpNum #kpNum{display: block;}
+    #detailsfoot #addsub>div{height: 0.68rem;}
+    #autoAuctionBox{ position: relative;  float: right;  width: 7.6rem;  height: 1.36rem;  text-align: center;  background-color: #f72f2f;  font-size: 0.4rem;  color: #fff;  display: none;}
+    #autoAuctionBox span{padding-top: .2rem;display: inline-block;}
+    #autoAuctionBox p{font-size: .32rem;}
+    #autoAuctionBox .jinduBG{position: absolute;height: 0.08rem;width: 100%;background: #fb793b;top:0;right: 0;}
+    #autoAuctionBox .jindu{position: absolute;height: 0.08rem;width: 50%;background: #ffd745;right: 0;top:0;border-radius-: }
+    #detailsfoot #auction-submit{float:right;width:3.0667rem;height:1.13rem;margin: 0.1rem 0.2rem 0.1rem auto;text-align:center;line-height:1.13rem;background-color:#f72f2f;border-radius: 0.55rem;}
+    #detailsfoot #auction-submit h2{margin-top:0.1rem;line-height:0.46rem;font-size:0.4rem;color:#fff;}
+    #detailsfoot #auction-submit p{line-height:0.46rem;font-size:0.32rem;color:#fff;}
+    #auction-other-box{float:right;width:7.6rem;height:100%;text-align:center;line-height:1.333333rem;background-color:#f72f2f;font-size:0.4rem;color: #fff;}
+    #detailsfoot #auction-submit.preCutDown{background-color:#999999;}
+    /*share*/
+    .shareorder-item{position:relative;min-height:1.92rem;margin:0 0.45rem;background-color:#fff;border-bottom:1px solid #dfdfdf;overflow:hidden;}
+    .shareorder-item .userphoto{position:absolute;top:0.33rem;width:1.333333rem;height:1.333333rem;border-radius:0.6666667rem;}
+    .shareorder-item:nth-last-of-type(1){border-bottom:none;}
+    .shareorder-item .username{padding-left:1.63rem;margin-top:0.04rem;line-height:1rem;font-size:0.3733333rem;color:#666666;}
+    .shareorder-item .comment{margin-bottom:0.2266667rem;padding-left:1.63rem;line-height:0.56rem;font-size:0.3733333rem;color:#333;}
+    .shareorder-item .time{position:absolute;right:0;top:0.3333333rem;line-height:0.56rem;font-size:0.2933334rem;color:#666;}
+    .shareorder-item .goods{margin-top:0.053rem;}
+    .shareorder-item .imglist{padding-left:1.63rem;overflow:hidden;}
+    .shareorder-item .imglist img{float:left;width:2.3rem;height:2.3rem;margin:0.2rem 0.19rem 0.33rem 0;}
+    .shareorder-item .bottom-info{overflow:hidden;}
+    .shareorder-item .bottom-info p{line-height:0.73rem;font-size:0.32rem;}
+    .shareorder-item .bottom-info p:first-child{float:left;}
+    #rule div{margin: 0 0.45rem;padding: .45rem 0; font-size: .35rem; color: #666;line-height: 0.55rem;}
+    .cutDownTime{width: 4.5rem;height: 1.9466667rem;line-height: 1.9466667rem;font-size: 1.2rem;color:#000;margin: 0 auto;}
+    .fixedCuDownTime .cutDownTime{width: 2.66666666rem;font-size: .5rem;padding-left: .4rem;text-align:center;line-height: 0.746666666rem;height: 0.746666666rem;display: none;}
+    #goodsprice.fixedCutDown .fixedCuDownTime{display: block;}
+    #goodsprice.fixedCutDown .cutDownTime{display: block;}
+    .fixedCuDownTime .lastBidderName{color: #666;font-size: .32rem;width: 100%;overflow: hidden;text-overflow: ellipsis;padding-left: .4rem;text-align:center;}
+    #goodsprice.fixedCutDown .prePrice,#goodsprice.fixedCutDown .avgPrice{display: none;}
+    /*商品详情页iPhoneX适配*/
+    .iPhoneX #detailsfoot{padding-bottom: .906667rem;background-color:#fff;}
+    .iPhoneX #goodsdetail-box{margin-bottom:2.24rem;}
+
+    /*拍中弹层*/
+    .popBox.auctionSuccess .box-content {position: relative;width: 7.34666666666rem;height: 9.8266666rem;background: url(../img/goods/auctionSuccess.png) 0 0 / 100% 100% no-repeat;}
+    .popBox.auctionSuccess .confirmcontent {position: relative;width: 100%;height: 9.8266666rem;overflow: hidden;}
+    .popBox .imgBox{position: relative;height: 5rem;}
+    .popBox .imgBox:after{content:'';position:absolute;left: 1.5rem; top: 3.5rem;display:inline-block;background: url('../img/goods/auctionSuccessGoodsBg.png') no-repeat;  background-size: 4.56rem 0.93333333333333rem;  width: 4.56rem;  height: 0.93333333333333rem;z-index: 2}
+    .popBox.auctionSuccess .confirmcontent img {position: absolute;  left: 2.1rem;  top: .7rem;  width: 3.333333333rem;  height: 3.333333333rem;  border-radius: 50%;  overflow: hidden;}
+    .popBox.auctionSuccess .auctionSuccessWarn{position: absolute;  bottom: .2rem;  color: #fa5551;  font-size: 0.266666rem;  width: 100%;  }
+    .popBox.auctionSuccess .btnShare{  position:absolute;right: -.36rem;  top: .3rem;display:inline-block;background: url('../img/goods/btnShare.png') no-repeat;  background-size: 0.88rem 1.04rem;  width: 0.88rem;  height: 1.04rem;z-index: 10002;  }
+    .popBox.auctionSuccess .confirmcontent p {margin-top: 0;height: 1.12rem;text-align: center;line-height: 1.12rem;font-weight: bold;font-size: 0.53333333rem;color: #e95045;}
+    .popBox.auctionSuccess .confirmbutton div.cancelText {display: block;margin: 0rem auto 0 auto;width: 5.68rem;height: 1.01333333333rem;background: url(../img/goods/btnWeituo.png) 0 0 / 100% 100% no-repeat;}
+    .popBox.auctionSuccess .confirmbutton div.okText {display: block;margin: .2rem auto 0 auto;width: 5.68rem;height: 1.01333333333rem;background: url(../img/goods/btnAuctionPay.png) 0 0 / 100% 100% no-repeat;}
+    .popBox.auctionSuccess.alert .confirmbutton div.okText{margin-top: .5rem;}
+    .auctionSuccessStarBox{position: absolute;z-index:10000;left:-.5rem;width:8.373333333rem;height:10.12rem;  top: -.5rem;background: url(../img/goods/auctionSuccessStar.png) 0 0 / 100% 100% no-repeat;  -webkit-animation: twinkling 1s infinite ease-in-out;  -webkit-animation-duration: 1s; animation-duration: 1s; -webkit-animation-fill-mode: both;animation-fill-mode: both}
+    @-webkit-keyframes twinkling{0%{opacity: 0;}50%{opacity: 1;}100%{opacity: 0;}}
+    @keyframes twinkling{0%{opacity: 0;}50%{opacity: 1;}100%{opacity: 0;}}
+    .popBox.auctionSuccess .confirmbutton{position: absolute;z-index: 10001;bottom: 1.9rem;}
+    /*新用户拍中弹层*/
+    .popBox.auctionSuccess.newUser .box-content {  width: 9.6rem;  height: 9.68rem;  margin: auto;  background: url(../img/goods/newUser_success.png) center center / 9.6rem 9.68rem no-repeat;  overflow:visible;  }
+    .popBox.auctionSuccess.newUser .confirmcontent{  margin:auto!important;  padding:0.9333334rem 0 0 0!important;  width:8.2rem!important;  height:5.6266667rem;  }
+    .popBox.auctionSuccess.newUser .confirmcontent h2{ margin-top:1.84rem;  line-height:0.88rem;  font-size:0.4rem;  color:#ff4021;  }
+    .popBox.auctionSuccess.newUser .confirmcontent h2 p{  margin-top:0;  line-height:1.2rem;  font-size:1.1466667rem;  color:#ff4021;  }
+    .popBox.auctionSuccess.newUser .confirmbutton{  position:relative;  bottom:0;  margin:auto;  padding:0;  width:8.2rem!important;  }
+    .popBox.auctionSuccess.newUser .confirmbutton div{  width:6.4266667rem;  height:1.2933334rem;  }
+    .popBox.auctionSuccess.newUser .confirmbutton div.cancelText{  display:none;  }
+    .popBox.auctionSuccess.newUser .confirmbutton div.okText{  background: url(../img/goods/newUser_pay.png) 0 0 / 100% 100% no-repeat;  border: none;  margin:0.9333334rem 0.8933334rem 0.8133334rem 0.8933334rem;  }
+    .popBox.auctionSuccess.newUser #close{  top:-0.2933334rem;  right:0.6933334rem;  }
+
+    /*H5数字键盘*/
+    .num-keyword {background: #f5f5f5;padding: 0.13333333rem;color: #333;position: relative;display: none;}
+    .num-keyword:before{width:0;height:0;border: 0.2666rem solid transparent;border-bottom-color: #f5f5f5; position:absolute;  content:'';  top: -0.4rem;  left: 4.2rem;  z-index: 2;  }
+    .keyword-left {float: left;width: 22%;background: #fff;border-radius: 0.16rem; height: 5.093333333rem; box-shadow: 0 1px 2px rgba(0,0,0,.2)  }
+    .keyword-left ul {  padding: 0 0.13333333rem;  }
+    .keyword-left li {  line-height: 1.28rem;  font-size: 0.453333333rem;  text-align: center  }
+    .keyword-left li:not(:last-child) {  border-bottom: 1px solid #e5e6e8  }
+    .keyword-left li.tapped{ background-color:#f5f5f5;  }
+    .keyword-right {padding-left: 22%; margin-left: 0.13333333rem;  }
+    .keyword-main ul {display: box;  display: -webkit-box;  display: -ms-flexbox;  display: -moz-box  }
+    .keyword-main li {width: 1.3333333333rem;box-flex: 1;-webkit-box-flex: 1;  -ms-flex: 1;  -moz-box-flex: 1;  height: 1.1733333rem;  line-height: 1.1733333rem;  background: #fff;  border-radius: 0.16rem;  box-shadow: 0 1px 2px rgba(0,0,0,.2);  text-align: center;  font-size: 0.453333333rem;  }
+    .keyword-main li.tapped{  background-color:#f5f5f5;}
+    .keyword-main li:not(:last-child) {  margin-right: 0.13333333rem;  }
+    .keyword-c { margin-top: 0.13333333rem;  }
+    .key-submit {color: #f72f2f;}
+    /*停拍*/
+    #stopAuctionBox{position: fixed;width: 100%;height: 10.5rem;z-index: 102;top:3.5rem;display: none;max-width: 10rem;text-align: center;}
+    .stopAuctionBg{background: url('../img/goods/stopAuction.png') no-repeat;background-size: 10rem 10rem;margin: auto;width: 10rem;height: 100%;position: relative;}
+    .stopAuctionBg .content{font-size:0.373333rem;color: #ff4021;margin-top: 4.5rem;width: 7rem;left: 1.5rem;position: absolute;margin-top: 4.4rem;}
+    .stopAuctionBg .btn{position: absolute;bottom: 2.4rem;width: 6.2rem;left: 1.9rem;height: 1.2rem;}
+    /*免费拍*/
+    .popBox.zuli .box-content{width:8.533333333rem;height:9.6rem;background: url(../img/zhuli/zuliPop.png) 0 0 / 100% 100% no-repeat;}
+    .popBox.zuli .confirmcontent{padding:0.56rem 0.666666667rem 0 0.666666667rem!important;overflow: hidden;}
+    .popBox.zuli .confirmcontent h2{margin:5.1333333333rem auto 0 auto;width:4.8rem;height:1.0666666666666rem;text-align:center;line-height: 0.5333333333rem;font-size:0.4rem;font-weight:normal;color:#434343;}
+    .popBox.zuli .confirmcontent h2 em{color:#fd2b2b;}
+    .popBox.zuli .confirmbutton div.cancelText{display:none;}
+    .popBox.zuli .confirmbutton div.okText{margin:0.7333333333rem auto 0 auto;width:4.7333333333rem;height:1.14666666rem;}
+    .popBox.zuli .box-content #close {right: 0.166667rem;top: -0.94rem;}
+/*收到好友助力提示动效*/
+    .daipaiTip{width: 90%;
+        background: rgba(0,0,0,.7);
+        border-radius: 1rem;
+        position: fixed;
+        top: 45%;
+        font-size: .4rem;
+        color: #fff;
+        text-align: center;
+        left: 5%;
+        padding: .2rem;
+        box-sizing: border-box;
+        display: none;
+    }
+    .dpTipNone{
+        -webkit-animation-duration: 4s;
+        animation-duration: 4s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+        -webkit-animation-name: dptip;
+        animation-name: dptip;
+        display: block;
+    }
+    @-webkit-keyframes dptip {
+        from {opacity: 1; top: 45%;}
+        to {opacity: .7; top: 40%;}
+    }
+    @keyframes dptip {
+        from {opacity: 1;top: 45%;}
+        to {opacity: .7; top: 40%;}
+    }
+    /*收到好友助力提示动效*/
+    /*新用户3次竞拍提示领币*/
+    .auctionNumTip{display:none;position: fixed;right: calc(50% - 5rem);bottom:2.5rem;width:3.44rem;line-height:0.69333333333rem;height:0.69333333333rem;background: url(../img/goods/ancitonNumTipBg.png) 0 0 / 100% 100% no-repeat;color: #f72f2f;white-space: nowrap;}
+    .auctionNumTip em{display: inline-block;margin-left: .1rem;margin-right: .16rem;}
+    /*优惠买*/
+    #yhmBox{position: fixed;width: 100%;height: 9.28rem;z-index: 102;top:3.5rem;display: none;max-width: 10rem;text-align: center;}
+    #yhmBox .close{ position:absolute;  right:0.6rem;  top:0;  display:inline-block;width: 0.986667rem;height: 0.986667rem;}
+    .yhmBg{ background: url('../img/goods/auction_yhm.png') no-repeat;background-size: 8.72rem 9.28rem;margin-left: .84rem;width: 8.72rem;height: 100%;position: relative;}
+    .yhmBg .content{font-size:0.373333rem;color: #fff;width: 70%;left: 11%;position: absolute;top:4.5rem;}
+    #yhmBox .btn{width: 5rem;height: 1.0666666rem;position: absolute;bottom: 0;margin: auto;left: 1.6rem;}
+
+    /*委托券*/
+    .popBox.weituoQuan .box-content {width: 7.733333rem;height: 7.706667rem;background: url(../img/goods/weituoQuan.png) 0 0 / 100% 100% no-repeat;}
+    .popBox.weituoQuan .confirmcontent {position: relative;width: 100%;height: 6rem;overflow: hidden;}
+    .popBox.weituoQuan .confirmbutton div.cancelText {display: none;}
+    .popBox.weituoQuan .confirmbutton div.okText {margin: auto;display: block;width: 6.4rem;height: 1.066667rem;text-align: center;line-height: 1.066667rem;background: rgba(254,236,11,0.94);box-shadow: 0 0.053333rem 0.106667rem 0 #e80f0f;border-radius: 2.666667rem;font-size: 0.426667rem;color: #b70101;}
+    .popBox.weituoQuan #close {top: -1.286667rem;}
+
+    /*H5版竞拍页*/
+    .market-price.last .avgPrice{display:none;}
+    .isH5Auction .market-price.last .prePrice{display:none;}
+    .isH5Auction .market-price.last .avgPrice{display:block;}
+    .isH5Auction #detailsfoot{height:1.333333rem;}
+    .isH5Auction #detailsfoot #addsub{display:none;}
+    #appAuctionFoot {position:absolute;left:0;top:0;display: block;height:1.333333rem;}
+    #h5AuctionFoot {position: absolute;bottom: 0;display: none;width:6rem;height: 1.333333rem;background-color: #fff;border-top: 0.013333rem solid #dfdfdf;}
+    #h5AuctionFoot img {position: absolute;left: 0.32rem;top: 0.133333rem;display: inline-block;width: 1.066667rem;height: 1.066667rem;border-radius: 50%;overflow: hidden;}
+    #h5AuctionFoot h2 {padding-left: 1.666667rem;line-height: 0.48rem;font-size: 0.32rem;color: #666;}
+    #h5AuctionFoot h2#userName {padding-top: 0.186667rem;}
+    #h5AuctionFoot h2#userId {padding-bottom: 0.186667rem;}
+    #h5AuctionFoot #balance {position: absolute;right: 0;top: 0;min-width: 1.866667rem;height: 100%;text-align: left;overflow: hidden;}
+    #h5AuctionFoot #balance h2 {padding-left: 0;margin-top: 0.2rem;height: 0.506667rem;line-height: 0.506667rem;font-size: 0.32rem;color: #333;}
+    #h5AuctionFoot #balance em {line-height: 0.346667rem;color: #f72f2f;white-space: nowrap;}
+    .isH5Auction #auction-other-box,.isH5Auction #auction-submit-box{position: absolute;right: 0;top: 0;width: 4rem;height: 1.333333rem;text-align: center;background-color: #f72f2f;overflow: hidden;}
+    .isH5Auction #detailsfoot #auction-submit{margin:0;width:100%;height:100%;}
+    .isH5Auction #detailsfoot #auction-submit h2 {margin-top: 0.2rem;padding-left: 0;height: 0.453333rem;line-height: 0.453333rem;font-size: 0.4rem;color: #fff;}
+    .isH5Auction #detailsfoot #auction-submit p {height: 0.64rem;line-height: 0.64rem;font-size: 0.32rem;color: #fff;}
+    .isH5Auction #appAuctionFoot {display: none;}
+    .isH5Auction #h5AuctionFoot {display: block;}
+
+    /*H5版竞拍拍中弹层*/
+    .popBox.auctionSuccessH5 .box-content {width: 7.34666666666rem;height: 9.8266666rem;background: url("../img/goods/auctionSuccessH5.png") 0 0 / 100% 100% no-repeat;}
+    .popBox.auctionSuccessH5 .confirmcontent {width: 100%;height: 6.3066667rem;}
+    .popBox.auctionSuccessH5 .confirmcontent img {position: absolute; left: 2.1rem; top: .7rem; width: 3.333333333rem;
+        height: 3.333333333rem;
+        border-radius: 50%;
+        overflow: hidden;}
+    .popBox.auctionSuccessH5 .confirmbutton {position: absolute;top: 6.3066667rem;z-index: 10001;overflow: hidden;}
+    .popBox.auctionSuccessH5 .confirmbutton div.cancelText {display: none;}
+    .popBox.auctionSuccessH5 .confirmbutton div.okText {margin: auto;width: 6.2666667rem;height: 0.9333333rem;}
+    .popBox.auctionSuccessH5 .box-content #close {right: -1rem;top: -1rem;}
+    /*新手引导*/
+    .newUserTeachMask{position: fixed;left:calc(50% - 5rem);top:0;width: 10rem;z-index: 9999; background: rgba(0,0,0,.7); height: 100%;}
+    .newUserTeach{position: fixed;left:calc(50% - 5rem);top:0;width: 10rem;height: 17.7866666666rem;z-index: 99999;}
+
+    @-webkit-keyframes pulse {
+        from {-webkit-transform: scale3d(1, 1, 1);transform: scale3d(1, 1, 1); }
+        50% {-webkit-transform: scale3d(1.2, 1.2, 1.2);transform: scale3d(1.2, 1.2, 1.2);}
+        to {-webkit-transform: scale3d(1, 1, 1);transform: scale3d(1, 1, 1);}
+    }
+    @keyframes pulse {
+        from {-webkit-transform: scale3d(1, 1, 1); transform: scale3d(1, 1, 1);}
+        50% {-webkit-transform: scale3d(1.2, 1.2, 1.2);transform: scale3d(1.2, 1.2, 1.2);}
+        to {-webkit-transform: scale3d(1, 1, 1); transform: scale3d(1, 1, 1);}
+    }
+
+    .pulse {-webkit-animation-duration: .8s;
+        animation-duration: .8s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+        -webkit-animation-name: pulse;
+        animation-name: pulse; }
+</style>
+<script>
+    //头部开关
+    if(T.Storage.get('noNavbar')){
+        $("html").addClass("noNavbar");
+    }else{
+        $("html").removeClass("noNavbar");
+    }
+    //h5版竞拍开关
+    var isH5Auction = T.Util.getPara('isH5Auction')||T.Storage.get('isH5Auction',1);
+    if(isH5Auction){
+        $("html").addClass("isH5Auction");
+        T.Storage.set('isH5Auction',1,1);
+    }
+</script>
+<div class="content" id="content">
+    <div id="collect" class="collect"><i id="collect-submit" class="icon-favorite"></i><!--<p id="collest-status">收藏</p>--></div>
+    <div id="goodsdetail-box">
+        <div id="goodsbanner">
+            <div id="imglist"><img class="lozad" src="../img/goods/lazy_load.png" data-src="../img/goods/banner_default.png"></div>
+            <div id="indicator"></div>
+        </div>
+        <div id="goodsprice">
+            <h2 class="current-price"><p>当前价</p>
+                <div style="height: 1.34rem;
+    overflow: hidden;;">
+                    <div id="priceBox"><em>￥</em><div class="AUCTION_PRICE">--</div></div>
+                </div>
+            </h2>
+            <h2 class="market-price"><del>市场价</del><del class="MARKET_PRICE">￥--</del></h2>
+            <h2 class="market-price last">
+                <div class="prePrice"><span>上期成交价</span><span class="PRE_AUCTION_PRICE">￥--</span></div>
+                <div class="avgPrice"><span>平均成交价</span><span class="AVG_AUCTION_PRICE">￥--</span></div>
+                <div class="fixedCuDownTime hide">
+                    <div class="cutDownTime" type-djs="1" id="237" data-djs="10"><i>00:06</i>:<span>11</span></div>
+                    <div class="lastBidderName"></div>
+                </div>
+            </h2>
+        </div>
+        <div id="goodsdesc"></div>
+        <div id="auctionstatus">
+            <h2 class="hide" id="stopBox">暂停中</h2>
+            <div class="cutDownTime" type-djs="1"><i>--:<em>--</em></i>:<span>--</span></div>
+            <div class="preAuctionCutDownDesc">后开始竞拍，请准备</div>
+        </div>
+        <div id="auctionpre"><h2>预约中</h2><p class="total">满<em id="BESPEAK_MIN_NUM">--</em>人开拍</p><p class="now">已预约<em id="BESPEAK_NUM">--</em>人</p></div>
+        <div id="leadeuser" >
+            <img src="../img/goods/leaduserflag.png" id="leaduserflag" >
+            <div class="leaduserDiv">
+                <img src="../img/usercenter/photo.png" id="leaduser"  onerror="T.Util.showDefaultPic(this)" >
+            </div>
+            <img src="../img/goods/icon_crown.png" id="crown">
+            <h2 id="lastBidder"><span class="lastBidderName">...</span><em>(---)</em></h2>
+            <div>
+                <p id="auctionIngDesc">若无人出价，将以<em>￥<span class="AUCTION_PRICE">--</span> </em>拍得本商品</p>
+                <p id="auctionOverDesc" class="hide">以<em>￥<span class="AUCTION_PRICE">--</span> </em>拍得本商品</p>
+            </div>
+        </div>
+        <div id="goodsrecord">
+            <div id="record-head"><p>围观<em id="PV_COUNT">--</em>人次</p><p>出价<em id="USERCOUNT">--</em>人</p><p>收藏<em id="FAVORTE_COUNT">--</em>人</p></div>
+            <ul id="auctionlist"></ul>
+            <div id="record-foot"><p>出价记录</p><p><em id="ALLCOUNT">--</em>条</p></div>
+            <div class="yxhMoney hide"><span>我已消耗<span id="yxhMoney">0</span>拍币/赠币</span><em>充值</em></div>
+            <div class="cjgMoney hide"><span>可差价购买</span><em>累计支出 ¥<span id="cjgMoney">0</span></em></div>
+        </div>
+        <div id="goodsargument">
+            <h2 class="appname"><img class="lozad" src="../img/goods/lazy_load.png" data-src="../img/goods/icon_logo.png"><span id="appName">掌上拍</span><img src="../img/goods/auctionHouseIcon.png" class="auctionHouse"></h2>
+            <div id="auctioner">
+                <img src="../img/goods/icon_auctioner.png" id="AUCTIONEER_PIC"  onerror="T.Util.showDefaultPic(this)">
+                <h2><span id="AUCTIONEER_NAME">--</span><em>中国执业拍卖师</em></h2>
+                <p class="serial">拍卖师编号<em id="AUCTIONEER_NO">--</em></p>
+                <p class="quality"><em>零风险</em><em>正品推荐</em><em>极速发货</em><em>公平公正</em></p>
+            </div>
+            <div id="quality"><em>零风险</em><em>正品推荐</em><em>极速发货</em><em>公平公正</em></div>
+            <div class="argument-item"><h2>起拍价</h2><p class="COMMODITY_PRICE">￥--</p></div>
+            <div class="argument-item"><h2>加价幅度</h2><p class="SINGLE_ADD_PRICE">￥--</p></div>
+            <div class="argument-item"><h2>出价费</h2><p><em class="POUNDAGE_PRICE">--</em>拍币/次</p></div>
+            <div class="argument-item"><h2>竞拍倒计时</h2><p class="COUNT_DOWN">--s</p></div>
+            <div class="argument-item"><h2>差价购买</h2><p id="IS_MARGIN_BUY">--</p></div>
+            <div class="argument-item"><h2>退币比例</h2><p class="RETURN_RATIO">--%</p></div>
+            <div class="argument-item" id="feedstip"><h2>拍中手续费<i></i></h2><p class="FEES">竞拍价<span class="auction_poundage">5%</span></p></div>
+            <div class="argument-item"><h2>委托售卖</h2><p class="WEITUO">可以</p></div>
+        </div>
+        <div id="detailstab"><em class="on">商品详情</em><em>晒单分享</em><em>往期成交</em><em>竞拍规则</em><i></i></div>
+        <div id="detailcontent">
+            <div class="detail-item" id="detail" style="display:none;"></div>
+            <div class="detail-item" id="shaidan" style="display:none;"></div>
+            <div class="detail-item" id="latestdeal" style="display:none;"></div>
+            <div class="detail-item" id="rule" style="display:none;">
+                <div>
+                    1、所有商品竞拍，每一次出价会消耗一定数量的拍币，同时商品价格按设定的递增幅度增加；<br>
+                    2、当用户对此件商品出价时，计时器将自动重置开始倒计时，便于其它用户进行出价竞争，如没有其它用户对该商品进行出价，倒计时归零时，您便成功拍得了此商品。<br>
+                    3、拍中的商品，可以选择委托售卖，委托成功后即可提现操作。<br>
+                    4、拍中的商品按最终竞拍成交价购买，超过72小时未支付，视为放弃，拍中的商品订单自动失效，同时不返出价的拍币。<br>
+                    5、如您未拍中此商品，则平台将您出价的拍币按商品设置的返币比例返还为购买币，便于您购买此商品时抵扣商品价格。
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="detailsfoot">
+    <div id="appAuctionFoot">
+        <div id="daipai" class="collect"><i id="daipai-submit" class="icon-icon-daipai"></i><p id="daipai-status">免费拍</p></div>
+        <!--<div id="download" class="collect"><i id="download-submit" class="icon-icon-daipai"></i><p>下载</p></div>-->
+        <div id="goIndex" class="collect"><i id="goIndex-s" class="icon-icon-daipai"></i><p>首页</p></div>
+        <div id="kefuBox" class="collect"><i id="kefu-submit"></i><p id="kefu-status">客服</p></div>
+    </div>
+    <div id="h5AuctionFoot">
+        <img id="userPhoto" src="../img/usercenter/photo.png">
+        <h2 id="userName">--</h2>
+        <h2 id="userId">ID:--</h2>
+        <div id="balance"><h2>账户余额：</h2><em>--.--</em></div>
+    </div>
+    <div id="auction-submit-box" class="hide">
+        <div id="auctionBox">
+            <div id="addsub">
+                <div>
+                    <em id="sub" class="addsub down"></em>
+                    <input type="tel" value="1"  disabled id="autoNum">
+                    <em id="add" class="addsub up"></em>
+                </div>
+                <p id="kpNum">余额可拍<em>--</em>次</p>
+            </div>
+            <div id="auction-submit"><h2>出价</h2><p><em class="POUNDAGE_PRICE">--</em>拍币/次</p></div>
+        </div>
+        <div id="autoAuctionBox">
+                <em class="jinduBG"></em>
+                <em class="jindu"></em>
+                <span>取消自动出价</span>
+            <p><em class="POUNDAGE_PRICE">--</em>拍币/次  已出<em id="sAutoNum"></em>/<em id="allAutoNum"></em>次</p>
+        </div>
+    </div>
+    <div id="auction-other-box" class="hide">预约该商品</div>
+    <div style="clear:both;overflow: hidden;"></div>
+    <div class="num-keyword" id="numKeyWord">
+        <div class="keyword-left">
+            <ul>
+                <li class="oneBet-key tmultiple" data-val="5">5次</li><li class="oneBet-key tmultiple" data-val="10">10次</li>
+                <li class="oneBet-key tmultiple" data-val="30">30次</li><li class="oneBet-key tmultiple" data-val="50">50次</li>
+            </ul>
+        </div>
+        <div class="keyword-right">
+            <i class="jiantou"></i>
+            <div class="keyword-main">
+                <ul>
+                    <li class="oneBet-key" data-val="1">1</li><li class="oneBet-key" data-val="2">2</li><li class="oneBet-key" data-val="3">3</li>
+                </ul>
+            </div>
+            <div class="keyword-main keyword-c">
+                <ul>
+                    <li class="oneBet-key" data-val="4">4</li><li class="oneBet-key" data-val="5">5</li><li class="oneBet-key" data-val="6">6</li>
+                </ul>
+            </div>
+            <div class="keyword-main keyword-c">
+                <ul>
+                    <li class="oneBet-key" data-val="7">7</li><li class="oneBet-key" data-val="8">8</li><li class="oneBet-key" data-val="9">9</li>
+                </ul>
+            </div>
+            <div class="keyword-main keyword-c">
+                <ul>
+                    <li class="all-delete">清除</li><li class="oneBet-key" data-val="0">0</li><li class="key-submit">确定</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="stopAuctionBox">
+    <div class="stopAuctionBg">
+        <div class="content"><!--为了您的身心健康，平台在02时~06时暂停竞拍，将在06点后恢复竞拍，请合理安排竞拍时间，谢谢！--></div>
+        <div class="btn"></div>
+    </div>
+</div>
+<div class="daipaiTip">好友___助力猛烈，免费获得--次自动出价</div>
+<div class="auctionNumTip"></div><!--新手任务已拍次数-->
+<div id="yhmBox">
+    <div class="yhmBg">
+        <span class="close"></span>
+        <div class="content"><!--哇，运气太好了，您以市场价50%获得此商品，立即付款5.10元把握这次机会。--></div>
+        <div class="btn"></div>
+    </div>
+</div>
+<div id="download"></div>
+<div id="sharerInfo"><!--<img src="../img/goods/userCount.png">帅的分享--></div>
+<div class="mask hide"></div>
+<script>
+    var dropLoad = '';
+    var pageSize = 10;//分页条目
+    var goodsDetailHasTipSuccessFlag = false;//是否弹过中奖层
+    var newUserHasAuctionSuccessFlag = false;//新用户是否弹过中奖层
+    var auctionYhmHasTipSuccessFlag = false;//是否弹过优惠买
+    var pageIndex = {
+        shareorder:0,
+        historyAuc:0
+    };//分页索引
+    var hasMore={
+        shareorder:false,
+        historyAuc:false
+    };//是否加载更多
+    var endGetDataFlag = true;//接口是否请求完毕
+    var commodityId = T.Util.getParaHash('id');//商品Id
+    var expectNo=T.Util.getParaHash('expectNo');//商品期号
+    var commodityLogo = "";//商品封面图
+    var COMMODITY_PIC = "";//商品图集
+    var expectId='';
+    var maxExpectNum = '';
+    var auctionPrice='',marketPrice=0;
+    var autoNum = 1;//自动出价次数
+    var lastObj = {};
+    var COMMODITY_NAME='';
+    var EXPECT_STATUS='';
+    var IS_NEW = 0;//是否是新手专区商品
+    var myAuctionCount = 0;//我出价次数
+
+    function loadMoreData() {
+        if ($(window).scrollTop() > ($('#goodsprice')[0].offsetTop-$('.navbar')[0].offsetHeight+3)) {//悬浮处理
+            $('#goodsprice').addClass('fixed');
+            if(EXPECT_STATUS==100){$('#goodsprice').addClass('fixedCutDown')}
+        } else {
+            $('#goodsprice').removeClass('fixed');
+            $('#goodsprice').removeClass('fixedCutDown');
+        }
+        //底部四个tab滑动加载更多
+        var tabtype = $("#detailstab em.on").index();
+        var scrollTop = $(this).scrollTop()+5;
+        var scrollHeight = $(document).height();
+        var windowHeight = $(this).height();
+        if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+            if(tabtype == 1 && hasMore["shareorder"]){
+                T.goodsDetail.getShareOrder(true);
+            }else if(tabtype == 2 && hasMore["historyAuc"]){
+                T.goodsDetail.getHistoryAuction(true);
+            }
+        }
+    }
+
+    T.goodsDetail = (function(){
+        var o = {
+            //程序入口
+            init:function(){
+                if(!T.Util.isEmpty(T.Util.getPara('shareInfoId'))){//带分享的链接
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,
+                        reqUrl:'/commodity/services/info/queryShareInfo.json?shareNo='+T.Util.getPara('shareInfoId'),
+                        callback:function(data){
+                            if(data.res_data && data.res_data.value && data.res_data.value.USER_ID){
+                                var name = data.res_data.value.NICK_NAME;
+                                if(name.length>4){name=name.substring(0,4)+'...'}
+                                $('#sharerInfo').html('<img src="'+data.res_data.value.USER_PIC+'">'+name+'的分享').show();
+                            }else{
+                                $('#sharerInfo').hide();
+                            }
+
+                        },
+                        errorCallback:function(data){
+                            //tip(data.msg);
+                        }
+                    });
+                }else{
+                    $('#sharerInfo').hide();
+                }
+                if(T.Util.getPara('initdownload')){
+                    T.Util.appDownload();
+                }
+                o.initPage();
+                if(T.Util.getParaHash('isNext')){//来自记录里面的继续购买 默认请求下一期
+                    o.getProductInfo('isNext');
+                }else{
+                    o.getProductInfo();
+                }
+                if(isH5Auction){
+                    o.getAuctionRecord();
+                }
+                T.Util.getAppInfo();
+                o.bindEvent();
+            },
+            //初始化页面
+            initPage:function(){
+                lozad().observe();
+                var status = T.Util.getParaHash('status');
+                var tabType = T.Util.getParaHash('tabType');
+                if(status == 'pre'){
+                    $("#goodsdetail-box,#detailsfoot").removeClass("auction").addClass("preauction");
+                }else{
+                    $("#goodsdetail-box,#detailsfoot").addClass("auction").removeClass("preauction");
+                    $('#auctionOverDesc').hide().siblings().show();
+                }
+                $("#goodsdetail-box").animate({opacity:1},0);
+                //H5版竞拍页底部初始化
+                function initUserInfo(){
+                    var userInfo = T.Storage.get('userinfo');
+                    if(T.Util.isEmpty(userInfo)) return false;
+                    $("#userPhoto").attr("src",userInfo.userPic);
+                    $("#userName").html(userInfo.nickName);
+                    $("#userId").html("ID:"+userInfo.userId);
+                    $("#balance em").html((userInfo.moneyList[2]+userInfo.moneyList[3]).toFixed(2)+"币");
+                }
+                if(isH5Auction){
+                    initUserInfo();
+                    T.User.getUInfo(function () {
+                        initUserInfo();
+                    });
+                }
+                //修改应用名
+                $("#appName").text(T.Util.getAppInfo("appName"));
+                //获取用户的收货地址
+                T.User.getUserAddress();
+                //定位到具体某个tab
+                if(tabType){
+                    window.scrollTo(0,document.body.scrollHeight);
+                    o.tabSwitch(parseInt(tabType));
+                }else{
+                    $("#detail").show().siblings().hide();
+                }
+                //每件商品页面的PV/UV（fwl_001，数字为商品id）
+                T.Util.setUserBehaviorList({
+                    "busId": T.Util.getPara('id'),
+                    "conductCode": "fwl_" + T.Util.getPara('id'),
+                    "comductDesc": "每件商品页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            viewAgain:function () {//再次出现刷新接口数据
+                o.getProductInfo();
+                goodsDetailHasTipSuccessFlag = false;
+            },
+            auctionYhm:function () {
+                return;//优惠购暂时注释
+                if(IS_NEW==0||auctionYhmHasTipSuccessFlag||isH5Auction){return;}
+                T.User.getUInfo(function () {
+                    var userinfo = T.Storage.get('userinfo'),m =  0;
+                    if(userinfo&&userinfo.moneyList){
+                        m = userinfo.moneyList[3];//userinfo.moneyList[2]+
+                    }//赠币为零
+                    if(userinfo.isSuccessAuction==1){return}//拍中过不查看是否有优惠买
+                    if(m==0){//查询是否触发优惠买
+                        T.Util.xmlHttpRequest({
+                            type:'get',
+                            errorType:1,
+                            reqUrl:'/commodity/services/product/newUser/layer.json?commodityId='+commodityId,
+                            callback:function(yhmData){
+                                var yhmD= yhmData.res_data.value;
+                                $('#yhmBox .content').html('哇，运气太好了，立即付款'+(yhmD.NEW_PAY_MONEY*1).toFixed(2)+'元获取价值'+(yhmD.MARKET_PRICE*1).toFixed(2)+'元的商品，立即节省'+(100-yhmD.NEW_RANDOM)+'%哦');
+                                $('#yhmBox,.mask').show();
+                                auctionYhmHasTipSuccessFlag = true;
+                                $('#yhmBox .close').off().Touch(function(){
+                                    $('#yhmBox,.mask').hide();
+                                });
+                                $('#yhmBox .btn').off().Touch(function (el) {//优惠买btn
+                                    $('#yhmBox,.mask').hide();
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/pay.html?commodityId='+commodityId+'&expectId='+yhmD.EXPECT_ID+'&NEW_ORDER_NO='+yhmD.NEW_ORDER_NO+'&money='+yhmD.NEW_PAY_MONEY+'&payType=auctionYhm');
+                                });
+                            },
+                            errorCallback:function(data){}
+                        });
+
+                    }
+                });
+            },
+            //事件绑定
+            bindEvent:function(){
+                $(window).off().scroll(loadMoreData);
+                $('#kefuBox').off().Touch(function () {
+                    //在线客服的点击量（kfdjl_001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId": T.Util.getPara('id'),
+                        "conductCode": "kfdjl_"+T.Util.getPara('id'),
+                        "comductDesc": "在线客服的点击量",
+                        "time": new Date().getTime()
+                    });
+                    //T.Util.kefu('h5','来源：竞拍详情页面|商品ID：'+commodityId+'|商品名称：'+COMMODITY_NAME+'|商品期次(商品唯一)：'+expectNo+'|商品期号(全系统唯一)：'+expectId);
+                    var obj = {
+                        eventId : commodityId,
+                        title: COMMODITY_NAME,
+                        content :"商品ID:"+commodityId,
+                        imageUrl : commodityLogo,
+                        url : T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+commodityId+'&expectNo='+expectNo,
+                        memo : "商品期次(商品唯一):"+expectNo+'商品期号(全系统唯一)：'+expectId
+                    }
+                    T.Util.kefuNew("h5",'来源：竞拍详情页面',obj);
+                });
+                $('.yxhMoney em').off().Touch(function(){//充值按钮
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/recharge.html');
+                });
+                $('#daipai').off().Touch(function(){
+                    //“免费拍”按钮点击量（mfpdjl_001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId": T.Util.getPara('id'),
+                        "conductCode": "mfpdjl_"+T.Util.getPara('id'),
+                        "comductDesc": "“免费拍”按钮点击量",
+                        "time": new Date().getTime()
+                    });
+                    if(EXPECT_STATUS!=100){
+                        if(EXPECT_STATUS<100){
+                            tip('商品预约中，开拍后再邀好友免费拍哦');
+                        }else{
+                            if(EXPECT_STATUS==200){
+                                tip('商品当前期次已结束，点击开始下一期再邀好友免费拍哦');
+                            }else{
+                                tip('商品当前期次不在竞拍中，稍后再邀好友免费拍哦');
+                            }
+                        }
+                        return;
+                    }
+                    if(newUserHasAuctionSuccessFlag &&IS_NEW=='1'){
+                        alert('您已经拍中过新手商品，请把机会留给其他人。',function () {
+                            T.Util.goTabbar('0');
+                        },'我知道了');
+                        return;
+                    }
+                    if(IS_NEW=='1' && T.Storage.get('userinfo') && T.Storage.get('userinfo').isSuccessAuction=='1'){
+                        alert('您好，此商品仅新手专享，您已不是新用户哦 ，请竞拍其它商品。',function () {
+                            T.Util.goTabbar('0');
+                        },'我知道了');
+                        return;
+                    }
+                    var daipaiNum = T.Storage.get('daipaiNum')||1;
+                    T.Storage.set('daipaiNum',(daipaiNum*1)+1);
+                    if(daipaiNum>4){//本设备弹过3次之后就不弹层 直接调分享
+                        o.inviteZhuli();
+                    }else{
+                        confirm({
+                            className:'userDefined zuli',
+                            html:'<h2>每成功邀请1位好友助力</br>可免费获得<em>1~5</em>次自动竞拍</h2>',
+                            okText:' ',
+                            close:'1',
+                            okFun:function(){
+                                //“免费拍”弹层“立即去邀请”的点击量（yqdjl_001，数字为商品id）
+                                T.Util.setUserBehaviorList({
+                                    "busId": T.Util.getPara('id'),
+                                    "conductCode": "yqdjl_"+T.Util.getPara('id'),
+                                    "comductDesc": "“免费拍”弹层“立即去邀请”的点击量",
+                                    "time": new Date().getTime()
+                                });
+                                o.inviteZhuli();
+                            }
+                        });
+                    }
+                });
+                $('#download').off().Touch(function(){
+                    T.Util.appDownload();
+                });
+                $('#goIndex').off().Touch(function(){
+                    window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=index.html&noNavbar=1';
+                });
+                //分享
+                $("#share").off().Touch(function(){
+                    //右上角“分享”“收藏”的点击量（fxdjl_001、scdjl_001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId": T.Util.getPara('id'),
+                        "conductCode": "fxdjl_" + T.Util.getPara('id'),
+                        "comductDesc": "右上角“分享”“收藏”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,
+                        reqUrl:'/commodity/services/info/createShareLink.json',
+                        callback:function(data){
+                           var shareInfoId =  data.res_data.value;
+                            T.Util.thirdShare({
+                                "type":"native",
+                                "title":"赞赞赞，您的好友送您大礼包了",
+                                "description":"一元可拍中“" + COMMODITY_NAME + "”，最高免费得，现在加入更有105元大礼包免费送！",
+                                "icon":T.Util.getAppLogo(),
+                                "url":Global.fullHost + '/auction/view/go.html#page=goodsDetail.html&id=' + T.Util.getPara("id") + '&shareInfoId='+shareInfoId+'&noNavbar=1&expectNo=' + expectNo + '&isNext=' + T.Util.getPara("isNext") + "&channelCode=" + (Global.isiOS ? 'iosh5':'adh5') + '&appInfo=' + Base64.encode(JSON.stringify(T.Util.getAppInfo())).replace(/\=/g,"_")
+                            },function(result){
+
+                            });
+                        },
+                        errorCallback:function(data){
+                            tip(data.msg);
+                        }
+                    });
+                });
+                $('#auction-submit').off().Touch(function(el){//点击出价 切换倒计时 重新开始
+                    if($(el).hasClass('preCutDown')){
+                        tip('等一等啦，马上就能出价哦');
+                        return
+                    };
+                    if(T.Util.isEmpty(T.Storage.get('userinfo'))||T.Util.isEmpty(T.Storage.get('access_token'))){
+                        T.Util.login();
+                        return;
+                    }
+                    if($('#auction-submit h2').html()=='自动出价'){
+                        o.autoPrice('1',$('#autoNum').val());
+                    }else if($('#auction-submit h2').html()=='好友助力中'){
+                        console.log('好友助力中好友助力中好友助力中好友助力中------');
+                    }else{
+                        o.productAuction();
+                    }
+                });
+                $('#autoAuctionBox').off().Touch(function () {
+                    o.autoPrice('2');
+                });
+                //H5版竞拍
+                $('#h5auction-submit').off().Touch(function(){
+                    o.productAuction();
+                });
+                $('#back').off().Touch(function () {
+                    if(($('#autoAuctionBox').css('display')=='block'||$('#auction-submit h2').html()=='好友助力中')&& ($('#auction-submit-box').css('display')=='block')){
+                        confirm({
+                            html:'您正在自动竞拍中，确定返回？<p>点击返回也将继续竞拍</p>',
+                            cancelText:'取消',cancelFun:function () {
+
+                            },okText:'确定',okFun:function () {
+                                if(T.isNative){
+                                    T.Storage.set('commodityIdNeedRefresh',commodityId);//返回的时候给本商品id设置一个标记 当关闭该层 下一层出现在用户视角的时候 重新拉取 该商品id信息
+                                }
+                                T.Util.back();
+                            }
+                        });
+                    }else if(IS_NEW && myAuctionCount >= 1 && $("#auction-other-box").css("display") == 'none'){//新手专区商品
+                        var str = '';
+                        var userinfo = T.Storage.get('userinfo')||{};
+                        if(myAuctionCount <= 2 && userinfo.isSuccessAuction!=1){//新手商品 且自己是新手){
+                            str = '老铁，再竞拍' + (3 - myAuctionCount) + '次可获得<em>1赠币</em>';
+                        }else if(myAuctionCount <= 4){
+                            str = '老铁，您距离竞拍成功还差1小步哦~</em>';
+                        }
+                        confirm({
+                            html:str,
+                            cancelText:'狠心放弃',
+                            okText:'我再想想',
+                            cancelFun:function(){
+                                T.Util.back();
+                            }
+                        });
+                    }else{
+                        if(T.isNative){
+                            T.Storage.set('commodityIdNeedRefresh',commodityId);//返回的时候给本商品id设置一个标记 当关闭该层 下一层出现在用户视角的时候 重新拉取 该商品id信息
+                        }
+                        T.Util.back();
+                    }
+                });
+                //切换tab
+                $("#detailstab em").off().Touch(function(el){
+                    if($(el).hasClass('on')){return;}
+                    o.tabSwitch($(el).index());
+                });
+                $('#auction-other-box').off().Touch(function (el) {//
+                    if($(el).html()=='预约该商品'){
+                        o.productVisitors(expectNo,commodityId,function () {
+                            $(el).html('已预约该商品');
+                            T.goodsDetail.getProductInfo();
+                        });
+                    }
+                    if($(el).html()=='前往下一期'){
+                        window.scrollTo(0,0);
+                        o.getProductInfo('isNext');
+                    }
+                });
+                //显示拍中手续费弹层
+                $("#feedstip").off().Touch(function(){
+                    confirm({
+                        className:'alert',
+                        html:"<h2>什么是竞拍手续费？</h2><p>为保证商品的正常竞拍，需按最终竞拍价的" + $(".auction_poundage").text() + "支付竞拍手续费给委托的第三方机构，由本平台代扣支付。</p>",
+                        okText:"我知道了"
+                    });
+                });
+                //收藏商品
+                $("#collect").off().Touch(function(el){
+                    //右上角“分享”“收藏”的点击量（fxdjl_001、scdjl_001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId": T.Util.getPara('id'),
+                        "conductCode": "scdjl_" + T.Util.getPara('id'),
+                        "comductDesc": "右上角“分享”“收藏”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    var type = $(el).hasClass("collected")?2:1;//type  1:收藏 2：取消
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        reqUrl:'/commodity/services/product/favorite.json?commodityId=' + commodityId+'&type='+type,//type  1:收藏 2：取消
+                        callback:function(data){
+                            if(type==1){
+                                $(el).addClass("collected");
+                                $('#collect-submit').removeClass().addClass("icon-favoriteOn");
+                                $("#collest-status").text("已收藏");
+                                tip("收藏成功！",'ok');
+                            }else{
+                                $(el).removeClass("collected");
+                                $("#collest-status").text("收藏");
+                                $('#collect-submit').removeClass().addClass("icon-favorite");
+                                tip("取消收藏成功！",'ok');
+                            }
+                        },
+                        errorCallback:function(data){
+
+                        }
+                    });
+                });
+                //输入倍数
+                $("#autoNum").NumInput({
+                    val:autoNum,
+                    min:1,
+                    max:99999,
+                    fn:function(){
+                        if(!$("#autoNum").hasClass('disable')){
+                            $("#numKeyWord").show();
+                            $("#autoNum").attr('data-type','allDelete');
+                        }
+                    },
+                    focusFn:function(){
+                        if(!$("#autoNum").hasClass('disable')){
+                            $("#numKeyWord").show();
+                            $("#autoNum").attr('data-type','allDelete');
+                        }
+                    },
+                    blurFn:function(){
+                        if($('#autoNum').val()>1){
+                            $('#auction-submit h2').html('自动出价');
+                        }else{
+                            $('#auction-submit h2').html('出价');
+                        }
+                    }
+                });
+                //h5数字键盘
+                $('.keyword-left li').off().Touch(function(el){
+                    $("#autoNum").val($(el).attr('data-val'));
+                    $('#auction-submit h2').html('自动出价');
+                });
+                $('.keyword-right li').off().Touch(function(el){
+                    if($('#autoNum').attr('data-type')=='allDelete'){
+                        if($(el).attr('data-val')==0){return;}
+                        $("#autoNum").val($(el).attr('data-val'));
+                        $("#autoNum").attr('data-type','noAllDelete');
+                    }else{
+                        var val = $('#autoNum').val();
+                        $("#autoNum").val(val+$(el).attr('data-val'));
+                    }
+
+                    if($('#autoNum').val()>1){
+                        $('#auction-submit h2').html('自动出价');
+                    }else{
+                        $('#auction-submit h2').html('出价');
+                    }
+                });
+                $('.keyword-right .all-delete').off().Touch(function(){//清除按钮
+                    $("#autoNum").attr('data-type','allDelete');
+                    $("#autoNum").val(1);
+                    $('#auction-submit h2').html('出价');
+                });
+                $('.keyword-right .key-submit').off().Touch(function(){//确定按钮
+                   /* var val = $('#autoNum').val();
+                    if(val>1){o.autoPrice('1',val);}*/
+                    $('#numKeyWord').hide();
+                });
+                $('#content').Touch(function () {
+                    $('#numKeyWord').hide();
+                });
+                //查看出价记录
+                $("#record-foot").off().Touch(function(el){
+                    //出价记录入口的点击量（jldjl_001，数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId": T.Util.getPara('id'),
+                        "conductCode": "jldjl_" + T.Util.getPara('id'),
+                        "comductDesc": "出价记录入口的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/bidRecord.html?id='+expectId+'&allCount='+$('#ALLCOUNT').html());
+                });
+                //充值
+                $("#recharge").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/recharge.html');
+                });
+                //查看售卖师主页
+                $("#auctioner").off().Touch(function(el){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctioner.html&id='+$(el).attr('data-id'));
+                });
+                //查看拍卖行主页
+                $("#goodsargument .appname").off().Touch(function(el){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionHouse.html');
+                });
+            },
+            //tab切换
+            tabSwitch:function(index){
+                var el = $("#detailstab em").eq(index);
+                el.addClass("on").siblings().removeClass("on");
+                el.siblings("i").animate({"left":(2.5 * index + 0.7166667) + "rem"});
+                $(".detail-item").eq(index).show().siblings().hide();
+                if(index == 1|| index == 2){
+                    $(".detail-item").eq(index).css("min-height",window.innerHeight);
+                }
+                //tab定位
+                if(parseInt(T.Util.getParaHash('tabType')) == 1){
+                    $("body").scrollTop($("#detailstab").offset().top - $(".navbar").height() - 2 * $("#goodsprice").height() - $("#detailstab").height() - 62);
+                }
+                //请求数据
+                if(index == 1){
+                    pageIndex["shareorder"] = 1;
+                    o.getShareOrder();
+                }else if(index == 2){
+                    pageIndex["historyAuc"] = 1;
+                    o.getHistoryAuction();
+                }
+            },
+            //日期格式化
+            timeFormat:function(time){
+                if(typeof time == 'string'){
+                    return new Date(time.replace(/-/g,'/')).format("yyyy-MM-dd hh:mm:ss");
+                }else if(typeof time == 'number'){
+                    return new Date(time).format("yyyy-MM-dd hh:mm:ss");
+                }else{
+                    return '--:--';
+                }
+            },
+            //计算节省比例
+            getSaveRatio:function(item){
+                if(item.BARGAIN_MONEY && item.MARKET_PRICE){
+                    return (100 - item.BARGAIN_MONEY / item.MARKET_PRICE * 100).toFixed(2)
+                }else{
+                    return '0.00';
+                }
+            },
+            //加载商品banner
+            loadBanner:function(imgList){
+                //渲染banner
+                var imgHtml = [],indicatorHtml = [];
+                imgHtml.push('<div id="imglist">');
+                indicatorHtml.push('<div id="indicator" style="left:calc(50% - ' + 0.15 * imgList.length + 'rem)">');
+                for(var index = 0;index < 2;index++){
+                    $.each(imgList,function(i,item){
+                        imgHtml.push('<img src="' + item + '" onerror="T.Util.showDefaultPic(this)">');
+                        if(index == 0){
+                            indicatorHtml.push('<em' + (i == 0 ? ' class="on"' : '') + '></em>');
+                        }
+                    });
+                }
+                imgHtml.push('</div>');
+                indicatorHtml.push('</div>');
+                $("#goodsbanner").html(imgHtml.join("") + indicatorHtml.join(""));
+                //执行banner动画
+                var elem = document.getElementById('goodsbanner');
+                var num = imgList.length;
+                function img_num(p) {
+                    if(num > 1){
+                        if (p > (num - 1)) {
+                            return p - num;
+                        } else {
+                            return p;
+                        }
+                    }else{
+                        return 0;
+                    }
+                }
+                window.imgScroll = Swipe(elem, {
+                    auto: 0,
+                    autoplayDisableOnInteraction: true,
+                    callback: function() {
+                        $("#indicator em").removeClass("on").eq(img_num(imgScroll.getPos())).addClass("on");
+                    }
+                });
+            },
+            //倒计时重置动画
+            cutDownRestart:function () {
+                if($('.digit-wrapper-10').length>0){
+                    $('.digit-wrapper-10').removeClass().addClass('digit-wrapper-10-a');
+                }else if($('.digit-wrapper-10-a').length>0){
+                    $('.digit-wrapper-10-a').removeClass().addClass('digit-wrapper-10');
+                }else if($('.digit-wrapper-60').length>0){
+                    $('.digit-wrapper-60').removeClass().addClass('digit-wrapper-60-a');
+                }else{
+                    $('.digit-wrapper-60-a').removeClass().addClass('digit-wrapper-60');
+                }
+            },
+            //倒计时暂停
+            cutDownPause:function () {
+                if($('.digit-wrapper-10').length>0){
+                    $('.digit-wrapper-10').addClass('pause');
+                }else if($('.digit-wrapper-10-a').length>0){
+                    $('.digit-wrapper-10-a').addClass('pause');
+                }else if($('.digit-wrapper-60').length>0){
+                    $('.digit-wrapper-60').addClass('pause');
+                }else{
+                    $('.digit-wrapper-60-a').addClass('pause');
+                }
+            },
+            //查询新手商品已拍次数
+            newAuctionTask:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/info/newAuctionTask.json?commodityId='+commodityId+'&expectId='+expectId,
+                    callback:function(data){//
+                        var num = data.res_data.value.count;
+                        myAuctionCount = num;
+                        if(data.res_data.value.IS_RECIVE && data.res_data.value.IS_RECIVE ==1){
+                            $('.auctionNumTip').hide();
+                        }else{
+                            if(num>2){
+                                $('.auctionNumTip').html('<em>3/3</em>点击领取1赠币');
+                                $('.auctionNumTip').off().Touch(function () {//领取币接口
+                                    T.Util.xmlHttpRequest({
+                                        type:'get',
+                                        errorType:1,
+                                        reqUrl:'/commodity/services/info/reciveTaskReward.json?taskId=7',
+                                        callback:function(data){//待联调
+                                            tip('领取成功，获得1赠币');
+                                            $('.auctionNumTip').hide();
+                                            T.User.getUInfo(function(){
+                                                var userInfo = T.Storage.get('userinfo');
+                                                $("#balance em").html(userInfo.moneyList[2]+userInfo.moneyList[3]+"币");
+                                            });
+                                        },
+                                        errorCallback:function(data){
+                                            data && tip(data.msg,'error');
+                                        }
+                                    });
+                                });
+                            }else{
+                                $('.auctionNumTip').html('<em>'+num+'/3</em>再拍'+(3-num)+'次获得1赠币');
+                            }
+                            $('.auctionNumTip').show();
+                        }
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg,'error');
+                    }
+                });
+            },
+            //获取商品信息
+            getProductInfo:function(type){
+                if(T.Util.isEmpty(expectNo)){expectNo='1'};
+                var url = '/commodity/services/product/info.json?commodityId=' + commodityId + '&expectNo=' + expectNo;
+                if(type&&type=='isNext'){url=url+'&isNext=1'}
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:url,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        console.log('获取竞拍商品信息成功');
+                        var d = data.res_data.value;
+                        if((!type || type!='isNext') && (expectId< d.EXPECT_ID) && expectId!=''){return;}//如果不是手动点击前往下一期 需要return
+                        if(type&&type=='isNext'){
+                            goodsDetailHasTipSuccessFlag = false;//如果触发了下一期 需要重新改变是否弹过层 否则会出现中奖不弹层bug
+                        }
+                        $('#leaduserflag').attr("src","../img/goods/leaduserflag.png");
+                        $('#autoNum').val(1);
+                        $('#auctionBox').show().siblings().hide();
+                        $('#auctionstatus .cutDownTime').show().siblings().hide();
+                        $(".auction_poundage").text((d.AUCTION_POUNDAGE||5) + "%");
+                        $(".argument-item .WEITUO").text(parseFloat(d.ISDELEGATEISDELEGATE)?"可以":"不可以");
+                        $('#numKeyWord').hide();
+                        auctionPrice = d.AUCTION_PRICE;
+                        marketPrice = d.MARKET_PRICE;
+                        expectId = d.EXPECT_ID;
+                        expectNo = d.CURRENT_EXPECT_NUM;
+                        maxExpectNum = d.MAX_EXPECT_NUM;
+                        COMMODITY_NAME = d.COMMODITY_NAME;
+                        EXPECT_STATUS=d.EXPECT_STATUS;
+                        IS_NEW = d.IS_NEW;
+                        commodityLogo = d.COMMODITY_LOGO;//商品封面图
+                        COMMODITY_PIC = d.PIC_LIST;//商品图集
+                        if(d.EXPECT_STATUS==80){//预约中
+                            $("#goodsdetail-box,#detailsfoot").removeClass("auction").addClass("preauction");
+                            if(d.IS_VISITOR){
+                                $('#auction-other-box').html('已预约该商品');
+                            }else{
+                                $('#auction-other-box').html('预约该商品');
+                            }
+                            $('#BESPEAK_MIN_NUM').html(d.BESPEAK_MIN_NUM);
+                            $('#BESPEAK_NUM').html(d.BESPEAK_NUM);
+                            $('#leadeuser').hide();
+                        }else{
+                            $('#auction-other-box').hide().html('前往下一期');
+                            $('#auction-submit-box').show();
+                            $("#goodsdetail-box,#detailsfoot").addClass("auction").removeClass("preauction");
+                            $('#auctionstatus').show();
+                            $('#auctionOverDesc').hide().siblings().show();
+                            if(d.EXPECT_STATUS==95){//预约倒计时
+                                addTimer('.cutDownTime',Math.ceil(d.SURPLUS_TIME/1000));
+                                $('.preAuctionCutDownDesc').show();
+                                $('#auction-submit').addClass('preCutDown');
+                            }else{
+                                $('.preAuctionCutDownDesc').hide();
+                                $('#auction-submit').removeClass('preCutDown');
+                            }
+                            if(d.IS_STOP_TIME && d.IS_STOP_TIME=='1'&&d.EXPECT_STATUS==200){//是否停拍时段暂停 1：是  2：否
+                                var d1 = d.DAY_START_SALES;
+                                var d2 = d.DAY_STOP_SALES;
+                                $('#stopAuctionBox .content').html('为了您的身心健康，平台<br>从'+d1+'<br>至'+d2+'<br>暂停竞拍,请合理安排竞拍时间，谢谢！');
+                                $('#stopAuctionBox,.mask').show();
+                                $('#stopAuctionBox .btn').off().Touch(function(){
+                                    T.Util.goTabbar('0');
+                                });
+                            }
+                            if(d.EXPECT_STATUS==120||d.EXPECT_STATUS==90){//暂停中 90为预约暂停
+                                if(d.EXPECT_STATUS==120){
+                                    $('#stopBox').html('暂停竞拍');
+                                    $('#auction-other-box').show().html('商品暂停竞拍');
+                                }else{
+                                    $('#stopBox').html('暂停预约');
+                                    $('#auction-other-box').show().html('商品暂停预约');
+                                }
+                                $('#stopBox').show().siblings().hide();
+                                $('#auction-submit-box').hide();
+                            }
+                            if(d.EXPECT_STATUS==100&&(d.AUTO_COUNT>0||d.REP_COUNT>0)){//存在自动竞拍
+                                if(d.REP_COUNT>0){//存在免费拍
+                                    $("#autoNum").val(d.REP_COUNT);
+                                    $("#autoNum").addClass('disable');
+                                    $('#addsub em').addClass('disable');
+                                    $("#auction-submit h2").html('好友助力中');
+                                }else{
+                                    o.autoAuction(d.AUTO_COUNT,d.ALL_AUTO_COUNT);
+                                }
+                            }else{
+                                $('#autoNum').val(1);
+                            }
+                            $('#ALLCOUNT').html(d.OTHER_INFO.ALLCOUNT);//所有出价记录数量
+                            $('#USERCOUNT').html(d.OTHER_INFO.USERCOUNT);//所有出价人数量
+                            $('#PV_COUNT').html(d.PV_COUNT);//围观人数量
+                            $('#FAVORTE_COUNT').html(d.FAVORTE_COUNT);//收藏人数量
+                            var PRICE_LIST = d.PRICE_LIST;
+                            $('#auctionlist').html('');
+                            if(PRICE_LIST.length>1){
+                                if(d.EXPECT_STATUS!=120){$('#stopBox').hide();}
+                                $('#leadeuser').show();
+                                var htmlArr = [];
+                                for(var i=0;i<PRICE_LIST.length;i++){
+                                    if(i==0){
+                                        $('.lastBidderName').html(PRICE_LIST[i].NICK_NAME||PRICE_LIST[i].USER_MOBILE);
+                                        $('#leaduser').attr('src','../img/usercenter/photo.png').attr('src',PRICE_LIST[i].USER_PIC);
+                                        $('#lastBidder').html('<span class="lastBidderName">'+(PRICE_LIST[i].NICK_NAME||PRICE_LIST[i].USER_MOBILE)+'</span><em>('+(PRICE_LIST[i].AUCTION_ADDR||"未知地域")+')</em></h2>');
+                                        htmlArr.push('<li class="auctionlist-item hide" data-userid="'+PRICE_LIST[i].USER_ID+'" data-money="'+PRICE_LIST[i].AUCTION_PRICE+'"><img class="lozad" src="../img/goods/lazy_load.png" data-src="'+PRICE_LIST[i].USER_PIC+'"><em>'+(PRICE_LIST[i].NICK_NAME||PRICE_LIST[i].USER_MOBILE)+'</em><em>出局</em><em>('+(PRICE_LIST[i].AUCTION_ADDR||"未知地域")+')</em><em>￥'+PRICE_LIST[i].AUCTION_PRICE.toFixed(2)+'</em></li>');
+                                    }else{
+                                        htmlArr.push('<li class="auctionlist-item"><img class="lozad" src="../img/goods/lazy_load.png" data-src="'+PRICE_LIST[i].USER_PIC+'"><em>'+(PRICE_LIST[i].NICK_NAME||PRICE_LIST[i].USER_MOBILE)+'</em><em>出局</em><em>('+(PRICE_LIST[i].AUCTION_ADDR||"未知地域")+')</em><em>￥'+PRICE_LIST[i].AUCTION_PRICE.toFixed(2)+'</em></li>');
+                                    }
+                                }
+                                $('#auctionlist').html(htmlArr.join('')).show();
+                            }else{
+                                $('#auctionlist').hide();
+                                if(PRICE_LIST.length==1){
+                                    $('#leadeuser').show();
+                                    $('.lastBidderName').html(PRICE_LIST[0].NICK_NAME||PRICE_LIST[0].USER_MOBILE);
+                                    $('#leaduser').attr('src','../img/usercenter/photo.png').attr('src',PRICE_LIST[0].USER_PIC);
+                                    $('#lastBidder').html('<span class="lastBidderName">'+(PRICE_LIST[0].NICK_NAME||PRICE_LIST[0].USER_MOBILE)+'</span><em>('+(PRICE_LIST[0].AUCTION_ADDR||"未知地域")+')</em></h2>');
+                                    $('#auctionlist').html('<li class="auctionlist-item hide"  data-userid="'+PRICE_LIST[0].USER_ID+'" data-money="'+PRICE_LIST[0].AUCTION_PRICE+'"><img class="lozad" src="../img/goods/lazy_load.png" data-src="'+PRICE_LIST[0].USER_PIC+'"><em>'+(PRICE_LIST[0].NICK_NAME||PRICE_LIST[0].USER_MOBILE)+'</em><em>出局</em><em>('+(PRICE_LIST[0].AUCTION_ADDR||"未知地域")+')</em><em>￥'+PRICE_LIST[0].AUCTION_PRICE.toFixed(2)+'</em></li>');
+                                }else{
+                                    $('#leadeuser').hide();
+                                    $('.lastBidderName').html('暂时无人出价');
+                                    $('#lastBidder').html('<span class="lastBidderName">暂时无人出价</span><em>(-- --)</em></h2>');
+                                }
+                            }
+                            $("#goodsdetail-box,#detailsfoot").removeClass("preauction").addClass("auction");
+                            if((d.EXPECT_STATUS>=150&&d.EXPECT_STATUS<=200)){
+                                if(d.IS_END==1){//竞拍的商品忽然停止
+                                    o.auctionOver('1');
+                                }else{
+                                    o.auctionOver();
+                                }
+                            }//商品竞拍成功
+                        }
+                        if(d.EXPECT_STATUS==200){
+                            $('.fixedCuDownTime .cutDownTime').html('已成交');
+                        }else{
+                            $('.fixedCuDownTime .cutDownTime').html('<i>--:--</i>:<span>--</span>');
+                        }
+                        if(d.EXPECT_STATUS==100){//只有100正在拍的的时候才加倒计时
+                            $(".cutDownTime").attr('id',d.COMMODITY_ID).attr('data-djs',d.COUNT_DOWN);
+                            addTimer('.cutDownTime',Math.ceil(d.SURPLUS_TIME/1000));
+                        }
+                        var userinfo = T.Storage.get('userinfo');
+                        if(IS_NEW==1 && userinfo && userinfo.isSuccessAuction!=1){//新手商品 且自己是新手
+                            o.newAuctionTask();
+                        }else{
+                            $('.auctionNumTip').hide();
+                        }
+                        if(d.AUCTION_USER_ID&&d.AUCTION_USER_ID.split(',').length>1 && d.AUCTION_USER_ID.split(',').indexOf(userinfo.userId)>-1){//一拍多中 并且自己拍中 竞拍成功者的信息要更新为自己
+                            $('.lastBidderName').html(T.Util.isEmpty(userinfo.nickName)?userinfo.userMobile:userinfo.nickName);//最新出价人姓名
+                            if(d.AUCTION_USER_AREA&&d.AUCTION_USER_AREA.split(',').length>1){
+                                $('#lastBidder em').html('('+d.AUCTION_USER_AREA.split(',')[d.AUCTION_USER_ID.split(',').indexOf(userinfo.userId)]+')');//最新出价人地域
+                            }
+                            $('#leaduser').attr('src','../img/usercenter/photo.png').attr('src',userinfo.userPic);//出价人图片
+                        }
+                        if(!T.Util.isEmpty(userinfo) && d.AUCTION_USER_ID && d.AUCTION_USER_ID.split(',').indexOf(userinfo.userId)>-1){
+                            $('.leaduserDiv').addClass('Isme');
+                        }else{
+                            $('.leaduserDiv').removeClass('Isme');
+                        }
+                        if(d.EXPECT_STATUS==200&&type&&type=='fromDjsTimer'){//消息丢失拉取接口获取中奖人是自己的时候需要弹层
+                            if(!T.Util.isEmpty(userinfo) && (d.AUCTION_USER_ID.split(',').indexOf(userinfo.userId)>-1) && !goodsDetailHasTipSuccessFlag){//包含自己需要提示用户竞拍成功
+                                goodsDetailHasTipSuccessFlag = true;
+                                newUserHasAuctionSuccessFlag = true;//未退出页面全局变量 新用户专区商品新用户中过奖之后再次点击出价免费拍提醒需要不一样
+                                userinfo.isSuccessAuction = '1';//竞拍成功改变本地是否新用户标志  未重新拉取用户信息变量
+                                T.Storage.set('userinfo',userinfo);
+                                var ISDELEGATE = d.ISDELEGATE!=1;
+                                if(isH5Auction){
+                                    T.goodsDetail.getAuctionRecord();
+                                }
+                                if(ISDELEGATE){//无委托
+                                    confirm({className:'userDefined auctionSuccess alert',html:'<div class="imgBox"><img src="' + commodityLogo + '"></div><p>立即支付<em>'+auctionPrice.toFixed(2)+'</em>元</p><div class="auctionSuccessWarn">友情提示：订单有效期为3天哦</div>'
+                                        ,cancelText:' ',cancelFun:function () {},okText:' ',okFun:function () {
+                                            //拍中商品后“立即付款”按钮点击量（pzfkdjl_001，数字为商品id）
+                                            T.Util.setUserBehaviorList({
+                                                "busId": T.Util.getPara('id'),
+                                                "conductCode": "pzfkdjl_" + T.Util.getPara('id'),
+                                                "comductDesc": "拍中商品后“立即付款”按钮点击量",
+                                                "time": new Date().getTime()
+                                            });
+                                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/pay.html?commodityId='+commodityId+'&expectId='+expectId+'&auctionPrice='+auctionPrice.toFixed(2)+'&payType=auctionSuc&isentity='+d.IS_ENTITY+'&isNotMargain=1');
+                                        },close:true
+                                    });
+                                }else{//有委托
+                                    confirm({className:'userDefined auctionSuccess',html:'<div class="imgBox"><img src="' + commodityLogo + '"></div><p>立即支付<em>'+auctionPrice.toFixed(2)+'</em>元</p><div class="auctionSuccessWarn">友情提示：订单有效期为3天哦</div>'
+                                        ,cancelText:' ',cancelFun:function () {
+                                            //拍中商品后“委托拍卖”按钮点击量（pzpmdjl_001，数字为商品id）
+                                            T.Util.setUserBehaviorList({
+                                                "busId": T.Util.getPara('id'),
+                                                "conductCode": "pzpmdjl_" + T.Util.getPara('id'),
+                                                "comductDesc": "拍中商品后“委托拍卖”按钮点击量",
+                                                "time": new Date().getTime()
+                                            });
+                                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/weituoAuction.html?commodityId=' + commodityId + '&id='+expectId+'&tax='+d.DELEGATE_TAX+'&delegatePrice='+d.DELEGATE_TAX+'&auctionPrice='+auctionPrice+'&marketPrice='+marketPrice.toFixed(2));
+                                        },okText:'  ',okFun:function () {
+                                            //拍中商品后“立即付款”按钮点击量（pzfkdjl_001，数字为商品id）
+                                            T.Util.setUserBehaviorList({
+                                                "busId": T.Util.getPara('id'),
+                                                "conductCode": "pzfkdjl_" + T.Util.getPara('id'),
+                                                "comductDesc": "拍中商品后“立即付款”按钮点击量",
+                                                "time": new Date().getTime()
+                                            });
+                                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/pay.html?commodityId='+commodityId+'&expectId='+expectId+'&auctionPrice='+auctionPrice.toFixed(2)+'&payType=auctionSuc&isentity='+d.IS_ENTITY+'&isNotMargain=1');
+                                        },close:true
+                                    });
+                                }
+                            }else{
+                                o.auctionYhm();//自己没拍中再查询是否存在优惠购
+                            }
+                        }
+                        var mqttArr = [];
+                        mqttArr.push('auction/commodity/'+commodityId);
+                        if(!T.Util.isEmpty(T.Storage.get('userinfo'))){
+                            if(globalMQArr.indexOf(T.Storage.get('userinfo').userId+'/replace/'+commodityId)==-1){
+                                mqttArr.push(T.Storage.get('userinfo').userId+'/replace/'+commodityId);
+                            }
+                            if(globalMQArr.indexOf('user/coupon/delegate/' + T.Storage.get('userinfo').userId)==-1){
+                                mqttArr.push('user/coupon/delegate/' + T.Storage.get('userinfo').userId);
+                            }
+                        }
+                        if(globalMQArr.indexOf('auction/commodity/'+commodityId)==-1){
+                            T.Util.mqtt(mqttArr);//订阅商品竞价消息
+                        }
+                        if(type&&type=='isNext'){
+                            $('#priceBox div').html(parseFloat(auctionPrice).toFixed(2));
+                            $('.AUCTION_PRICE').html(parseFloat(auctionPrice).toFixed(2));//修改商品当前竞拍价
+                        }else{
+                            if(auctionPrice!=$('#priceBox').find("div").eq(0).html()){
+                                var eleee = $('#priceBox');
+                                $('#priceBox').append('<div>'+parseFloat(auctionPrice).toFixed(2)+'</div>');
+                                eleee.animate({
+                                    marginTop:-eleee.find('div').height()/70+'rem'
+                                },500,function(){
+                                    eleee.css('margin-top',0);
+                                    eleee.find("div").eq(0).remove();
+                                    $('.AUCTION_PRICE').html(parseFloat(auctionPrice).toFixed(2));//修改商品当前竞拍价
+                                });
+                            }
+                        }
+
+                        $('.MARKET_PRICE').html(marketPrice.toFixed(2));//商品市场价
+                        $('.PRE_AUCTION_PRICE').html(d.PRE_AUCTION_PRICE?d.PRE_AUCTION_PRICE.toFixed(2):'￥--');
+                        $('.AVG_AUCTION_PRICE').html(d.AVG_PRICE?d.AVG_PRICE.toFixed(2):'￥--');
+                        var tagImg = '';
+                        if(d.TAG_LIST.length>0) {
+                            for(var i=0;i<d.TAG_LIST.length;i++){
+                                tagImg+='<img src="../img/goods/tag_'+d.TAG_LIST[i].TAG_CODE+'.png">'
+                            }
+                        }
+                        $('#goodsdesc').html(tagImg+'<h2>'+d.COMMODITY_TITLE+'<span>'+(d.PRODUCT_NOTE||"")+'</span></h2>');//商品标签 标题 描述
+                        $('.COMMODITY_PRICE').html(d.COMMODITY_PRICE);//商品竞拍起步价
+                        $('.SINGLE_ADD_PRICE').html(d.SINGLE_ADD_PRICE);//商品竞拍每次加价幅度
+                        $('.COUNT_DOWN').html(d.COUNT_DOWN+'s');//商品竞拍倒计时
+                        $('.RETURN_RATIO').html(d.RETURN_RATIO+'%');//商品竞拍失败退币比例
+                        $('.POUNDAGE_PRICE').html(d.POUNDAGE_PRICE);//拍一次多少钱
+                        if(d.IS_MARGIN_BUY==0){
+                            $('#IS_MARGIN_BUY').html('否');
+                        }else{
+                            $('#IS_MARGIN_BUY').html('有');
+                        }
+                        var userPrice = d.USER_INFO;
+                        if(userPrice&&userPrice.length>0){
+                            var m = 0;var m2=0;
+                            for(var i=0;i<userPrice.length;i++){
+                                m+=userPrice[i].POUNDAGE_PRICE;
+                                if(userPrice[i].PRICE_TYPE==2){//拍币
+                                    m2 = userPrice[i].POUNDAGE_PRICE;
+                                }
+                            }
+                            $('#yxhMoney').html(m.toFixed(2));
+                            if(marketPrice>=100){
+                                $('#cjgMoney').attr('data-m',m2).attr('data-mk',marketPrice).attr('data-rr',d.RETURN_RATIO);
+                            }
+                            if(marketPrice>=100&&(m2>=(d.marketPrice/10))){//显示累积出价
+                                $('.cjgMoney,.yxhMoney').show();
+                                $('#cjgMoney').html((d.marketPrice-(m2*(d.RETURN_RATIO/100))).toFixed(2));//市场价-拍币*返币比例
+                            }
+
+                        }else{
+                            $('#yxhMoney').html('0.00');
+                            $('.cjgMoney,.yxhMoney').hide();
+                            $('#cjgMoney').html('0.00');//市场价-拍币*返币比例
+                        }
+                        var userinfo = T.Storage.get('userinfo');
+                        if(userinfo&&userinfo.moneyList){
+                            var m = userinfo.moneyList[2]+userinfo.moneyList[3];//拍币加赠币
+                            if((m/d.POUNDAGE_PRICE)>10||m>=100){
+                                $('#addsub').addClass('kpNum');
+                                $('#kpNum em').attr('data-num',Math.floor(m/d.POUNDAGE_PRICE)).html((Math.floor(m/d.POUNDAGE_PRICE)>100?'100+':Math.floor(m/d.POUNDAGE_PRICE))).show();
+                            }else{
+                                $('#addsub').removeClass('kpNum');
+                            }
+                        }else{
+                            $('#addsub').removeClass('kpNum');
+                        }
+                        var PIC_LIST = d.PIC_LIST;
+                        var bannerImgArr = [],detailImgHtml=[];
+                        for(var m=0;m<PIC_LIST.length;m++){
+                            if(PIC_LIST[m].TYPE==1){//banner滚动图
+                                bannerImgArr.push(PIC_LIST[m].PHOTO_URL);
+                            }else{//商品详情图
+                                detailImgHtml.push('<img class="lozad" src="../img/goods/lazy_load.png" data-src="'+PIC_LIST[m].PHOTO_URL+'">');
+                            }
+                        }
+                        $('#detail').html(detailImgHtml.join(''));
+                        o.loadBanner(bannerImgArr);//加载banner
+                        if(!d.AUCTIONEER_ID){
+                            $('#auctioner').hide();
+                            $("#quality").show();
+                        }else{
+                            //售卖师信息
+                            $('#AUCTIONEER_PIC').attr('src',d.AUCTIONEER_PIC||'../img/goods/icon_auctioner.png');
+                            $('#AUCTIONEER_NAME').html(d.AUCTIONEER_NAME);
+                            $('#AUCTIONEER_NO').html(d.AUCTIONEER_NO);
+                            $('#auctioner').attr('data-id',d.AUCTIONEER_ID);
+                            $('#auctioner').show();
+                            $("#quality").hide();
+                        }
+
+                        var auctionerObj={'pic':d.AUCTIONEER_PIC,'name':d.AUCTIONEER_NAME,'NO':d.AUCTIONEER_NO,'ID':d.AUCTIONEER_ID};
+                        T.Storage.set('auctionerInfo',auctionerObj);
+                        //是否收藏
+                        if(d.ISFAVORITE==1){//已收藏
+                            $('#collect').addClass("collected");
+                            $('#collect-submit').removeClass().addClass("icon-favoriteOn");
+                            $("#collest-status").text("已收藏");
+                        }else{
+                            $('#collect').removeClass("collected");
+                            $('#collect-submit').removeClass().addClass("icon-favorite");
+                            $("#collest-status").text("收藏");
+                        }
+                        lozad().observe();
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        if(data){o.getProductInfo(type)};//异常情况重新拉商品消息}
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        data && tip(data.msg,'error');
+                    }
+                });
+            },
+            //本商品晒单列表
+            getShareOrder:function (fromMore) {
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    needToken:'no',
+                    reqUrl:'/order/services/order/shareOrder.json?commodityId=' + commodityId+'&page=' + pageIndex["shareorder"] + '&limit=' + pageSize + '&type=2',
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO,htmlArr=[];
+                        if(data.res_data.value.ISEND=='2'){//还有更多
+                            hasMore["shareorder"] = true;
+                            pageIndex["shareorder"]++;
+                        }else{
+                            hasMore["shareorder"] = false;
+                        }
+                        for(var i=0,j=d.length;i<j;i++){
+                            htmlArr.push('<div class="shareorder-item"><img class="userphoto lozad" src="../img/goods/lazy_load.png" data-src="' + d[i].PIC + '">');
+                            htmlArr.push('<h2 class="username">'+(d[i].NICK_NAME || d[i].USER_MOBILE)+'</h2><p class="time">' + new Date(d[i].SHARE_TIME).format("yyyy-MM-dd hh:mm:ss") + '</p>');
+                            if(d[i].SHARE_DESC){
+                                htmlArr.push('<h3 class="comment">'+d[i].SHARE_DESC+'</h3>');
+                            }
+                            htmlArr.push('<div class="imglist">');
+                            $.each(d[i].PHOTO_LIST,function(i,item){
+                                htmlArr.push('<img class="lozad" src="../img/goods/lazy_load.png" data-src="' + item + '">');
+                            });
+                            htmlArr.push('</div></div>');
+                        }
+                        if(htmlArr.length){
+                            fromMore ? $('#shaidan').append(htmlArr.join('')) : $('#shaidan').html(htmlArr.join(''));
+                            if(!hasMore["shareorder"] && $('#shaidan .loaded').length==0){
+                                $('#shaidan').append('<h2 class="loaded">已经到底部了</h2>');
+                            }
+                        }else{
+                            if(!fromMore){
+                                $("#shaidan").html('<div class="nodata shaidan"><i></i><h2>暂无数据</h2></div>');
+                            }
+                        }
+                        $(".detail-item").eq(1).css("min-height","inherit");
+                        //查看大图
+                        $(".imglist img").off().Touch(function(){
+                            //晒单分享中图片的查看量（tpdjl_001，数字为商品id）
+                            T.Util.setUserBehaviorList({
+                                "busId": T.Util.getPara('id'),
+                                "conductCode": "tpdjl_"+T.Util.getPara('id'),
+                                "comductDesc": "晒单分享中图片的查看量",
+                                "time": new Date().getTime()
+                            });
+                            var imgList = [],imgListObj = $(this).parent().find("img");
+                            for(var i = 0;i < imgListObj.length;i++){
+                                imgList.push(imgListObj.eq(i).attr("src"));
+                            }
+                            T.Storage.set('imageViewerData',{
+                                index:$(this).index(),
+                                imgList:imgList
+                            });
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/imageViewer.html?source=goodsDetailShare');
+                        });
+                        lozad().observe();
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        if(data){
+                            tip(data.msg || data.result_msg);
+                        }
+                    }
+                });
+            },
+            //获取本商品往期成交记录
+            getHistoryAuction:function(fromMore){
+                if(pageIndex["historyAuc"]>5){
+                    if($('#latestdeal .loaded').length==0){
+                        $('#latestdeal').append('<h2 class="loaded">展示近50期成交数据</h2>');
+                    }
+                    return;
+                }
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/order/pastDone.json?commodityId=' + commodityId+'&page=' + pageIndex["historyAuc"] + '&limit=' + pageSize,//type 0:全部 1：正在拍 2：我拍中 3：未拍中 4：待付款
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND=='2'){//还有更多
+                            hasMore["historyAuc"] = true;
+                            pageIndex["historyAuc"]++;
+                        }else{
+                            hasMore["historyAuc"] = false;
+                        }
+                        o.showHistoryAuction(d,fromMore);
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                    }
+                });
+            },
+            //渲染往期成交记录
+            showHistoryAuction:function(data,fromMore){
+                var html = [];
+                $.each(data,function(i,item){
+                    html.push('<div class="historydeal-item" data-no="'+item.EXPECT_NO+'"><img class="userphoto lozad" src="../img/goods/lazy_load.png" data-src="' + item.USER_PIC + '">');
+                    html.push('<h2 class="auction-time">' + o.timeFormat(item.BARGAIN_TIME) + '</h2><h2 class="auction-detail">成交人：<em>' + (item.NICK_NAME||item.USER_MOBILE) + '</em></h2>');
+                    html.push('<h2 class="auction-detail">成交价：<em class="price">￥' + (item.BARGAIN_MONEY ? item.BARGAIN_MONEY.toFixed(2) : "0.00") + '</em></h2><h2 class="auction-detail">市场价：<em class="price">￥' + (item.MARKET_PRICE ? item.MARKET_PRICE.toFixed(2) : "0.00") + '</em></h2><h2 class="save-ratio' + (item.BARGAIN_MONEY >= item.MARKET_PRICE ? " hide":"") + '">' + o.getSaveRatio(item) + '%<em>节省</em></h2></div>');
+                });
+                if(html.length){
+                    fromMore ? $("#latestdeal").append(html.join("")) : $("#latestdeal").html(html.join(""));
+                    if(!hasMore["historyAuc"] &&$('#latestdeal .loaded').length==0){
+                        $('#latestdeal').append('<h2 class="loaded">已加载全部数据</h2>');
+                    }
+                    $('.historydeal-item[data-no]').off().Touch(function (el) {
+                        //往期成交的数据点击量（wqcjdjl_001，数字为商品id）
+                        T.Util.setUserBehaviorList({
+                            "busId": T.Util.getPara('id'),
+                            "conductCode": "wqcjdjl_"+T.Util.getPara('id'),
+                            "comductDesc": "往期成交的数据点击量",
+                            "time": new Date().getTime()
+                        });
+                        if(T.isNative){
+                            if(T.Util.isEmpty(T.Util.getPara('source'))){
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id=' + commodityId + '&expectNo=' + $(el).attr("data-no")+'&source=historydeal');
+                            }else{
+                                window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id=' + commodityId + '&expectNo=' + $(el).attr("data-no")+'&source=historydeal';
+                            }
+                        }else{
+                              expectNo = $(el).attr("data-no");
+                              window.scrollTo(0,0);
+                              T.goodsDetail.getProductInfo();
+                        }
+
+                    });
+                }else{
+                    if(!fromMore){
+                        $("#latestdeal").html('<div class="nodata auction"><i></i><h2>暂无数据</h2></div>');
+                    }
+                }
+                $(".detail-item").eq(2).css("min-height","inherit");
+                lozad().observe();
+            },
+            //获取竞拍记录
+            getAuctionRecord:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/product/myAuction.json?page=1&limit=10&type=2',//type 0:全部 1：正在拍 2：我拍中 3：未拍中 4：待付款
+                    callback:function(json){
+                        var data = json.res_data.value.INFO;
+                        var availCount = 0;//已拍中未失效未付款订单数量
+                        var payCount = 0;//已付款订单数量
+                        $.each(data,function(i,item){
+                            var d = data[i];
+                            if(d.BARGAIN_STATUS!=-150 && d.BARGAIN_STATUS!=300 && d.BARGAIN_STATUS!=200 && d.BARGAIN_STATUS!=-200 && d.BARGAIN_STATUS!=400){//失效
+                                availCount += 1;
+                            }else if(d.O_TYPE&&d.O_TYPE==2){//已付款
+                                payCount += 1;
+                            }
+                        });
+                        if(availCount||payCount){
+                            showFloat({
+                                html:'<i></i><h2>您有' + (payCount?payCount+"件已付款的商品":availCount + "件已拍中的商品")+ '</h2>',
+                                time:'forever',
+                                activeFun:function(){
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsRecord.html&type=overOk' + (isH5Auction?"&isH5Auction=1":""));
+                                }
+                            });
+                        }
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+
+                    }
+                })
+            },
+            //商品竞拍 出价接口
+            productAuction:function(){
+                if(newUserHasAuctionSuccessFlag &&IS_NEW=='1'){
+                    alert('您已经拍中过新手商品，请把机会留给其他人。',function () {
+                        T.Util.goTabbar('0');
+                    },'我知道了');
+                    return;
+                }
+                if(IS_NEW=='1' && T.Storage.get('userinfo') && T.Storage.get('userinfo').isSuccessAuction=='1'){
+                    alert('您好，此商品仅新手专享，您已不是新用户哦 ，请竞拍其它商品。',function () {
+                        T.Util.goTabbar('0');
+                    },'我知道了');
+                    return;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    errorType:1,
+                    reqData:{
+                        "req_token":T.Storage.get('userinfo').userId+Math.random()*100000,
+                        "data": {
+                            'expectId':expectId,
+                            'commodityId':commodityId,
+                            'commodityNo':expectNo,
+                            'auctionPrice':auctionPrice,
+                        }
+                    },
+                    reqUrl:'/commodity/services/product/auction.json',
+                    callback:function(data){
+                            endGetDataFlag = true;
+                            tip('竞拍商品出价成功',"ok");
+                            var numA =($('#kpNum em').attr('data-num'))*1;
+                            var num  = (numA-1)>100?'100+':numA-1;
+                            $('#kpNum em').html(num).attr('data-num',numA-1);
+                            $('#yxhMoney').html(($('#yxhMoney').html()*1)+($('.POUNDAGE_PRICE').html()*1));
+                            $('#numKeyWord').hide();
+                            if(IS_NEW){o.newAuctionTask();}//新手任务
+                            //h5版出价后更新账户余额
+                            T.User.getUInfo(function(){
+                                var userInfo = T.Storage.get('userinfo');
+                                $("#balance em").html(userInfo.moneyList[2]+userInfo.moneyList[3]+"币");
+                            });
+                    },
+                    errorCallback:function(data){
+                        setTimeout(function(){
+                            if(data&&data.msg_code=='1001'&&data.msg=='你已是领先中，无需再次出价'){
+                                tip('您已在出价中',"ok");
+                            }else if(data.msg_code=='1001'&&data.msg=='用户不是新用户，不能竞拍新手商品'){
+                                 alert('您好，此商品仅新手专享，您已不是新用户哦 ，请竞拍其它商品。',function () {
+                                     T.Util.goTabbar('0');
+                                 },'我知道了');
+                            }else if(data.msg_code=='1024'){//
+                                alert('您的设备已拍过新手专享商品哦，请把机会让给更多的人。',function () {
+                                    T.Util.goTabbar('0');
+                                },'我知道了');
+                            }else{
+                                if(data.msg_code=='1008'){//竞拍价已变更
+                                    auctionPrice = parseFloat(data.res_data.value);
+                                    var eleee = $('#priceBox');
+                                    $('#priceBox').append('<div>'+parseFloat(auctionPrice).toFixed(2)+'</div>');
+                                    eleee.animate({
+                                        marginTop:-eleee.find('div').height()/70+'rem'
+                                    },500,function(){
+                                        eleee.css('margin-top',0);
+                                        eleee.find("div").eq(0).remove();
+                                        $('.AUCTION_PRICE').html(parseFloat(auctionPrice).toFixed(2));//修改商品当前竞拍价
+                                    });
+                                    tip('竞拍价已变更，请重新出价',"error");
+                                }
+                                if(data.msg_code != '-20'){
+                                    tip( data.msg||Global.neterror,"error");
+                                }
+                            }
+
+                        },50);
+                        endGetDataFlag = true;
+                    }
+                });
+            },
+            //自动竞价
+            autoPrice:function (type,count) {
+                if(newUserHasAuctionSuccessFlag && IS_NEW=='1'){
+                    alert('您已经拍中过新手商品，请把机会留给其他人。',function () {
+                        T.Util.goTabbar('0');
+                    },'我知道了');
+                    return;
+                }
+                if(IS_NEW=='1' && T.Storage.get('userinfo') && T.Storage.get('userinfo').isSuccessAuction=='1'){
+                    alert('您好，此商品仅新手专享，您已不是新用户哦 ，请竞拍其它商品。',function () {
+                        T.Util.goTabbar('0');
+                    },'我知道了');
+                    return;
+                }
+                var url = '/commodity/services/product/autoPrice.json?commodityId='+commodityId+'&expectNo='+expectNo+'&type='+type;
+                if(type==1){//1为开启 2为取消
+                    url = url+'&count='+count;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:url,
+                    errorType:1,
+                    callback:function(data){
+                        if(type==1){
+                           // $('#auction-submit h2').html('取消自动出价');
+                            //$("#autoNum").addClass('disable');
+                            //$('#addsub em').addClass('disable');
+                            tip('自动出价成功',"ok");
+                            //o.autoPriceUI();
+                            $('#auction-submit h2').html('出价');
+
+                            if($('.leaduserDiv').hasClass('Isme')){//最新出价人是自己
+                                $('#sAutoNum').html(0);
+                                $('#autoAuctionBox .jindu').css('width',((1)*100)+'%');
+                            }else{
+                                $('#autoAuctionBox .jindu').css('width',(((count-1)/count)*100)+'%');
+                                $('#sAutoNum').html(1);
+                            }
+                            $('#allAutoNum').html(count);
+                            $('#autoAuctionBox').show().siblings().hide();
+                            var numA = ($('#kpNum em').attr('data-num'))*1;
+                            var num  = (numA-count)>100?'100+':(numA-count);
+                            if(IS_NEW){o.newAuctionTask();}//新手任务
+                            $('#kpNum em').html(num).attr('data-num',numA-count);
+                            $('#yxhMoney').html(($('#yxhMoney').html()*1)+($('.POUNDAGE_PRICE').html()*count));
+                           /* if($('.MARKET_PRICE').html()>=1000 && ($('#yxhMoney').html()>=$('.MARKET_PRICE').html()/10)){
+
+                            }*/
+                            $('#numKeyWord').hide();
+                        }else{
+                            var numA = (($('#kpNum em').attr('data-num'))*1);
+                            var num  = (numA+($('#autoNum').val()*1))>100?'100+':(numA+($('#autoNum').val()*1));
+
+                            $('#kpNum em').html(num).attr('data-num',numA+($('#autoNum').val()*1));
+                            $('#yxhMoney').html(($('#yxhMoney').html()*1)-($('.POUNDAGE_PRICE').html()*($('#autoNum').val()*1)));
+                            /*if($('.MARKET_PRICE').html()>=1000 && ($('#yxhMoney').html()>=$('.MARKET_PRICE').html()/10)){
+                                $('.cjgMoney').show();
+                                $('#cjgMoney').html(($('.MARKET_PRICE').html()-(m2*($('.POUNDAGE_PRICE')/100))).toFixed(2));//市场价-拍币*返币比例
+                            }*/
+                            /*$('#auction-submit h2').html('出价');
+                            $('#autoNum').val(1);
+                            $('#addsub em').removeClass('disable');
+                            $("#autoNum").removeClass('disable');*/
+                            $('#autoNum').val(1);
+                            $('#auctionBox').show().siblings().hide();
+                            tip('取消自动出价成功',"ok");
+                        }
+                    },
+                    errorCallback:function(data){
+                        if(data){
+                            if(data.msg_code=='1001'&& data.msg=='当前商品已经在自动竞价，请勿重复'){
+                                $('#auction-submit h2').html('取消自动出价');
+                            }else if(data.msg_code=='1001'&&data.msg=='用户不是新用户，不能竞拍新手商品'){
+                                alert('您好，此商品仅新手专享，您已不是新用户哦 ，请竞拍其它商品。',function () {
+                                    T.Util.goTabbar('0');
+                                },'我知道了');
+                            }else if(data.msg_code=='1024'){//
+                                alert('您的设备已拍过新手专享商品哦，请把机会让给更多的人。',function () {
+                                    T.Util.goTabbar('0');
+                                },'我知道了');
+                            }else {
+                                if (data.msg_code != '-20') {
+                                    tip(data.msg || Global.neterror, "error");
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            //自动竞拍
+            autoAuction:function(num,allNum){
+                $('#auction-other-box').hide();
+                $('#auction-submit-box').show();
+
+               // $('#autoNum').val(num);
+                //$("#autoNum").addClass('disable');
+                //$('#addsub em').addClass('disable');
+                //$('#auction-submit h2').html('取消自动出价');
+                $('#sAutoNum').html(allNum-num);
+                $('#allAutoNum').html(allNum);
+                $('#autoAuctionBox .jindu').css('width',(num/allNum)*100+'%');
+                $('#autoAuctionBox').show().siblings().hide();
+            },
+            //竞拍成功之后
+            auctionOver:function (isEnd) {
+                $('#stopBox').show().siblings().hide();
+                $('#stopBox').html('<i class="end"></i>');
+                if($('#leadeuser').css('display')=='block'){$('#auctionstatus').hide();}//有人竞拍成功
+                $('#leaduserflag').attr("src","../img/goods/winneruser.png");
+                $('#auctionOverDesc').show().siblings().hide();
+                if((expectNo==maxExpectNum)||(isEnd==1)){
+                    $('#auction-other-box').show().html('商品竞拍已结束');
+                }else{
+                    $('#auction-other-box').show().html('前往下一期');
+                }
+                $('#auction-submit-box').hide();
+            },
+            //商品预约
+            productVisitors:function(expectNo,id,callBack){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/product/visitors.json?expectNo='+expectNo+'&commodityId='+id,
+                    callback:function(data){
+                        tip('预约成功！','ok');
+                        callBack();
+                    },
+                    errorCallback:function(){}
+                })
+            },
+            //邀请好友免费拍
+            inviteZhuli:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:'1',
+                    reqUrl:'/commodity/services/replace/createLink.json?expectId=' + expectId,
+                    callback:function(data){
+                        T.Util.thirdShare({
+                            "type":"native",
+                            "title":'快来！免费送你68元赠币，可以竞拍正版商品！',
+                            "description":'老铁，为我助力，一起来竞拍！',
+                            "icon":T.Util.getAppLogo(),
+                            "url":Global.fullHost + '/auction/activity/zhuli.html?DPId='+data.res_data.value.ID+'&COMMODITY_ID='+commodityId+'&noNavbar=1'
+                        },function(result){
+
+                        });
+                    },
+                    errorCallback:function(data){
+                        if(data.msg_code=='1001'&&data.msg=='用户不是新用户，不能竞拍新手商品'){
+                            alert('您好，此商品仅新手专享，您已不是新用户哦 ，请竞拍其它商品。',function () {
+                                T.Util.goTabbar('0');
+                            },'我知道了');
+                        }else{
+                            tip(data.msg);
+                        }
+                    }
+                });
+            }
+        }
+
+        return {
+            newAuctionTask:o.newAuctionTask,
+            auctionYhm:o.auctionYhm,
+            viewAgain:o.viewAgain,
+            getShareOrder:o.getShareOrder,
+            getHistoryAuction:o.getHistoryAuction,
+            getProductInfo:o.getProductInfo,
+            getAuctionRecord:o.getAuctionRecord,
+            auctionOver:o.auctionOver,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.Util.canShowBigAward('1');//默认告诉原生该界面可以弹出大奖弹层
+        T.goodsDetail.init();
+    });
+    window.onpageshow = function(){
+        T.goodsDetail.getAuctionRecord();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>忘记密码</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>忘记密码</h1>
+    <span class="navIcon" id="kefu"></span>
+</div>
+<div class="mainContent" id="main">
+    <div id="pwdfind-box">
+        <div class="pwdfind-item tel"><div class="pwdfind-wrapper"><input id="tel" type="tel" maxlength="11" placeholder="请输入手机号码"></div><i class="clear"></i></div>
+        <div class="pwdfind-item pwd"><div class="pwdfind-wrapper"><input id="pwd" type="password" minlength="6" maxlength="16" placeholder="请输入新密码"></div><i class="clear"></i></div>
+        <div class="pwdfind-item message"><div class="pwdfind-wrapper"><input id="message" maxlength="6" placeholder="请输入验证码"><div id="getMessage">获取验证码</div></div></div>
+    </div>
+    <div class="pwdfind-btn" id="pwdfind_submit">提交</div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script type="text/javascript" src="../js/md5.js?0.200"></script>
+<script>
+    T.findPassword = (function(){
+        var isGetMessage = false;//是否获取短信验证码
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        //表单校验
+        var check = {
+            tel:function(val){
+                if(val == ''){
+                    tip('请输入手机号码！');
+                }else if(!/^1\d{10}$/.test(val)){
+                    tip('手机号码不正确，请重新输入');
+                }else{
+                    return true;
+                }
+            },
+            pwd:function (val) {
+                if(val == ''){
+                    tip('请输入新密码！');
+                }else if(val.length<6){
+                    tip('密码长度小于6位！');
+                }else {
+                    return true;
+                }
+            },
+            message:function(val){
+                if(val == ''){
+                    tip('请输入短信验证码！');
+                }else if(val.length!=6){
+                    tip('请输正确的短信验证码！');
+                }else{
+                    return true;
+                }
+            }
+        };
+
+        //主对象
+        var o = {
+            init:function(){
+                o.initPage();
+                o.bindEvent();
+            },
+            //初始化页面
+            initPage:function(){
+                var userAcct = T.Storage.get('lastLoginInfo');
+                if(userAcct && /^1[0-9]{10}$/.test(userAcct)){
+                    $("#tel").val(userAcct);
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                $('#kefu').Touch(function () {
+                    //T.Util.kefu('h5','来源：忘记密码右上角|用户输入的手机号码：'+$('#tel').val());
+                    T.Util.kefuNew('h5','来源：忘记密码右上角|用户输入的手机号码：'+$('#tel').val());
+                });
+                //获取验证码
+                $('#getMessage').off().Touch(function(el){
+                    if($(el).hasClass('no')){return};
+                    var telNum = $('#tel').val().trim();
+                    o.getMessageCode(telNum,'FORGET',function () {
+                        isGetMessage = true;
+                        $('#getMessage').addClass('no');
+                        o.countDown();
+                    });
+                });
+                //提交
+                $("#pwdfind_submit").off().Touch(function(){
+                    if(isGetMessage){
+                        o.findPwd($('#tel').val().trim(),$('#pwd').val().trim(),$('#message').val().trim());
+                    }else{
+                        tip('请获取短信验证码');
+                    }
+                });
+                //文本框输入事件
+                $("input").on("input",function(){
+                    var tel = T.Util.trim($("#tel").val());
+                    if($(this).val().length > 0){
+                        $(this).parent().parent().addClass("writing");
+                    }else{
+                        $(this).parent().parent().removeClass("writing");
+                    }
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+            },
+            //倒计时
+            countDown:function () {
+                var timeVal = 60;
+                var clear=setInterval(function(){
+                    timeVal--;
+                    $('#getMessage').html(timeVal+'秒后重发!');
+                    dds = timeVal;
+                    if(timeVal == 0){
+                        clearInterval(clear);
+                        $('#getMessage').html('获取验证码').removeClass('no');
+                    }
+                },1000);
+            },
+            //获取验证码
+            getMessageCode:function (telNum,type,callback) {
+                if(!check.tel(telNum)) return;
+                var url = '/user/services/user/sendCode.json';
+                var reqData =
+                    {
+                        "userAcct":telNum,
+                        "event":type
+                    };
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        tip('验证码已发送','ok');
+                        callback(data);
+                        return;
+                    },
+                    errorCallback:function(){
+                        $('#getMessage').removeClass('no');
+                    }
+                })
+            },
+            //找回密码
+            findPwd:function(telNum,pas,mess){
+                if(!check.tel(telNum)) return;
+                if(!check.pwd(pas)) return;
+                if(!check.message(mess)) return;
+                var url = '/user/services/user/forgetPwd.json';
+                var reqData = {
+                    "userMobile":telNum,
+                    "passWord":md5(pas),
+                    "validateCode":mess
+                };
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        o.logInInterface(telNum,'pwd',pas,function () {//
+                            tip("密码重置成功","ok");
+                            setTimeout(function(){
+                                endGetDataFlag = true;
+                                T.Util.back({index:4});
+                            },3000);
+                        },function(data) {
+                            endGetDataFlag = true;
+                            setTimeout(function(){
+                                data ? tip(data.msg) : tip(Global.neterror,"error");
+                            },400);
+                        });
+                    },
+                    errorCallback:function(){
+                        endGetDataFlag = true;
+                    }
+                })
+            },
+            //登录
+            logInInterface:function (telNum,type,val,callback,errorCallBack) {
+                if(!check.tel(telNum))return;
+                var reqData = {"userAcct":telNum};
+                if(type=='message'){
+                    if(!check.message(val))return;
+                    reqData.validateCode=val;
+                }
+                if(type=='pwd'){
+                    if(!check.pwd(val))return;
+                    reqData.passWord = md5(val);
+                }
+                var url = '/user/services/user/login.json';
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    errorType:1,
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        T.Storage.set('access_token',data.res_data.value.token);
+                        T.Util.sendToken({"token":data.res_data.value.token});//传递给原生
+                        T.User.getUInfo(function(){callback();});
+                    },
+                    errorCallback:function(data){
+                        errorCallBack && errorCallBack(data);
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+    if(T.isNative){
+        T.appToH5.init(function () {//初始化事件回调函数
+            T.findPassword.init();
+        },function () {//webview再次打开回调函数
+
+        },function () {//webview消失第一视角回调函数
+
+        },function () {//app退到系统后台回调函数
+
+        },function () {//app退到系统后台后重新回到app触发的函数
+
+        });
+    }else{
+        T.findPassword.init();
+    }
+    });
+</script>
+</body>
+</html>

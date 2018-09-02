@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>全部资讯</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/news.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>全部资讯</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="news-box"></div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.news = (function(){
+        var dropLoad = '';
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//请求条目
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        var o = {
+            init:function(){
+                o.getNewsList();//获取资讯列表
+                o.bindEvent();
+            },
+            bindEvent:function(){
+                $(window).off().scroll(o.loadMoreData);//绑定下滑加载更多
+                $('#main').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getNewsList();
+                    },
+                    threshold : 50
+                });
+            },
+            //日期格式化
+            timeFormat:function(time){
+                if(typeof time == 'string'){
+                    return new Date(time.replace(/-/g,'/')).format("yyyy-MM-dd hh:mm");
+                }else if(typeof time == 'number'){
+                    return new Date(time).format("yyyy-MM-dd hh:mm");
+                }else{
+                    return '--:--';
+                }
+            },
+            //加载更多数据
+            loadMoreData:function(){
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(hasMore){
+                        o.getNewsList(true);
+                    }
+                }
+            },
+            //获取资讯列表
+            getNewsList:function(fromMore){
+                endGetDataFlag = false;
+                tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/user/services/template/INFOMATION.json?page=' + pageIndex + '&limit=' + pageSize,//type =1：全部 2：收入 3：支出
+                    callback:function(json){
+                        setTimeout(function(){
+                            pageLoading.hide();
+                        },1);
+                        endGetDataFlag = true;
+                        var data = json.res_data.INFO;
+                        if(json.res_data.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showNewsList(data,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $("html,body").addClass("white");
+                            $('#news-box').html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                T.news.init();
+                            });
+                        }else{
+                            $("html,body").removeClass("white");
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染资讯列表
+            showNewsList:function(data,fromMore){
+                var html = [];
+                $.each(data,function(i,item) {
+                    html.push('<div class="news-item" data-id="'+item.ID+'"><img src="' + item.LOG_PIC + '"><h2>' + item.TITLE + '</h2>');
+                    html.push('<p>' + item.AUTHOR + '<em class="time">' + o.timeFormat(item.CRT_TIME) + '</em><em class="pv">' + item.READ_COUNT + '</em></p></div>');
+                });
+                if(html.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? $('#news-box').append(html.join("")) : $('#news-box').html(html.join(""));
+                    $('.news-item').off().Touch(function (el) {
+                        //“竞拍资讯”入口的点击量（jpzx_djl）
+                        T.Util.setUserBehaviorList({
+                            "busId":"竞拍资讯",
+                            "conductCode": "jpzx_djl",
+                            "comductDesc": "“竞拍资讯”入口的点击量",
+                            "time": new Date().getTime()
+                        });
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/news/newsdetail.html?data-id='+$(el).attr('data-id'));
+                    });
+                }else{
+                    if(!fromMore){
+                        $("html,body").addClass("white");
+                        $('#news-box').html('<div class="nodata"><i></i><h2>暂无数据~</h2></div>');
+                    }
+                }
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.news.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.news.init();
+        }
+    });
+</script>
+</body>
+</html>

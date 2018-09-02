@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>添加银行卡</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>添加银行卡</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="addbankcard-box">
+        <div class="addbankcard-head"><h2>银行卡开户名与账户真实姓名须一致</h2></div>
+        <div class="addbankcard-item username"><h2>开户姓名</h2><input id="username" type="text" maxlength="15"><i class="doubt"></i></div>
+        <div class="addbankcard-item cardno"><h2>银行卡号</h2><input id="cardno" type="tel" maxlength="25" placeholder="请输入银行卡号"><i class="clear"></i></div>
+        <div class="banktype"></div>
+        <div id="addbankcard-submit">确认添加</div>
+        <p class="addbankcard-text">为了更好的提现体验，<em id="supportbank">了解支持银行</em></p>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.addBankCard = (function(){
+        var showNetError = false;//是否显示网络异常
+        var isSupport = true;
+        var isLoadJs = [false,false];//银行卡校验JS资源是否加载完毕
+
+        var check = {
+            bank_card:function(val){
+                if(val == '') {
+                    tip("请输入银行卡号!");
+                }else if(val.length < 15 || val.length >25){
+                    tip('您的银行卡号不正确 ，请重新输入');
+                }else if(!isSupport){
+                    tip("您的银行卡号不正确 ，请重新输入");
+                }else{
+                    return true;
+                }
+            }
+        }
+
+        var o = {
+            //程序入口
+            init:function(){
+                var userInfo = T.Storage.get('userinfo');//用户信息
+                if(!o.isCertificate()){
+                    $("#username").attr("placeholder","请输入开户姓名");
+                    confirm({html:"请先进行实名认证",okFun:function(){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/identityInfo.html');
+                    },cancelFun:function(){
+                        T.Util.back();
+                    }});
+                }else{
+                    $("#username").val(userInfo.realName.slice(0,1) + "**").attr("readonly","readonly");
+                }
+                o.loadJS();
+                o.bindEvent();
+            },
+            //是否实名认证
+            isCertificate:function(){
+                var userInfo = T.Storage.get('userinfo');//用户信息
+                if(userInfo){
+                    return (userInfo.realName && userInfo.idCard) ? true : false;
+                }else{
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                }
+            },
+            //加载JS资源
+            loadJS:function(){
+                //获取支持银行列表
+                $.getScript(Global.fullHost + '/res/native/bankCard/bankIssuing.js?' + Math.random(),function(){
+                    isLoadJs[0] = true;
+                },function () {
+                    if(!showNetError){
+                        showNetError = true;
+                        tip(Global.neterror,'error');
+                    }
+                });
+                //获取支持银行卡号列表
+                $.getScript(Global.fullHost + '/res/native/bankCard/bankValidata.js?' + Math.random(),function(){
+                    isLoadJs[1] = true;
+                },function () {
+                    if(!showNetError){
+                        showNetError = true;
+                        tip(Global.neterror,'error');
+                    }
+                });
+            },
+            //银行卡校验
+            getBankInfo:function(bank_acct){
+                try{
+                    var bankBin = bankValidate.bankBin;
+                    for(var i = 0;i < bankBin.length;i++){
+                        var bankItem = bankBin[i];
+                        var cname = bankItem.cname;
+                        var bankid = o.getBankId(cname);
+                        var bankinfo = bankContrast[bankid];
+                        var binArr =  bankBin[i].bin.split("|");
+                        for(var j = 0;j < binArr.length;j++){
+                            if((parseInt(binArr[j].slice(0,binArr[j].length)) == parseInt(bank_acct.slice(0,binArr[j].length)))){
+                                var card_type = "储蓄卡";//默认都是储蓄卡
+                                return {
+                                    bankid:bankid,
+                                    bankname:cname,
+                                    bankicon:bankinfo ? bankinfo[3] : '/auction/img/usercenter/icon_bank.png',
+                                    bankcolor:bankinfo ? bankinfo[2] : '#999',
+                                    issupport:bankinfo ? bankinfo[1] : '1',
+                                    cardtype:card_type
+                                }
+                            }
+                        }
+                    }
+                }catch(e){
+                    return false;
+                }
+            },
+            //获取银行编号
+            getBankId:function(cname){
+                try{
+                    for(var p in bankContrast){
+                        if(cname == bankContrast[p][0]){
+                            return p;
+                        }
+                    }
+                }catch(e){
+                    return false;
+                }
+            },
+            //获取支持的银行列表
+            getSupportBank:function(){
+                try{
+                    var supportbank = [];
+                    for(var p in bankContrast){
+                        if(bankContrast[p][1] == '1'){
+                            supportbank.push(bankContrast[p][0]);
+                        }
+                    }
+                    return supportbank;
+                }catch(e){
+                    tip(Global.neterror,'error');
+                    return false;
+                }
+            },
+            //获取银行卡列表
+            getBankCardList:function (callback) {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/bankCardList.json',
+                    callback:function(json){
+                        var data =json.res_data.value.INFO;
+                        callback && callback(data);
+                        T.Storage.set('bankCardList',data);
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            //事件绑定
+            bindEvent:function(){
+                //输入银行卡号自动校验
+                $("#cardno").on("input",function(){
+                    //添加删除按钮
+                    if($(this).val().length > 0){
+                        $(this).parent().addClass("writing");
+                    }else{
+                        $(this).parent().removeClass("writing");
+                    }
+                    //添加空格
+                    var cardno = $("#cardno").val();
+                    if(!T.cardNo) T.cardNo = "";
+                    if(cardno.length > T.cardNo.length){
+                        if(!cardno.slice(-1).match(/\d/)){
+                            $("#cardno").val(T.cardNo);
+                            return false;
+                        }
+                        cardno = T.Util.trim(cardno);
+                        if(cardno.length >= 4){
+                            $(this).val(cardno.match(/\d{4}/g).join(" ") + " " + cardno.slice(cardno.length - cardno.length % 4,cardno.length));
+                        }
+                    }
+                    T.cardNo = $("#cardno").val();
+                    //自动校验
+                    clearTimeout(T.cardNoCheck);
+                    T.cardNoCheck = setTimeout(function(){
+                        cardno = T.Util.trim($("#cardno").val());
+                        if(cardno.length){
+                            if(cardno.length >= 8){
+                                if(isLoadJs[0] && isLoadJs[1]){//确保JS资源加载完毕
+                                    var bankInfo = o.getBankInfo(cardno);
+                                    if(bankInfo && (bankInfo.issupport == '1')){
+                                        isSupport = true;
+                                        var bankicon = '<i style="background:url(' + Global.fullHost + bankInfo.bankicon + ') 0 0 / 100% 100% no-repeat;"></i>';
+                                        $(".banktype").html(bankicon + bankInfo.bankname + '--' + bankInfo.cardtype);
+                                        $("#addbankcard-submit").removeClass("disabled");
+                                    }else{
+                                        isSupport = false;
+                                        var bankicon = '<i style="background:url(../img/usercenter/bankcard.png) 0 0 / 100% 100% no-repeat;"></i>';
+                                        $(".banktype").html(bankicon + '<em class="red">不支持该银行卡</em>');
+                                        $("#addbankcard-submit").addClass("disabled");
+                                    }
+                                }else{
+                                    tip(Global.neterror,"error");
+                                }
+                            }
+                        }else{
+                            $(".banktype").html("");
+                            $("#addbankcard-submit").removeClass("disabled");
+                        }
+                    },500);
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                    $(".banktype").html("");
+                    $("#addbankcard-submit").removeClass("disabled");
+                });
+                //添加银行卡
+                $('#addbankcard-submit').off().Touch(function (el) {
+                    if($(el).hasClass("disabled")) return false;
+                    var cardno = T.Util.trim($("#cardno").val());
+                    if(!check.bank_card(cardno)) return false;
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        reqUrl:'/user/services/user/addBankcard.json?cardNo='+T.cardNo,
+                        callback:function(data){
+                            tip('添加成功！','ok');
+                            //更新用户银行卡信息
+                            o.getBankCardList(function(){
+                                setTimeout(function(){
+                                    T.Util.back();
+                                },3000);
+                            });
+                        },
+                        errorCallback:function(){}
+                    });
+                });
+                //开户姓名说明
+                $(".doubt").off().Touch(function(){
+                    alert('<h2>开户姓名说明</h2><p style="font-size:0.32rem">为保证提现资金安全到达，只能绑定<b>已通过身份验证</b>本人的银行卡！</p>',function(){
+
+                    },'知道了');
+                });
+                //了解支持银行
+                $("#supportbank").off().Touch(function(){
+                    try{
+                        var supportbank = o.getSupportBank();
+                        alert('<h2>支持哪些银行？</h2><p style="font-size:0.2933334rem;">目前共支持' + supportbank.length + '家银行卡提现，分别为' + supportbank.join("、") + '</p>',function(){
+
+                        },'知道了');
+                    }catch(err){
+                        tip(Global.neterror,'error');
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.addBankCard.init();
+            }, function () {//webview再次打开回调函数
+                T.addBankCard.init();
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.addBankCard.init();
+        }
+    });
+</script>
+</body>
+</html>

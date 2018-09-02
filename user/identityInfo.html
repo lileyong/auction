@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>身份信息</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css">
+    <script type="text/javascript" src="../js/zepto.min.js"></script>
+    <script>
+        var userinfo = T.Storage.get('userinfo')||{};
+        var from = T.Util.getPara('from');
+        if(userinfo && userinfo.userMobile){
+            $("html").removeClass("mobile");
+        }else if(from == 'drawing'){
+            $("html").addClass("mobile");
+        }
+    </script>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>身份信息</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="identityinfo-box">
+        <div class="identityinfo-item username"><div class="identityinfo-wrapper"><h2>真实姓名</h2><input id="username" type="text" maxlength="8" placeholder="您的真实姓名"></div><i class="clear"></i></div>
+        <div class="identityinfo-item identity"><div class="identityinfo-wrapper"><h2>身份证号</h2><input id="identity" type="text" maxlength="18" placeholder="您的身份证号"></div><i class="clear"></i></div>
+        <div class="identityinfo-item phone" style="display: none;"><div class="identityinfo-wrapper"><h2 style="letter-spacing: 0.2rem;">手机号</h2><input id="tel" type="number" maxlength="11" placeholder="请输入手机号"></div><i class="clear"></i></div>
+        <div class="identityinfo-item code" style="display: none;"><div class="identityinfo-wrapper"><h2 style="letter-spacing: 0.2rem;">验证码</h2><input id="message" type="number" maxlength="6" placeholder="请输入验证码"></div><em id="getMessage">获取验证码</em><i class="clear"></i></div>
+    </div>
+    <div id="identityinfo-submit">提交</div>
+    <p class="identityinfo-text">实名信息是您委托、提现的唯一凭证，一经提交不可修改。</p>
+</div>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    var bindThirdHttpFlag = true;
+    T.identityInfo = (function(){
+        var userInfo = T.Storage.get('userinfo');//用户信息
+        var isGetMessage = false;//是否获取验证码
+
+        //表单校验
+        var check  ={
+            username:function(val){
+                if(val==''){
+                    tip("请输入真实姓名");
+                }else if(!T.Util.isPureChinese(val)||val.length < 2){
+                    tip('请输入正确的真实姓名');
+                }else{
+                    return true;
+                }
+            },
+            identity:function(val){
+                var myDate = new Date();
+                var now = myDate.format("YYYYMMdd");
+                var birthday = val.substring(6,14);
+                var age = (now - birthday)/10000;
+                var nowYear = now.substring(0,4);
+                var year = val.substring(6,10);
+                var month = val.substring(10,12);
+                var day = val.substring(12,14);
+                if(val=='') {
+                    tip("请输入身份证号码");
+                } else if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(val))){
+                    tip('请输入正确的身份证号码');
+                }else if(3>nowYear-year||nowYear-year>100 || 1>month||month>12 || 1>day||day>31){//生日年月日规范
+                    tip('请输入正确的身份证号码');
+                }else{
+                    return true;
+                }
+            },
+            tel:function(val){
+                if(val == ''){
+                    tip('请输入手机号码');
+                }else if(!/^1\d{10}$/.test(val)){
+                    tip('手机号码不正确，请重新输入');
+                }else{
+                    return true;
+                }
+            },
+            message:function(val){
+                if(!isGetMessage){
+                    tip('请获取验证码');
+                }else if(!val){
+                    tip('请输入验证码');
+                }else if(!/^[0-9]{6}$/.test(val)){
+                    tip('请输入正确的验证码');
+                    $("#message").val('');
+                }else{
+                    return true;
+                }
+            }
+        };
+
+        var o = {
+            //程序入口
+            init:function(){
+                o.initPage();
+                o.bindEvent();
+            },
+            //初始化页面
+            initPage:function(){
+                if(userInfo){
+                    if(o.isCertificate()){
+                        $("#username").val(userInfo.realName).attr("readonly","readonly");
+                        $("#identity").val(userInfo.idCard).attr("readonly","readonly");
+                        $("#identityinfo-submit").text("已实名认证");
+                    }
+                }else{
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //实名认证
+                $('#identityinfo-submit').off().Touch(function (el) {
+                    o.submit();
+                });
+                //获取验证码
+                $('#getMessage').off().Touch(function(el){
+                    if($(el).hasClass('no')){return};
+                    var telNum = $('#tel').val().trim();
+                    o.getMessageCode(telNum,'BIND',function () {
+                        $('#getMessage').addClass('no');
+                        o.countDown();
+                    });
+                });
+                //文本框输入事件
+                $("input").on("input",function(){
+                    if($(this).val().length > 0){
+                        $(this).parent().parent().addClass("writing");
+                    }else{
+                        $(this).parent().parent().removeClass("writing");
+                    }
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+            },
+            //是否实名认证
+            isCertificate:function(){
+                return (userInfo.realName && userInfo.idCard) ? true : false;
+            },
+            //提交实名认证
+            submit:function(){
+                var name = T.Util.trim($("#username").val());
+                var idcard = T.Util.trim($("#identity").val());
+
+                if(o.isCertificate()) return tip("您已实名认证！");//检查是否实名认证
+                if(!check.username(name)) return false;//校验真实姓名
+                if(!check.identity(idcard)) return false;//校验身份证号
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqData:null,
+                    reqUrl:'/user/services/user/updateInfo.json?event=IDCARD&newVal=' + name + ',' + idcard,
+                    callback:function(data){
+                        function success(){
+                            tip("身份信息已提交成功","ok");
+                            //更新userInfo
+                            var userInfo = T.Storage.get('userinfo');
+                            $.extend(userInfo,{realName:name,idCard:T.Util.hideMidStr(idcard,3,3)});
+                            T.Storage.set('userinfo',userInfo);
+                            setTimeout(function(){
+                                T.Util.back();
+                            },1000);
+                        }
+                        if($("html").is(".mobile")){
+                            var tel = T.Util.trim($("#tel").val());
+                            var message = T.Util.trim($("#message").val());
+                            if(!check.tel(tel)) return false;//校验身份证号
+                            if(!check.message(message)) return false;//校验验证码
+                            o.setMobile($('#tel').val().trim(),$('#message').val().trim(),function () {
+                                success();
+                            });
+                        }else{
+                            success();
+                        }
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            //获取验证码
+            getMessageCode:function (telNum,type,callback) {
+                if(!check.tel(telNum)) return;
+                var url = '/user/services/user/sendCode.json';
+                var reqData = {
+                    "userAcct":telNum,
+                    "event":type
+                };
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        isGetMessage = true;
+                        tip('验证码已发送','ok');
+                        callback(data);
+                        return;
+                    },
+                    errorCallback:function(){
+                        $('#getMessage').removeClass('no');
+                    }
+                })
+            },
+            //倒计时
+            countDown:function () {//倒计时
+                var timeVal = 60;
+                var clear=setInterval(function(){
+                    timeVal--;
+                    $('#getMessage').html(timeVal+'秒后重发!');
+                    dds = timeVal;
+                    if(timeVal == 0){
+                        clearInterval(clear);
+                        $('#getMessage').html('获取验证码').removeClass('no');
+                    }
+                },1000);
+            },
+            //设置手机号
+            setMobile:function(telNum,code,callBack){
+                if(!bindThirdHttpFlag){return;};
+                bindThirdHttpFlag = false;
+                if(!check.tel(telNum)) return;
+                if(!check.message(code)) return;
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:{'type':1,'token':telNum,'validateCode':code},
+                    errorType:'1',
+                    reqUrl:'/user/services/user/acct/bind.json',
+                    callback:function(){
+                        bindThirdHttpFlag = true;
+                        callBack && callBack();
+                    },
+                    errorCallback:function(data){
+                        bindThirdHttpFlag = true;
+                        if(data.msg_code=='1020'){//产生了合并
+                            T.Storage.set('bindAccountInfo',data.res_data.value);
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/bindAccount.html?from=setMobile');
+                        }else{
+                            tip(data.msg);
+                        }
+                    }
+                });
+
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+$(document).ready(function () {
+    if (T.isNative) {
+        T.appToH5.init(function () {//初始化事件回调函数
+            T.identityInfo.init();
+        }, function () {//webview再次打开回调函数
+
+        }, function () {//webview消失第一视角回调函数
+
+        }, function () {//app退到系统后台回调函数
+
+        }, function () {//app退到系统后台后重新回到app触发的函数
+
+        });
+    } else {
+        T.identityInfo.init();
+    }
+});
+</script>
+</body>
+</html>

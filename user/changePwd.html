@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>密码管理</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>密码管理</h1>
+    <div id="rightBtn">确认</div>
+</div>
+<div class="mainContent" id="main">
+    <div id="pwdfind-box">
+        <div class="pwdfind-item pwd"><div class="pwdfind-wrapper"><input id="pwd" type="password" minlength="6" maxlength="16" placeholder="请输入当前登录密码"></div><i class="clear"></i></div>
+        <div class="pwdfind-item pwd newpwd"><div class="pwdfind-wrapper"><input id="newpwd" type="password" minlength="6" maxlength="16" placeholder="请输入新登录密码(6~16位字符)"></div><i class="clear"></i></div>
+    </div>
+    <p class="pwdfind-text" id="findpwd">忘记密码?</p>
+    <div class="submitOk" id="changePwd">确认</div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script type="text/javascript" src="../js/md5.js?0.200"></script>
+<script>
+    T.pwdManage = (function(){
+        var check = {
+            pwd:function(val){
+                if(val == ''){
+                    tip('请输入当前登录密码');
+                }else if(val.length<6){
+                    tip('密码长度小于6位');
+                }else{
+                    return true;
+                }
+            },
+            newPwd:function(pwd,newPwd){
+                if(newPwd == ''){
+                    tip('请输入新登录密码');
+                }else if(newPwd.length<6){
+                    tip('密码长度小于6位');
+                }else if(pwd == newPwd){
+                    tip('新旧密码不能一致');
+                }else{
+                    return true;
+                }
+            }
+        };
+
+        var o = {
+            init:function(){
+                o.initPage();
+                o.bindEvent();
+            },
+            initPage:function(){
+                var access_token = T.Storage.get('access_token');
+                if(!access_token){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                }
+            },
+            bindEvent:function(){
+                //文本框输入事件
+                $("input").on("input",function(){
+                    if($(this).val().length > 0){
+                        $(this).parent().addClass("writing");
+                    }else{
+                        $(this).parent().removeClass("writing");
+                    }
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+                //忘记密码
+                $("#findpwd").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/findPwd.html');
+                });
+                //修改密码
+                $("#rightBtn,#changePwd").off().Touch(function(){
+                    var pwd = T.Util.trim($("#pwd").val());
+                    var newPwd = T.Util.trim($("#newpwd").val());
+                    if(!check.pwd(pwd)) return false;
+                    if(!check.newPwd(pwd,newPwd)) return false;
+                    var url = '/user/services/user/updateInfo.json?event=UPDATPWD&newVal=' + md5(pwd) + ',' + md5(newPwd);
+
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        reqUrl:url,
+                        callback:function(){
+                            tip("密码设置成功","ok");
+                            setTimeout(function(){
+                                T.Util.back();
+                            },3000);
+                        },
+                        errorCallback:function(){}
+                    })
+                });
+            },
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.pwdManage.init();
+            },function () {//webview再次打开回调函数
+
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.pwdManage.init();
+        }
+    });
+</script>
+</body>
+</html>

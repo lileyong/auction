@@ -1,0 +1,131 @@
+/*邀请页样式*/
+
+html,
+body {
+  background: url(../img/activity/invite/regBgRepeat.png) center center / 10rem 0.026667rem repeat-y;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  font-size: 0.373333rem;
+  color: #ccc;
+}
+
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+  font-size: 0.373333rem;
+  color: #ccc;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  font-size: 0.373333rem;
+  color: #ccc;
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  font-size: 0.373333rem;
+  color: #ccc;
+}
+
+#bg {
+  position: absolute;
+  width: 100%;
+}
+
+#inviteRegBox {
+  overflow: hidden;
+}
+
+#regForm {
+  position: relative;
+  margin: 9.386667rem 1.133333rem 0 1.133333rem;
+}
+
+#regForm .formItem {
+  position: relative;
+  margin-bottom: 0.266667rem;
+  width: 100%;
+  height: 1.2rem;
+  font-size: 0.373333rem;
+  overflow: hidden;
+}
+
+#regForm .formItem input {
+  padding: 0.44rem 0.106667rem 0.44rem 1.053333rem;
+  width: 100%;
+  height: 1.186667rem;
+  background-color: transparent;
+}
+
+#regForm .formItem #getMessage {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-block;
+  width: 2.866667rem;
+  height: 1.2rem;
+  text-align: center;
+  line-height: 1.2rem;
+  border-radius: 0.08rem;
+  font-size: 0.373333rem;
+  color: #fff;
+}
+
+#regForm .formBtn {
+  overflow: hidden;
+}
+
+#regForm #receive {
+  margin: 0.146667rem auto;
+  display: block;
+  width: 100%;
+  height: 1.2rem;
+}
+
+#regForm #download {
+  margin-top: 0.906667rem;
+  display: block;
+  height: 0.56rem;
+}
+
+#regForm #kefu {
+  float: right;
+  margin: 0.24rem 0.226667rem 0 auto;
+  width: 1.413333rem;
+  height: 0.346667rem;
+  background: url(../img/activity/invite/kefu.png) 0 0 / 100% 100% no-repeat;
+}
+
+/*邀请下载页样式*/
+
+#bgBox .bg {
+  position: absolute;
+  display: none;
+  width: 100%;
+}
+
+.showBg1 #bgBox .bg:nth-child(1) {
+  display: block;
+}
+
+.showBg2 #bgBox .bg:nth-child(2) {
+  display: block;
+}
+
+.showBg3 #bgBox .bg:nth-child(3) {
+  display: block;
+}
+
+#dlBox {
+  position: relative;
+  overflow: hidden;
+}
+
+#dlBox #auction {
+  margin-top: 12.6rem;
+  width: 100%;
+  height: 3.04rem;
+  background: url(../img/activity/invite/auction.png) 0 0 / 100% 100% no-repeat;
+}

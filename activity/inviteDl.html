@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#d8313a;">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>下载领豪礼</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/inviteReg.css">
+    <script>
+        /*随机显示一张背景*/
+        var t = document.documentElement.className;
+        var bgIndex = Math.ceil(3 * Math.random());
+        var className = "showBg" + bgIndex;
+        document.documentElement.className = t ? t + " " + className: className;
+    </script>
+</head>
+<body>
+<div class="mainContent noNavbar" id="main">
+    <div class="content" id="content">
+        <div id="bgBox">
+            <img src="../img/activity/invite/dlbg1.jpg" class="bg">
+            <img src="../img/activity/invite/dlbg2.jpg" class="bg">
+            <img src="../img/activity/invite/dlbg3.png" class="bg">
+        </div>
+        <div id="dlBox"><div id="auction"></div></div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.inviteReg = (function(){
+        var reqEndFlag = true;
+        var newGoods = null;//新手专区商品
+
+        var o = {
+            init:function(){
+                setInterval(function(){
+                    bgIndex += 1;
+                    if(bgIndex == 4){
+                        bgIndex = 1;
+                    }
+                    var className = "showBg" + bgIndex;
+                    document.documentElement.className = t ? t + " " + className: className;
+                },3000);
+                T.Util.initAppDownload();//初始化下载
+                o.getNewGoods();//获取新手专区推荐的商品
+                o.bindEvent();//事件绑定
+            },
+            //事件绑定
+            bindEvent:function(){
+                //下载
+                $("#auction").off().Touch(function(){
+                    function openGoodsDetail(newGoods){
+                        if(newGoods.length){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id=' + newGoods[0].COMMODITY_ID + '&expectNo=' + newGoods[0].EXPECT_NO + '&isNext=1&isH5Auction=1');
+                        }else{
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUserH5.html');
+                        }
+                    }
+                    if(newGoods){
+                        openGoodsDetail(newGoods);
+                    }else{
+                        o.getNewGoods(function(newGoods){
+                            openGoodsDetail(newGoods);
+                        });
+                    }
+                });
+            },
+            //获取新手专区商品
+            getNewGoods:function(callBack){
+                if(!reqEndFlag){
+                    return false;
+                }
+                reqEndFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/world/newProduct.json?page=0&limit=1&code=4',//code：4 新手推荐 6 热门好货 5 本周新品
+                    callback:function(json){
+                        reqEndFlag = true;
+                        newGoods = json.res_data.value.INFO;
+                        callBack && callBack(newGoods);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        reqEndFlag = true;
+                    }
+                });
+            },
+            //分享注册
+            reg:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:"/commodity/services/invite/addInvite.json?code=018747&userMobile=13127246999&validateCode=123456",
+                    callback:function(json){
+                        inviteInfo = json.res_data.value;
+                        o.showInviteInfo(inviteInfo);
+                        callback && callback();
+                    },
+                    errorCallback:function(data){
+                        data && tip(data.msg);
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.inviteReg.init();
+            },function () {//webview再次打开回调函数
+                T.inviteReg.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.inviteReg.init();
+        }
+    });
+</script>
+</body>
+</html>

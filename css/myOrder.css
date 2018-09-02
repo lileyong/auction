@@ -1,0 +1,220 @@
+#myOrderTab {
+  position: fixed;
+  z-index: 1;
+  width: 10rem;
+  height: 1.13rem;
+  background-color: #fff;
+  border-bottom: 0.013333rem solid #dfdfdf;
+}
+
+#myOrderTab .tab-item {
+  float: left;
+  width: 25%;
+  text-align: center;
+  line-height: 1.13rem;
+  font-size: 0.4rem;
+  color: #666;
+}
+
+#myOrderTab .tab-item.on {
+  color: #f72f31;
+}
+
+#myOrderTab .pointer {
+  position: absolute;
+  bottom: 0;
+  left: calc(12.5% - 0.54rem);
+  display: inline-block;
+  width: 1.07rem;
+  height: 0.08rem;
+  border-radius: 0.04rem;
+  background-color: #f72f2f;
+}
+
+#myOrderList {
+  padding-top: 1.13rem;
+}
+
+.orderItem {
+  position: relative;
+  margin-bottom: 0.133333rem;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.orderItem.done:after {
+  content: '';
+  position: absolute;
+  right: 0.773333rem;
+  top: -0.32rem;
+  display: inline-block;
+  width: 1.813333rem;
+  height: 1.813333rem;
+  background: url(../img/goods/orderDone.png) 0 0 / 100% 100% no-repeat;
+}
+
+.orderItem .orderHead {
+  margin: 0 0.453333rem;
+  height: 1.066667rem;
+  line-height: 1.066667rem;
+  background-color: #fff;
+  border-bottom: 0.013333rem solid #e7e7e7;
+}
+
+.orderItem .orderHead .orderTitle {
+  float: left;
+  position: relative;
+  padding-left: 0.626667rem;
+  font-size: 0.346667rem;
+  color: #333;
+}
+
+.orderItem .orderHead .orderTitle i {
+  position: absolute;
+  left: 0;
+  top: 0.293333rem;
+  display: inline-block;
+  width: 0.48rem;
+  height: 0.48rem;
+  background-color: #999;
+}
+
+.orderItem .orderHead .orderStatus {
+  float: right;
+  font-size: 0.346667rem;
+  color: #f72f2f;
+}
+
+.orderItem .orderHead .orderStatus.lose {
+  color: #999;
+}
+
+.orderItem .orderHead.mall .orderTitle i {
+  background: url(../img/orderdetail/icon-mall.png) 0 0 / 100% 100% no-repeat;
+}
+
+.orderItem .orderHead.auction .orderTitle i {
+  background: url(../img/orderdetail/icon-auction.png) 0 0 / 100% 100% no-repeat;
+}
+
+.orderItem .orderHead.cjg .orderTitle i {
+  background: url(../img/orderdetail/icon-cjg.png) 0 0 / 100% 100% no-repeat;
+}
+
+.orderItem .express {
+  width: 100%;
+  height: 1.586667rem;
+  background-color: #fff;
+}
+
+.orderItem .express .expressStatus {
+  position: relative;
+  padding: 0.266667rem 0.4533333rem 0 1.133333rem;
+  width: calc(100% - 1.6rem);
+  height: 0.506667rem;
+  line-height: 0.506667rem;
+  font-size: 0.346667rem;
+  color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.orderItem .express .expressStatus i {
+  position: absolute;
+  left: 0.453333rem;
+  top: 0.36rem;
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.32rem;
+  background: url(../img/goods/expressCar.png) 0 0 / 100% 100% no-repeat;
+}
+
+.orderItem .express .expressTime {
+  padding-left: 1.133333rem;
+  line-height: 0.613333rem;
+  font-size: 0.346667rem;
+  color: #666;
+}
+
+.orderItem .goodsInfo {
+  position: relative;
+  width: 100%;
+  height: 2.56rem;
+  background-color: #fafafa;
+}
+
+.orderItem .goodsInfo img {
+  position: absolute;
+  left: 0.466667rem;
+  top: 0.28rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.orderItem .goodsInfo p {
+  padding: 0.6rem 0.933333rem 0 2.72rem;
+  line-height: 0.453333rem;
+  font-size: 0.32rem;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.orderItem .payInfo {
+  margin: 0 0.453333rem;
+  height: 0.92rem;
+  line-height: 0.92rem;
+  background-color: #fff;
+  border-bottom: 0.013333rem solid #e7e7e7;
+  font-size: 0.32rem;
+  color: #333;
+}
+
+.orderItem .payInfo h2 {
+  float: right;
+  font-weight: bold;
+}
+
+.orderItem .payInfo h2 span em:first-child {
+  font-size: 0.4rem;
+}
+
+.recore-footer {
+  margin: 0 0.453333rem;
+  width: calc(100% - 0.906667rem);
+  height: 1.066667rem;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.recore-footer .record-btn {
+  float: right;
+  margin: 0.2rem 0.266667rem 0.2rem 0;
+  display: inline-block;
+  width: 2.13rem;
+  height: 0.67rem;
+  text-align: center;
+  line-height: 0.67rem;
+  border: 0.013333rem solid #9a9a9a;
+  border-radius: 0.33rem;
+  font-size: 0.35rem;
+  color: #666666;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+.recore-footer .record-btn:nth-child(1) {
+  margin-right: 0;
+  color: #f72f2f;
+  border-color: #f72f2f;
+}
+
+.timeWaitPay {
+  color: #f72f2f;
+  font-size: .34rem;
+  height: 1.066667rem;
+  line-height: 1.066667rem;
+}

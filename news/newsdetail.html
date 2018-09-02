@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>资讯详情</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/news.css?v=1.0.0">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>资讯详情</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="newsdetail"></div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.newsDetail = (function(){
+        var dropLoad = '';
+        var endGetDataFlag = true;//接口是否请求完毕
+
+        var o = {
+            init:function(){
+                o.getNewsDetail();//获取资讯详情
+                o.bindEvent();
+                //页面的PV/UV（jpzx_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"竞拍资讯",
+                    "conductCode": "jpzx_fwl",
+                    "comductDesc": "页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            bindEvent:function(){
+                $('#main').off().dropload({//绑定下拉刷新
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getNewsDetail();
+                    },
+                    threshold : 50
+                });
+            },
+            //获取资讯列表
+            getNewsDetail:function(){
+                endGetDataFlag = false;
+                tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/user/services/template/INFOCONTENT.json?id=' +T.Util.getPara('data-id'),//type =1：全部 2：收入 3：支出
+                    callback:function(json){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        o.showNewsDetail(json.res_data[0]);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $('#newsdetail').html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                T.newsDetail.init();
+                            });
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染资讯详情
+            showNewsDetail:function(data){
+                var html = [];
+                html.push('<h2 id="title">' + data.TITLE + '</h2>');
+                html.push('<p><em id="author">' + data.AUTHOR + '</em><em id="time">' + new Date(data.CRT_TIME).format('yyyy-MM-dd hh:mm') + '</em></p>');
+                html.push('<article>' + data.CONTENT.replace(/href/g,"data-href").replace(/http:\/\/192\.168\.86\.121:8088/g,'') + '</article>');
+                $("title").text(data.TITLE);
+                $('#newsdetail').html(html.join(""));
+                $('#newsdetail *').removeAttr("style");
+                $('#newsdetail br').remove();
+                $.each($('#newsdetail img'),function(index,item){
+                    var imgObj = $('#newsdetail img').eq(index);
+                    if(imgObj.parent().is("p")){
+                        imgObj.parent().css("text-indent","0!important");
+                    }else if(imgObj.parent().parent().is("p")){
+                        imgObj.parent().parent().css("text-indent","0!important");
+                    }
+                });
+                $("a").off().Touch(function(){
+                    var url = $(this).attr("data-href");
+                    if(/^id:\/\//i.test(url)){//跳转某一个商品
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+url.replace(/^id:\/\//i,"")+'&isNext=1');
+                    }else if(/^relative:\/\//i.test(url)){//跳转相对地址
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/'+url.replace(/^relative:\/\//i,""));
+                    }else{//跳转完整URL
+                        T.Util.openWindow(url);
+                    }
+                },{prevent:true});
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.newsDetail.init();
+            }, function () {//webview再次打开回调函数
+                T.newsDetail.init();
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.newsDetail.init();
+        }
+    });
+</script>
+</body>
+</html>

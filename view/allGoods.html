@@ -1,0 +1,645 @@
+<style>
+    /*全部商品*/
+    html,body{background-color:#fff!important;}
+    #goodsmenu{position:fixed;left:calc(50% - 5rem);top:1.7066667rem;width:2.4rem;overflow-y: auto;-webkit-overflow-scrolling:touch;}
+    #goodsmenu .goodsmenu-item{position:relative;width:100%;height:1.6rem;text-align:center;line-height:1.6rem;font-size:0.37rem;color:#333;background-color:#f7f7f7;border-bottom:2px solid #fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    #goodsmenu .goodsmenu-item.on{background-color:#fff;color:#f72f2f;}
+    #goodsmenu .goodsmenu-item.on:before{content:'';position:absolute;left:0;top:0;display:inline-block;width:0.0533334rem;height:100%;background-color:#f72f2f;}
+    #goodscontent{margin-left:2.4rem;background-color:#fff;overflow-y: auto;-webkit-overflow-scrolling:touch;}
+    .goods-item{position:relative;margin-left:0.4rem;width:calc(100% - 0.4rem);height:3.05rem;border-bottom:1px solid #dfdfdf;}
+    .goods-item.over img{opacity:0.6;}
+    .goods-item.over:after{content:'';position:absolute;left:-0.226667rem;top:0.96rem;display:inline-block;background: url('../img/sprite.png') no-repeat 0 -7.6rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 1.973333rem;
+        height: 1.066667rem;}
+    .goods-item.pre h2.goodsdesc{margin-top:0.52rem;}
+    .goods-item.pre p.preline{float:left;clear:both;margin-top:0.08rem;padding-left:1.8rem;line-height:0.56rem;font-size:0.32rem;color:#999999;}
+    .goods-item.pre p.prenow{float:left;clear:both;padding-left:1.8rem;line-height:0.56rem;font-size:0.373333rem;color:#333333;}
+    .goods-item:last-child{border-bottom:none;}
+    .goods-item img{position:absolute;left:0;top:0.75rem;width:1.55rem;height:1.55rem;}
+    .goods-item h2.goodsdesc{float:left;overflow: hidden;margin-top:0.27rem;padding-left:1.8rem;width:calc(100% - 3.96rem);max-height:0.86rem;line-height:0.43rem;word-break:break-all;font-size:0.35rem;color:#333;}
+    .goods-item p.endtime{float:left;margin-top:0.13rem;padding-left:1.8rem;width:calc(100% - 3.96rem);line-height:0.43rem;font-size:0.37rem;color:#f72f2f;}
+    .goods-item p.currentprice{float:left;margin-top:0.10rem;padding-left:1.76rem;width:calc(100% - 3.96rem);line-height:0.43rem;font-size:0.43rem;color:#f72f2f;}
+    .goods-item p.leaduser{float:left;margin-top:0.08rem;padding-left:1.8rem;width:calc(100% - 3.96rem);line-height:0.43rem;font-size:0.32rem;color:#999;}
+    .goods-item .goods-submit{position:absolute;right:0;top:0;width:2rem;height:100%;}
+    .goods-item .goods-submit:before{content:'';position:absolute;left:0;top:0.59rem;display:inline-block;width:1px;height:1.87rem;background-color:#dfdfdf;}
+
+    .goods-submit em{position:absolute;right:0.27rem;top:1.15rem;display:inline-block;width:1.47rem;height:0.75rem;text-align:center;line-height:0.75rem;font-size:0.4rem;color:#fff;border-radius:0.37rem;background-color:#f72f2f;}
+    .goods-submit em.pre{background-color:#ffa800;color:#fff;}
+    .goods-submit em.stop{background-color:#eeeeee;color:#999;}
+    .goods-submit em.over{background-color:#eeeeee;color:#999;}
+
+    .pre em.auction,
+    .pre em.stop,
+    .pre em.over,
+    .pre .otherBox{display: none;}
+    .pre em.pre,
+    .pre .preBox{display: block;}
+    .over em.auction,
+    .over em.stop,
+    .over em.pre,
+    .over .preBox{display: none;}
+    .over em.over,
+    .over .otherBox{display: block;}
+    .stop em.auction,
+    .stop em.pre,
+    .stop em.over,
+    .stop .preBox{display: none;}
+    .stop em.stop,
+    .stop .otherBox{display: block;}
+    .auction em.pre,
+    .auction em.stop,
+    .auction em.over,
+    .auction .preBox{display: none;}
+    .auction em.auction,
+    .auction .otherBox{display: block;}
+
+    #search-box{background-color:#fff;overflow:hidden;}
+    #search-box .search-count{height:0.8rem;line-height:0.8rem;padding-left:0.45rem;font-size:0.32rem;color:#666;background-color:#f5f5f5;}
+    #search-box .goods-item{margin:0 0.45rem;width:calc(100% - 0.9rem);}
+    #search-box input::-webkit-input-placeholder{line-height:0.3466667rem;font-size:0.32rem;}
+    #search-box input:-moz-placeholder{line-height:0.3466667rem;font-size:0.32rem;}
+    #search-box input::-moz-placeholder{line-height:0.3466667rem;font-size:0.32rem;}
+    #search-box input:-ms-input-placeholder{line-height:0.3466667rem;font-size:0.32rem;}
+    #search-box #search-content{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+    #search-history {overflow: hidden;position: relative;}
+    #search-history h2 {margin-top: 0.2rem;height: 0.973333rem;padding: 0 0.453333rem;line-height: 0.973333rem;font-size: 0.32rem;color: #999;}
+    #search-history #clear_search {position: absolute;top: 0.4733333rem;right: 0.4533333rem;display: inline-block; width: 1.066667rem;height: 1.066667rem;background: url('../img/sprite.png') no-repeat -7.6rem -11.146667rem;
+        background-size: 13.226667rem 11.946667rem;
+        width: 0.426667rem;
+        height: 0.426667rem;}
+    #search-history #history-list {margin-left: 0.453333rem;margin-right: 0.213333rem;}
+    #search-history #history-list em {float: left;margin-right: 0.24rem;margin-bottom: 0.24rem;height: 0.853333rem;padding: 0 0.373333rem;line-height: 0.853333rem;background-color: #f4f4f4;border-radius: 0.053333rem;font-size: 0.373333rem;color: #666;}
+    /*停拍*/
+    #stopAuctionBox{position: fixed;width: 100%;height: 10.5rem;z-index: 102;top:3.5rem;display: none;max-width: 10rem;text-align: center;}
+    .stopAuctionBg{background: url('../img/goods/stopAuction.png') no-repeat;
+        background-size: 10rem 10rem;
+        margin: auto;width: 10rem;height: 100%;position: relative;}
+    .stopAuctionBg .content{font-size:0.373333rem;color: #ff4021;margin-top: 4.5rem;
+        width: 7rem;
+        left: 1.5rem;position: absolute;margin-top: 4.4rem;}
+    .stopAuctionBg .btn{position: absolute;bottom: 2.4rem;width: 6.2rem;left: 1.9rem;height: 1.2rem;}
+
+</style>
+<div class="content" id="content">
+    <div id="allGoods-box">
+        <div id="goodsmenu"><div id="goodsmenu-wrapper"></div></div>
+        <div id="goodscontent"><div id="goodscontent-wrapper"></div></div>
+    </div>
+    <div id="search-box" style="display:none;">
+        <div id="search-history">
+            <h2>最近搜索</h2><i id="clear_search"></i>
+            <div id="history-list"><div class="nodata"><h2>暂无搜索历史</h2></div></div>
+        </div>
+        <div id="search-content" style="display:none;"><div id="search-wrapper"><h2 class="search-count">搜索结果...</h2></div></div>
+    </div>
+    <div class="clearboth"></div>
+</div>
+<div id="stopAuctionBox">
+    <div class="stopAuctionBg">
+        <div class="content"><!--为了您的身心健康，平台在02时~06时暂停竞拍，将在06点后恢复竞拍，请合理安排竞拍时间，谢谢！--></div>
+        <div class="btn"></div>
+    </div>
+</div>
+<div class="mask hide"></div>
+<script type="text/javascript">
+    T.allGoods = (function(){
+        var page = T.Util.getParaHash('page');
+        var columnId = 0;//栏目ID
+        var dropLoad = '';//下拉刷新
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//分页步长
+        var hasMore=false;//是否加载更多
+        var searchKeyWords = '';//搜索关键词
+        var searchIndex = 1;//搜索分页
+        var searchHasMore = false;//加载更多搜索内容
+        var endGetDataFlag = true;//接口是否请求完毕
+        var searchEnd = true;//是否搜索完毕
+        var deviceCd = T.Util.getAppInfo('deviceID');
+
+        //主对象
+        var o = {
+            init:function(){
+                o.loadCache();//加载缓存
+                o.initPage();//初始化页面
+                o.getSearchHistory();//获取历史搜索记录
+                o.getProductColumnList();//获取商品列表
+                o.bindEvent();//事件绑定
+            },
+            //初始化页面
+            initPage:function(){
+                $("html").removeClass("noNavbar");
+                if(!T.isNative){
+                    $(".clearboth").addClass("h5");
+                }
+                $(".pageType p[data-href]").eq(2).addClass('on').siblings().removeClass("on");
+                $("#goodsmenu,#goodscontent,#search-content").height(window.innerHeight - $("#dlbanner").height() - $(".navbar").height() - (T.isNative ? 0 : $("footer").height()));
+                //页面的PV/UV（jpdt_fwl）
+                T.Util.setUserBehaviorList({
+                    "busId":"竞拍大厅",
+                    "conductCode": "jpdt_fwl",
+                    "comductDesc": "页面的PV/UV",
+                    "time": new Date().getTime()
+                });
+            },
+            //加载缓存
+            loadCache:function(){
+                var content = T.Storage.get('allGoods');
+                if(content){
+                    $("#content").html(content);
+                    $("#allGoods-box").show();
+                    $("#search-box").hide();
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定下滑加载更多
+                $("#goodscontent").off().scroll(o.loadMoreData);
+                //绑定下拉刷新
+                $('#goodscontent').dropload({
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        if(T.Util.isEmpty($(".goodsmenu-item.on").attr("data-id"))){//如果获取不到列表id 有可能是列表获取失败 需要重新获取列表
+                            o.getProductColumnList();//获取商品列表
+                        }else{
+                            o.getProductList($(".goodsmenu-item.on").attr("data-id"));
+                        }
+                    },
+                    scrollArea:$('#goodscontent'),
+                    threshold : 50
+                });
+                //绑定搜索下滑加载更多
+                $("#search-content").off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(this).children().eq(0).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                        if(searchHasMore){
+                            o.doSearch(searchKeyWords,true);
+                        }
+                    }
+                });
+                //搜索商品
+                $("#searchinput").on("focus",function(){
+                    o.searchRecover();
+                    $("#searchbox").addClass("search");
+                    $("#search-box").show().siblings().hide();
+                });
+                $("#searchinput").on("blur",function(){
+
+                });
+                $("#searchinput").on("input",function(){
+                    $("html,body").removeClass("white");
+                    $("#search-content").show().siblings().hide();
+                    var keywords = T.Util.trim($("#searchinput").val());
+                    if(keywords){
+                        $("#search-content").html('<h2 class="search-count">搜索"' + $(this).val() + '"</div>');
+                    }else{
+                        o.searchRecover();
+                    }
+                    if(!T.isNative && keywords && searchEnd){//h5版本自动搜索
+                        clearTimeout(T.searchTimeout);
+                        T.searchTimeout = setTimeout(function(){
+                            o.doSearch(keywords);
+                        },1000);
+                    }
+                });
+                //取消搜索
+                $("#search_cancel").off().Touch(function(){
+                    $("#searchinput").blur();
+                    $("#searchbox").removeClass("search");
+                    $("#search-box").hide().siblings().show();
+                    o.searchRecover();
+                });
+            },
+            //绑定商品事件
+            bindGoodsEvent:function(){
+                //切换栏目
+                $('.goodsmenu-item').off().Touch(function(el){
+                    //分类tab的点击量（jpdt_djl1、jpdt_djl2，从上至下按数字正序）
+                    T.Util.setUserBehaviorList({
+                        "busId":"竞拍大厅",
+                        "conductCode": "jpdt_djl"+$(el).index(),
+                        "comductDesc": "分类tab的点击量",
+                        "time": new Date().getTime()
+                    });
+                    var el  = $(el);
+                    if(el.hasClass('on')){return;};
+                    pageIndex = 1;//重置分页索引
+                    el.addClass('on').siblings().removeClass('on');
+                    o.getProductList(el.attr('data-id'));
+                });
+                $('.goods-submit').off().Touch(function(el){
+                    var ela = $(el).parent();
+                    //各个商品“查看详情”或“预约竞拍”的点击量（jpdt_xqdjl001、jpdt_yydjl001数字为商品id）
+                    T.Util.setUserBehaviorList({
+                        "busId":"竞拍大厅",
+                        "conductCode": "jpdt_" + (ela.hasClass("pre")?"yy":"xq") + "djl"+ela.data("id"),
+                        "comductDesc": "各个商品“查看详情”或“预约竞拍”的点击量",
+                        "time": new Date().getTime()
+                    });
+                    if(ela.hasClass("pre")){
+                        if(ela.attr('data-isvisitor')==1){tip('您已预约哦');return;}
+                        var commodityId = ela.attr("data-id");
+                        var yuNumEl =  ela.find('.preBox .prenow span');
+                        var yuNum = yuNumEl.html()*1;
+                        T.Util.xmlHttpRequest({
+                            type:'get',
+                            reqUrl:'/commodity/services/product/visitors.json?expectNo='+ela.attr("data-no")+'&commodityId='+commodityId,
+                            callback:function(data){
+                                ela.attr('data-isvisitor',1);
+                                ela.find(".pre").html('已预约');
+                                tip('预约成功！','ok');
+                                yuNumEl.html(yuNum+1);
+                                if((yuNum+1)>=(ela.find('.preBox .preline span').html())){//当加了1之后等于预约需要人数 延迟500毫秒需要调取接口 防止消息丢失
+                                    setTimeout(function () {
+                                        if(ela.hasClass('pre')){//500毫秒之后还是预约的状态需要拉取接口
+                                            T.Util.getCommodityInfo(commodityId);
+                                        }
+                                    },500);
+
+                                }
+                            },
+                            errorCallback:function(data){
+                                if((data.msg_code=='1001'&&data.msg=='当前商品暂时不能预约')||data.msg=='已预约'){
+                                    setTimeout(function () {
+                                        if(ela.hasClass('pre')){//500毫秒之后还是预约的状态需要拉取接口
+                                            T.Util.getCommodityInfo(commodityId);
+                                        }
+                                    },500);
+                                }else{
+                                    data && tip(data.msg,'error');
+                                }
+                            }
+                        })
+                    }else if(ela.hasClass("auction")){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+ela.attr('data-id')+'&expectNo='+ela.attr('data-no')+'&isNext=1');
+                    }else if(ela.hasClass("stop")){
+                        T.Util.xmlHttpRequest({//查询是否需要弹停拍时段
+                            type: 'get',
+                            errorType: 1,
+                            reqUrl: '/commodity/services/template/GET_EXPECT_INFO.json?commodityId=' + ela.attr('data-id'),
+                            callback: function (data) {
+                                var d = data.res_data[0];
+                                if (T.Util.isEmpty(d)) {
+                                    return;
+                                }
+                                if(d.expectStatus==120){tip('当前商品已暂停竞拍')};
+                                if(d.IS_STOP_TIME && d.IS_STOP_TIME=='1'&&d.expectStatus==200){
+                                    var d1 = d.DAY_START_SALES;
+                                    var d2 = d.DAY_STOP_SALES;
+                                    $('#stopAuctionBox .content').html('为了您的身心健康，平台<br>从'+d1+'<br>至'+d2+'<br>暂停竞拍,请合理安排竞拍时间，谢谢！');
+                                    $('#stopAuctionBox,.mask').show();
+                                    $('#stopAuctionBox .btn').off().Touch(function(){
+                                        $('#stopAuctionBox,.mask').hide();
+                                    });
+                                }
+                            },
+                            errorCallback: function (data) {
+                                console.log(data);
+                            }
+                        });
+                    }
+                });
+                //参与竞拍
+                $('.goods-info').off().Touch(function(el){
+                    if(!$(el).parent().hasClass('stop')){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id='+$(el).parent().attr('data-id')+'&expectNo='+$(el).parent().attr('data-no')+'&isNext=1');
+                    }
+                });
+            },
+            //绑定搜索事件
+            bindSearchEvent:function(){
+                //历史搜索
+                $("#history-list em").off().Touch(function(){
+                    var keywords = $(this).text();
+                    $("#searchinput").val(keywords);
+                    $("#search-content").show().siblings().hide();
+                    setTimeout(function(){
+                        o.doSearch(keywords);
+                    },500);
+                });
+                //清空搜索历史
+                $("#clear_search").off().Touch(function(){
+                    confirm({
+                        html:'确定清空历史搜索吗？',
+                        cancelText:'取消',
+                        okText:'确定',
+                        okFun:function(){
+                            o.clearSearchHistory();
+                        }
+                    });
+                });
+            },
+            //加载更多数据
+            loadMoreData:function(){
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(this).children().eq(0).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(hasMore){
+                        o.getProductList($(".goodsmenu-item.on").attr("data-id"),true);
+                    }
+                }
+            },
+            //字符限制
+            strLimit:function(val){
+                if(!val) return '';
+                var len = T.Util.getStrLen(val);
+                if(len >= 32){
+                    return T.Util.strSlice(val,32);
+                }else{
+                    return val;
+                }
+            },
+            //获取商品栏目
+            getProductColumnList:function () {
+                tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/product/productColumnList.json',
+                    callback:function(data){
+                        pageLoading.hide();
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        var htmlArr=[],d= data.res_data ? data.res_data.value.COL_LIST : [];
+                        htmlArr.push('<div class="goodsmenu-item on" data-id="all">全部</div>');
+                        for(var i=0,j=d.length;i<j;i++){
+                            htmlArr.push('<div class="goodsmenu-item" data-id="'+d[i].COLUMN_ID+'">'+d[i].COLUMN_NAME+'</div>');
+                        }
+                        var infolist = data.res_data.value.INFO_LIST;
+                        if(infolist.INFO){
+                            o.showProductListHtml(infolist.INFO);
+                        }
+                        if(infolist.ISEND == '2'){
+                            pageIndex++;
+                            hasMore = true;
+                        }else{
+                            hasMore = false;
+                        }
+                        if(htmlArr.length){
+                            $('#goodsmenu-wrapper').html(htmlArr.join(''));
+                            setTimeout(function(){
+                                if(/allGoods.html/.test(window.location.href)){
+                                    T.Storage.set('allGoods',$("#content").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true" '));
+                                }
+                            },10);
+                        }
+                        o.bindGoodsEvent();
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        pageLoading.hide();
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".goods-item").length){
+                                $("#allGoods-box").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }
+                    }
+                })
+            },
+            //获取商品列表
+            getProductList:function (id,fromMore) {
+                tip('加载中...','loading');
+                var _url = '/commodity/services/product/productList.json?page=' + pageIndex + '&limit=' + pageSize;//page=1  limit
+                if(id!='all'){
+                    _url =_url+'&columnId='+id ;
+                }
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:_url,
+                    callback:function(json){
+                        pageLoading.hide();
+                        var data = (json.res_data && json.res_data.value) ? json.res_data.value.INFO : [];
+                        if(json.res_data.value.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showProductListHtml(data,fromMore);
+                    },
+                    errorCallback:function(){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        setTimeout(function(){
+                            tip(data ? data.msg : Global.neterror,"error");
+                        },500);
+                    }
+                })
+            },
+            //组装商品列表
+            doProductListHtml:function(d){
+                var htmlArr =[],messArr=[];
+                var defaultLogo = '../img/nodata/nopic120.png';
+                for(var i=0;i<d.length;i++){
+                    var djsTime ='';
+                    var clsStr='';
+                    var timeStr= '<cite>--</cite>:<cite>--</cite>:<cite>--</cite>';
+                    if(d[i].EXPECT_STATUS==80){//预约
+                        clsStr='pre';
+                    }else if(d[i].EXPECT_STATUS==100){//正在拍
+                        clsStr='auction';
+                        addTimer('[djs-id="'+d[i].COMMODITY_ID+'"]',Math.ceil(d[i].SURPLUS_TIME/1000));
+                        console.log(djsTime);
+                    }else if(d[i].EXPECT_STATUS==120||d[i].EXPECT_STATUS==90){//暂停正在拍 90为预约暂停
+                        clsStr='stop';
+                         if(d[i].EXPECT_STATUS==90){timeStr='暂停预约'}else{timeStr='暂停竞拍'}
+                    }else{//其他情况
+                        clsStr='over';
+                    }
+                    messArr.push('auction/commodity/'+d[i].COMMODITY_ID);
+
+                    htmlArr.push('<div class="goods-item '+clsStr+'" data-id="'+d[i].COMMODITY_ID+'" data-no="'+d[i].EXPECT_NO+'" data-expect_id="'+d[i].EXPECT_ID+'" data-isVisitor="'+d[i].IS_VISITOR+'">\
+                                        <div class="goods-info"><img class="goodsimg lozad" src="../img/goods/lazy_load.png" data-src="'+(d[i].COMMODITY_LOGO||defaultLogo)+'" onerror="T.Util.showDefaultPic(this)">\
+                                        <h2 class="goodsdesc">'+o.strLimit(d[i].COMMODITY_TITLE) + '</h2>\
+                                        <div class="preBox"><p class="preline">满<span>' + d[i].BESPEAK_MIN_NUM + '</span>人开拍</p>\
+                                        <p class="prenow">已预约<span>' +d[i].BESPEAK_NUM + '</span>人</p></div>\
+                                        <div class="otherBox"><p class="endtime" djs-id="'+d[i].COMMODITY_ID+'" data-djs="'+d[i].COUNT_DOWN+'" type-djs="1">'+timeStr+'</p>\
+                                        <p class="currentprice">￥<em class="AUCTION_PRICE">'+(d[i].AUCTION_PRICE?(d[i].AUCTION_PRICE*1).toFixed(2):"0.00")+'</em></p>\
+                                        <p class="leaduser"><span class="shopUserName">'+(d[i].AUCTION_USER_NAME||"暂时无人出价")+'</span></p></div></div>');
+                    htmlArr.push('<div class="goods-submit" data-isVisitor="'+d[i].IS_VISITOR+'"><em class="pre">'+(d[i].IS_VISITOR?"已预约":"预约")+'</em><em class="auction">竞拍</em><em class="stop">暂停</em><em class="over">已成交</em></div> </div>');
+                }
+                setTimeout(function () {
+                    T.Util.mqtt(messArr);
+                },100);
+                return htmlArr;
+            },
+            //渲染商品列表
+            showProductListHtml:function(data,fromMore){
+                var htmlArr = o.doProductListHtml(data);
+                if(dropLoad != ''){
+                    $('#goodscontent-wrapper').html('');
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+                if(htmlArr.length){
+                    if(fromMore){
+                        $('#goodscontent-wrapper').append(htmlArr.join(' '));
+                    }else{
+                        $('#goodscontent').scrollTop(0);
+                        $('#goodscontent-wrapper').html(htmlArr.join(' '));
+                    }
+                }else{
+                    if(!fromMore){
+                        $('#goodscontent-wrapper').html('<li class="nodata goods"><i></i><h2>暂无类别数据哦~</h2></li>');
+                    }
+                }
+                endGetDataFlag = true;
+                lozad().observe();
+                o.bindGoodsEvent();
+            },
+            //获取搜索记录
+            getSearchHistory:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/product/productSearchLog?deviceCd=' + deviceCd,
+                    callback:function(data){
+                        if(data){
+                            if(!data.res_data) data.res_data = {};
+                            o.showSearchHistory(data.res_data.value||[]);
+                        }
+                    },
+                    errorCallback:function(){
+
+                    }
+                });
+            },
+            //渲染搜索记录
+            showSearchHistory:function(data){
+                var html = [];
+                $.each(data,function(i,item){
+                    if(!T.Util.isEmpty(item.SEARCH_INFO)){
+                        html.push('<em>' + item.SEARCH_INFO+ '</em>');
+                    }
+                });
+                if(html.length){
+                    $("#clear_search").show();
+                    $("#history-list").html(html.join(""));
+                }else{
+                    $("#clear_search").hide();
+                    $("#history-list").html('<div class="nodata"><h2>暂无搜索历史</h2></div>');
+                }
+                o.bindSearchEvent();
+            },
+            //清空搜索记录
+            clearSearchHistory:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/product/invalidSearchLog?deviceCd=' + deviceCd,
+                    callback:function(data){
+                        $("#clear_search").hide();
+                        $("#history-list").html('<div class="nodata"><h2>暂无搜索历史</h2></div>');
+                    },
+                    errorCallback:function(){
+
+                    }
+                });
+            },
+            //搜索商品
+            doSearch:function(keywords,fromMore){
+                if(!searchEnd){
+                    return false;
+                }
+                searchEnd = false;
+                searchKeyWords = keywords;
+                if(T.Util.isEmpty(keywords)){
+                    return;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/product/productELSearch?deviceCd=' + deviceCd + '&query=' + keywords + '&page=' + searchIndex + '&limit=' + pageSize,
+                    callback:function(data){
+                        searchEnd = true;
+                        if(data.msg_code == "0"){
+                            if(data.res_data.value){
+                                if(data.res_data.value.ISEND == '2'){
+                                    searchIndex++;
+                                    searchHasMore = true;
+                                }else{
+                                    searchHasMore = false;
+                                }
+                                var searchResult = data.res_data.value;
+                                o.showSearch(searchResult,keywords,fromMore);
+                            }
+                        }else{
+                            data.msg && tip(data.msg);
+                        }
+                    },
+                    errorCallback:function(){
+                        searchEnd = true;
+                    }
+                });
+            },
+            //渲染搜索结果
+            showSearch:function(value,keywords,fromMore){
+                var data = value.INFO,totalNum = value.totalNum;
+                $("#searchinput").val("").blur().attr("placeholder","");
+                $("#searchbox").addClass("success");
+                if(!T.Util.isEmpty(keywords)){
+                    $("#searchbox").prepend('<em>' + keywords + '</em>');
+                }
+                $("#searchbox em").off().Touch(function(){
+                    o.searchRecover();
+                });
+                if(data.length){
+                    var htmlArr =[];
+                    if(!fromMore){
+                        htmlArr.push('<h2 class="search-count">搜索结果 ' + keywords + '(' + totalNum + ')</h2>');
+                    }
+                    htmlArr = htmlArr.concat(o.doProductListHtml(data));
+                    $("html,body").removeClass("white");
+                    fromMore ? $("#search-content").append(htmlArr.join(" ")) : $("#search-content").html(htmlArr.join(" "));
+                    lozad().observe();
+                    o.bindGoodsEvent();
+                }else{
+                    $("html,body").addClass("white");
+                    $("#search-content").html('<div class="nodata search"><i></i><h2>未搜索到此商品，请尝试其它关键字搜索</h2></div>');
+                }
+                o.getSearchHistory();
+            },
+            //搜索框复原
+            searchRecover:function(){
+                searchIndex = 1;//重置搜索分页索引
+                searchHasMore = false;//没有更多搜索
+                $("html,body").addClass("white");
+                $("#searchbox").removeClass("success").find('em').remove();
+                $("#searchinput").attr("placeholder","搜索您需要的商品");
+                $("#search-history").show().siblings().hide();
+                $("#search-content").html("");
+            }
+        }
+        return {
+            init:o.init,
+            doSearch:o.doSearch
+        }
+    })();
+    $(document).ready(function () {
+        T.Util.canShowBigAward('1');//默认告诉原生该界面可以弹出大奖弹层
+        T.allGoods.init();
+    });
+</script>
+
+

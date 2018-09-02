@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#d8313a;" id="zhuli">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>助力拿奖励</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/zhuli.css">
+</head>
+<body class="noNavbar">
+<div class="mainContent" id="main">
+    <div class="content" id="content">
+        <div id="zhuliBox">
+            <img src="../img/zhuli/bg.png" id="bg">
+            <div id="zhuliContent">
+                <div id="goodsInfo"></div>
+                <h2 id="zhuliResult">为我助力你也能获得<em>68元赠币</em><p id="zhuliStatus">（仅限新用户）</p></h2>
+                <div id="zhuliBtn" class="zhuli"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.zhuli = (function(){
+
+        var o = {
+            init:function(){
+                o.initPage();
+                o.bindEvent();
+                T.Util.initAppDownload();
+                window.onpageshow = function(event) {//ios从缓存里面返回 页面会触发这个方法
+                    if(!T.Util.isEmpty(T.Storage.get("zhuliRegFlag"))){//注册回来
+                        T.zhuli.replaceAuction('zhuliReg');
+                    }
+                };
+                if(!T.Util.isEmpty(T.Storage.get("zhuliRegFlag"))){//注册回来 微博里面不会触发window.onpageshow
+                    T.zhuli.replaceAuction('zhuliReg');
+                }
+            },
+            initPage:function(){
+                var htmlArr = [];
+                htmlArr.push('<h2 id="invitations"><em class="quot">“</em>老铁，我正在' + T.Util.getAppInfo('appName') + '竞拍<em class="quot">”</em></h2>');
+                htmlArr.push('<p id="goodsName"></p><img src="../img/goods/lazy_load.png" id="infoImg">');
+                $("#goodsInfo").html(htmlArr.join(""));
+                o.getCommodityInfo();
+            },
+            //获取商品信息
+            getCommodityInfo:function () {
+                var _url = '/commodity/services/template/QUERY_PRODUCT_INFO.json?commodityId='+T.Util.getPara('COMMODITY_ID');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:_url,
+                    callback:function(data){
+                        var d = data.res_data[0];
+                        $('#infoImg').attr('src',d.COMMODITY_LOGO);
+                        $('#goodsName').html(d.COMMODITY_NAME);
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            replaceAuction:function (type) {
+                if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                    T.Util.login();
+                    return;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/replace/auction.json?id='+T.Util.getPara('DPId'),   //免费拍,
+                    callback:function(data){
+                        if(type&&type=='zhuliReg'){//移除从注册回来标示
+                            T.Storage.remove('zhuliRegFlag');
+                        }
+                        if(data.res_data && data.res_data.value && data.res_data.value.isNew == 1){//新用户标示 是否在app登录过
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUserH5.html&pageFrom=zhuli&result='+data.res_data.value.count);
+                        }else{
+                            $('#zhuliBtn').removeClass().addClass('auction');
+                            $('#zhuliResult').html('成功为好友助力'+data.res_data.value.count+'次');
+                            o.bindEvent();
+                        }
+                    },
+                    errorCallback:function(data){
+                        if(type&&type=='zhuliReg'){//移除从注册回来标示
+                            T.Storage.remove('zhuliRegFlag');
+                        }
+                        var str = data.msg;
+                        var errorResultNum = '';
+                        if(data.msg_code=='1014'){//对同一个好友助力2次以上
+                            str='您已助力过了,不可重复助力哦';
+                            errorResultNum = '-1';
+                        }
+                        if(data.msg_code=='1013'){//邀请更老的用户助力
+                            str='助力失败<p>您比好友更早使用平台,无法为好友助力哦</p>';
+                            errorResultNum = '-6';
+                        }
+                        if(data.msg_code=='1022'){//触发一个链接被多人助力 防刷限制
+                            errorResultNum = '-5';
+                            str='本期商品助力达到上限,下次早点来为好友助力哦';
+                        }
+                        if(data.msg_code=='1011'){//帮别的好友助力成功过
+                            errorResultNum = '-4';
+                            str='每人只有1次助力机会,您已帮其他好友助力过啦';
+                        }
+                        if(data.msg_code=='1001'&&data.msg=='自己不能帮自己代拍'){//自己给自己助力异常
+                            str='无法为自己助力哦';
+                            errorResultNum = '-3';
+                        }
+                        if(data.msg_code=='1012'||data.msg_code=='1015'){//助力商品期次结束包含当前结束或者整个商品结束
+                            str='助力失败<p>好友当前期次竞拍已结束</p>';
+                            errorResultNum = '-2';
+                        }
+                        if(data.res_data && data.res_data.value && data.res_data.value.isNew == 1){//新用户标示 是否在app登录过
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUserH5.html&pageFrom=zhuli&result='+errorResultNum);
+                        }else{
+                            $('#zhuliBtn').removeClass().addClass('auction');
+                            $('#zhuliResult').html(str);
+                            o.bindEvent();
+                        }
+                    }
+                });
+            },
+            //事件绑定
+            bindEvent:function(){
+                $("#zhuliBtn").off().Touch(function(el){
+                    if($(el).is(".zhuli")){
+                        if(Global.isWechat){//微博
+                            o.replaceAuction();
+                        }else{//获取微信、QQ登录态
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/zhuliReg.html');
+                        }
+                    }else{
+                        T.Util.appDownload();
+                    }
+                });
+            }
+        }
+
+        return {
+            replaceAuction:o.replaceAuction,
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.zhuli.init();
+            },function () {//webview再次打开回调函数
+                T.zhuli.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.zhuli.init();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+#myCouponTab {
+  position: relative;
+  height: 1.13rem;
+  background-color: #fff;
+  border-bottom: 0.013333rem solid #dfdfdf;
+}
+
+#myCouponTab .tab-item {
+  float: left;
+  width: 33.33%;
+  text-align: center;
+  line-height: 1.13rem;
+  font-size: 0.4rem;
+  color: #666;
+}
+
+#myCouponTab .tab-item.on {
+  color: #f72f31;
+}
+
+#myCouponTab .pointer {
+  position: absolute;
+  bottom: 0;
+  left: calc(16.67% - 0.54rem);
+  display: inline-block;
+  width: 1.07rem;
+  height: 0.08rem;
+  border-radius: 0.04rem;
+  background-color: #f72f2f;
+}
+
+#myCouponList {
+  padding-top: 0.4rem;
+}
+
+#myCouponList .couponItem {
+  position: relative;
+  margin: 0 auto 0.266667rem auto;
+  width: 9.093333rem;
+  height: 2.24rem;
+  background: url(../img/coupon/quanBg.png) 0 0 / 100% 100% no-repeat;
+  overflow: hidden;
+}
+
+#myCouponList .couponItem img {
+  position: absolute;
+  left: 0.32rem;
+  top: 0.32rem;
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+#myCouponList .couponItem h2 {
+  padding-left: 2.24rem;
+  padding-top: 0.346667rem;
+  height: 0.666667rem;
+  line-height: 0.666667rem;
+  font-size: 0.48rem;
+  color: #333333;
+}
+
+#myCouponList .couponItem p {
+  padding-left: 2.24rem;
+  height: 0.44rem;
+  line-height: 0.44rem;
+  font-size: 0.32rem;
+}
+
+#myCouponList .couponItem p:nth-of-type(1) {
+  padding-top: 0.08rem;
+  color: #666;
+}
+
+#myCouponList .couponItem p:nth-of-type(2) {
+  color: #999;
+}
+
+#myCouponList .couponItem .status {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 2.666667rem;
+  height: 100%;
+}
+
+#myCouponList .couponItem .useCoupon {
+  margin: 0.72rem 0.533333rem;
+  display: inline-block;
+  width: 1.546667rem;
+  height: 0.746667rem;
+  text-align: center;
+  line-height: 0.746667rem;
+  border: 0.026667rem solid #f82f2f;
+  border-radius: 0.053333rem;
+  font-size: 0.373333rem;
+  color: #f52f34;
+}
+
+#myCouponList .couponItem i {
+  margin: 0.52rem 0.733333rem;
+  display: inline-block;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+#myCouponList .couponItem i.used {
+  background: url(../img/coupon/used.png) 0 0 / 100% 100% no-repeat;
+}
+
+#myCouponList .couponItem i.overdue {
+  background: url(../img/coupon/overdue.png) 0 0 / 100% 100% no-repeat;
+}

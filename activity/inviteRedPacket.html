@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#fd9706;">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>新用户专享</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        html,
+        body {
+            background-color: #fd9706;
+        }
+
+        img.bg{
+            width:100%;
+        }
+
+        .popBox.inviteRedPacket .box-content {
+            position: relative;
+            top:0.2666667rem;
+            width: 8.853333rem;
+            height: 10rem;
+            background: url(../img/activity/invite/redPacket.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        .popBox.inviteRedPacket .confirmbutton div.cancelText {
+            display: none;
+        }
+
+        .popBox.inviteRedPacket .confirmcontent {
+            height: 6.706667rem;
+        }
+
+        .popBox.inviteRedPacket .confirmcontent img {
+            margin: 1rem auto 0 auto;
+            display: block;
+            width: 2.146667rem;
+            height: 2.146667rem;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .popBox.inviteRedPacket .confirmcontent h2 {
+            margin: 0.693333rem auto 0 auto;
+            width: 4.8rem;
+            text-align: center;
+            line-height: 0.586667rem;
+            font-size: 0.4rem;
+            color: #fee890;
+        }
+
+        .popBox.inviteRedPacket .confirmcontent p {
+            margin-top: 0.133333rem;
+            text-align: center;
+            line-height: 1.28rem;
+            font-size: 0.48rem;
+            color: #f9ffb8;
+        }
+
+        .popBox.inviteRedPacket .confirmbutton div.okText {
+            margin: auto;
+            width: 5.226667rem;
+            height: 1.28rem;
+            background: url(../img/activity/invite/receiveRedPacket.png) 0 0 / 100% 100% no-repeat;
+        }
+
+        .popBox.inviteRedPacket .confirmbutton div.okText.download {
+            background: url(../img/activity/invite/goAuction.png) 0 0 / 100% 100% no-repeat;
+        }
+    </style>
+</head>
+<body>
+<div class="mainContent noNavbar" id="main">
+    <div class="content" id="content" style="display: none;">
+        <img class="bg" src="../img/activity/invite/inviteRedPacketBg.jpg">
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.inviteRedPacket = (function(){
+        var inviteCode = T.Util.getPara('inviteCode');//邀请码
+        var isH5Share = parseInt(T.Util.getPara('isH5Share'));
+        var linkRecordSuccess = false;//记录是否发送成功
+
+        var o = {
+            init:function(){
+                var userInfo = T.Storage.get('userinfo')||{};
+                if(userInfo && userInfo.userId == T.Util.getPara('userId') && !isH5Share){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/invite.html?noNavbar=1&userId='+T.Util.getPara('userId')+'&userPic='+T.Util.getPara('userPic')+ '&inviteCode=' + T.Util.getPara('inviteCode'));
+                }else{
+                    $("#content").show();
+                    var userPhoto = T.Util.getPara('userPic');
+                    confirm({
+                        className:'userDefined inviteRedPacket',
+                        html:'<img src="' + userPhoto + '"><div id="packetText"><h2>我正在掌上乐购<br>低价竞拍正版商品</h2><p>送你68元赠币，可免费竞拍</p></div>',
+                        okText:' ',
+                        okFun:function(){
+                            if($(".okText").is(".download")){
+                                T.Util.appDownload();
+                            }else{
+                                o.receive();
+                            }
+                        },okNoClose:true
+                    });
+                }
+                o.addLinkRecord();
+                T.Util.initAppDownload();
+            },
+            //添加链接记录
+            addLinkRecord:function(){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    authError:1,
+                    reqUrl:'/commodity/services/invite/addLinkRecord.json?code='+inviteCode,
+                    callback:function(data){
+                        linkRecordSuccess = true;
+                    },
+                    errorCallback:function(data){
+
+                    }
+                });
+            },
+            //领取赠币
+            receive:function(){
+                if(!linkRecordSuccess){
+                    o.addLinkRecord();//添加链接记录
+                }
+                if(Global.isQQ||Global.isWeibo){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/activity/inviteReg.html?inviteCode='+T.Util.getPara('inviteCode'));
+                }else{
+                    if(!T.Storage.get('access_token') && Global.isWechat){
+                        return tip('获取不到您的信息，请稍后再试');
+                    }
+                    tip("领取中...","loading");
+                    T.Util.xmlHttpRequest({
+                        type:'get',
+                        errorType:1,
+                        reqUrl:"/user/services/user/isLoginApp.json?time="+new Date().getTime(),
+                        callback:function(data){
+                            pageLoading.hide();
+                            if(data.res_data == 1){
+                                $("#packetText").html('<h2>你已经领取过赠币了，不能重复领取哦！</h2>');
+                                $(".okText").addClass("download");
+                            }else{
+                                var inviteReceived = T.Storage.get('inviteReceived')||{};
+                                var userinfo = T.Storage.get("userinfo")||{};
+                                var userId = userinfo.userId;
+                                $(".okText").removeClass("download");
+                                if(inviteReceived[userId] == 1){
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUserH5.html?pageFrom=invite&result=2');
+                                }else{
+                                    inviteReceived[userId] = 1;
+                                    T.Storage.set("inviteReceived",inviteReceived);
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUserH5.html?pageFrom=invite&result=1');
+                                }
+                            }
+                        },
+                        errorCallback:function(data){
+                            pageLoading.hide();
+                            setTimeout(function(){
+                                data && tip(data.msg);
+                            },200);
+                        }
+                    });
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.inviteRedPacket.init();
+            },function () {//webview再次打开回调函数
+                T.inviteRedPacket.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.inviteRedPacket.init();
+        }
+    });
+</script>
+</body>
+</html>

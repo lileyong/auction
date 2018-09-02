@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>手机号码</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>手机号码</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="pwdfind-box">
+        <div class="pwdfind-item tel"><div class="pwdfind-wrapper"><input id="tel" type="tel" maxlength="11" placeholder="请输入您要绑定的手机号码"></div><i class="clear"></i></div>
+        <div class="pwdfind-item message"><div class="pwdfind-wrapper"><input id="message" maxlength="6" placeholder="请输入验证码"><div id="getMessage">获取验证码</div></div></div>
+    </div>
+    <div class="pwdfind-btn" id="pwdfind_submit">提交</div>
+    <div id="kefuTips">如遇到验证码未收到问题，请点击联系：<span id="kefuOnline">在线客服</span></div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    var bindThirdHttpFlag = true;
+    T.setMoblie = (function(){
+        //表单校验
+        var check = {
+            tel:function(val){
+                if(val == ''){
+                    tip('请输入当前的手机号码！');
+                }else if(!/^1\d{10}$/.test(val)){
+                    tip('手机号码不正确，请重新输入');
+                }else{
+                    return true;
+                }
+            },
+            newtel:function (telNum,newTel) {
+                if(newTel == ''){
+                    tip('请输入新的手机号码！');
+                }else if(!/^1\d{10}$/.test(newTel)){
+                    tip('手机号码不正确，请重新输入');
+                }else if(newTel == telNum){
+                    tip('新绑定的手机号不能与旧手机号一致');
+                }else{
+                    return true;
+                }
+            },
+            message:function(val){
+                if(val == ''){
+                    tip('请输入短信验证码！');
+                }else if(val.length!=6){
+                    tip('请输正确的短信验证码！');
+                }else{
+                    return true;
+                }
+            }
+        };
+
+        //主对象
+        var o = {
+            init:function(){
+                o.initPage();
+                o.bindEvent();
+            },
+            initPage:function(){
+                var access_token = T.Storage.get('access_token');
+                if(!access_token){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                }
+            },
+            //获取验证码
+            getMessageCode:function (telNum,type,callback) {
+                if(!check.tel(telNum)) return;
+                var url = '/user/services/user/sendCode.json';
+                var reqData = {
+                    "userAcct":telNum,
+                    "event":type
+                };
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        tip('验证码已发送','ok');
+                        callback(data);
+                        return;
+                    },
+                    errorCallback:function(){
+                        $('#getMessage').removeClass('no');
+                    }
+                })
+            },
+            //倒计时
+            countDown:function () {//倒计时
+                var timeVal = 60;
+                var clear=setInterval(function(){
+                    timeVal--;
+                    $('#getMessage').html(timeVal+'秒后重发!');
+                    dds = timeVal;
+                    if(timeVal == 0){
+                        clearInterval(clear);
+                        $('#getMessage').html('获取验证码').removeClass('no');
+                    }
+                },1000);
+            },
+            //事件绑定
+            bindEvent:function(){
+                $('#kefuOnline').Touch(function () {
+                    //T.Util.kefu('h5','来源：绑定手机页面收不到验证码按钮|用户输入的手机号码：'+$('#tel').val());
+                    T.Util.kefuNew('h5','来源：绑定手机页面收不到验证码按钮|用户输入的手机号码：'+$('#tel').val());
+                });
+                //获取验证码
+                $('#getMessage').off().Touch(function(el){
+                    if($(el).hasClass('no')){return};
+                    var telNum = $('#tel').val().trim();
+                    o.getMessageCode(telNum,'BIND',function () {
+                        $('#getMessage').addClass('no');
+                        o.countDown();
+                    });
+                });
+                //提交
+                $("#pwdfind_submit").off().Touch(function(){
+                    o.setMobile($('#tel').val().trim(),$('#message').val().trim());
+                });
+                //文本框输入事件
+                $("input").on("input",function(){
+                    var tel = T.Util.trim($("#tel").val());
+                    if($(this).val().length > 0){
+                        $(this).parent().parent().addClass("writing");
+                    }else{
+                        $(this).parent().parent().removeClass("writing");
+                    }
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+            },
+            //设置手机号
+            setMobile:function(telNum,code){
+                if(!bindThirdHttpFlag){return;};
+                bindThirdHttpFlag = false;
+                if(!check.tel(telNum)) return;
+                if(!check.message(code)) return;
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:{'type':1,'token':telNum,'validateCode':code},
+                    errorType:'1',
+                    reqUrl:'/user/services/user/acct/bind.json',
+                    callback:function(){
+                        bindThirdHttpFlag = true;
+                        tip('手机号码设置成功','ok');
+                        T.User.getUInfo(function () {
+                            var userinfo = T.Storage.get('userinfo');
+                            var from = T.Util.getPara("from");
+                            if(from == 'drawing' && userinfo.isSetPwd != '1'){
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setPwd.html?from=setMobile');
+                            }else{
+                                T.Util.back();
+                            }
+                        },1);//刷新用户信息
+                    },
+                    errorCallback:function(data){
+                        bindThirdHttpFlag = true;
+                        if(data.msg_code=='1020'){//产生了合并
+                            T.Storage.set('bindAccountInfo',data.res_data.value);
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/bindAccount.html?from=setMobile');
+                        }else{
+                            tip(data.msg);
+                        }
+                    }
+                });
+
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.setMoblie.init();
+            }, function () {//webview再次打开回调函数
+
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.setMoblie.init();
+        }
+    });
+</script>
+</body>
+</html>

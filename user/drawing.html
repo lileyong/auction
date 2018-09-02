@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>提现</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/drawing.css">
+</head>
+<body>
+<div class="navbar absolute">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>提现</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="drawing-box">
+        <div class="drawing-head"><h2>可提取余额</h2><p>￥<span id="allMoney">--</span></p></div>
+        <div id="drawing-type">
+            <div class="drawing-type card"><h2>提现至银行卡</h2></div>
+            <div class="drawing-type wechat"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    var ADThirdLoginClick = false;//安卓是否点击过第三方登录
+    var bindType = 3;
+    var getUserInfoNum = 0;
+
+    T.drawing = (function(){
+        var page = T.Util.getParaHash('page');
+        var allMoney=T.Util.getParaHash('money');
+        var bindThirdHttpFlag = true;
+
+        var o = {
+            //程序入口
+            init:function(){
+                if(!T.Storage.get('access_token')){
+                    return T.Util.login();
+                }
+                o.initPage();
+                o.bindEvent();
+            },
+            initPage:function(){
+                $('#allMoney').html(allMoney);
+                T.User.getUInfo(function(){
+                    var userinfo = T.Storage.get('userinfo');
+                    allMoney = userinfo.moneyList[0]||0;
+                    $('#allMoney').html(allMoney);
+                });
+                var userInfo = T.Storage.get('userinfo')||{};//用户信息
+                if(userInfo.bindCount){
+                    o.bindType(userInfo.bindCount);
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //选择提现方式
+                $(".drawing-type").off().Touch(function(){
+                    var userInfo = T.Storage.get('userinfo')||{};//用户信息
+                    //判断用户是否进行实名认证
+                    if(!(userInfo.realName && userInfo.idCard)){
+                        confirm({html:"请先进行实名认证",okFun:function(){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/identityInfo.html?from=drawing');
+                        },cancelFun:function(){
+
+                        }});
+                        return;
+                    }
+                    //判断用户是否输入了手机号
+                    if(!T.Util.isEmpty(userInfo)&&!userInfo.userMobile){
+                        alert('为了您的账户安全，请先绑定手机号码',function () {
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setMobile.html?from=drawing');
+                        });
+                        return;
+                    }
+                    if($(this).is(".card")){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/drawingToCard.html#page=drawing&money='+T.Util.getPara('money'));
+                    }else{
+                        if($(this).is(".bind")){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/userInfo.html');
+                        }else{
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/drawingToWechat.html#money='+T.Util.getPara('money'));
+                        }
+                    }
+                });
+            },
+            bindType:function (bindCount){
+                var i = 0;
+                var bindNum = 0;
+                while(bindCount > 0){
+                    i ++;
+                    if(bindCount & 1 > 0) {
+                        if(i == 1||i == 2||i == 3){
+                            bindNum++;
+                        }
+                        if(i == 3){
+                            $(".drawing-type.wechat").removeClass("bind").html('<h2>提现至微信零钱</h2>');
+                        }else{
+                            $(".drawing-type.wechat").addClass("bind").html('<h2>提现至微信零钱</h2><p>注：您还未绑定微信，<em>前往绑定</em></p>');
+                        }
+                    }
+                    bindCount = bindCount >> 1;
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.drawing.init();
+            },function () {//webview再次打开回调函数
+                T.drawing.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.drawing.init();
+        }
+    });
+</script>
+</body>
+</html>

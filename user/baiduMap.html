@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta content="no-cache,must-revalidate" http-equiv="Cache-Control" />
+    <meta content="no-cache" http-equiv="pragma" />
+    <meta content="0" http-equiv="expires" />
+    <meta content="telephone=no, address=no" name="format-detection" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>新增收货地址</title>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/map.css">
+    <!--百度地图-->
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=j4ckH3YpV8DXOu9EbOOa94l4sr7BHNQX"></script>
+</head>
+<body>
+<div id="mapContainer">
+    <!--地图控件-->
+    <div id="bdMap">
+        <div class="navbar">
+            <div class="back_arrow back_home" id="back"></div>
+            <h1>新增收货地址</h1>
+        </div>
+        <div class="mainContent" id="main">
+            <div id="content">
+                <!-- 搜索 -->
+                <div id="searchBox">
+                    <div id="cityInfo"><h2 class="currentCity">定位中...</h2></div>
+                    <form id="searchForm" action="javascript:T.bdMap.doSearch();">
+                        <input type="search" id="searchInput" placeholder="查找小区/大厦/学校等"/>
+                    </form>
+                </div>
+                <!-- 地图 -->
+                <div id="mapBoxWrap"><div id="mapBox"></div><em id="getLocation"></em></div>
+                <!--结果面板-->
+                <div id="resultBox"><div class="addressItem nodata">定位中...</div></div>
+            </div>
+        </div>
+    </div>
+    <!--城市选择控件-->
+    <div id="selectCity" style="display:none;">
+        <div class="navbar">
+            <div class="back_arrow back_home" class="back"></div>
+            <h1>选择城市</h1>
+        </div>
+        <div class="mainContent">
+            <div id="selectCityHead"><form id="selectCityForm" action="javascript:T.bdMap.searchCity($('#selectCityInput').val());"><input type="search" placeholder="输入城市名或拼音查询" id="selectCityInput"><span id="searchCancel">取消</span></div>
+            <div id="selectCityMain">
+                <div id="locationCity"><h2 class="cityItem gpsCity">定位中..</h2></div>
+                <div class="selectCityTitle" id="hotCity"><h2>国内热门城市</h2></div>
+                <div id="hotCityList">
+                    <div class="hotCityRaw"><em class="cityItem">北京</em><em class="cityItem">上海</em><em class="cityItem">深圳</em></div>
+                    <div class="hotCityRaw"><em class="cityItem">广州</em><em class="cityItem">天津</em><em class="cityItem">成都</em></div>
+                    <div class="hotCityRaw"><em class="cityItem">杭州</em><em class="cityItem">西安</em><em class="cityItem">重庆</em></div>
+                </div>
+                <div id="cityList"></div>
+                <div id="cityNav"></div>
+            </div>
+            <!--城市搜索-->
+            <div id="searchCityBox" style="display: none;"><div class="mask"></div><div id="searchCityList" style="display: none;"></div></div>
+        </div>
+    </div>
+</div>
+<script src="../js/zepto.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script type="text/javascript" src="../js/areaData_v2.js"></script>
+<script type="text/javascript" src="../js/pinyin.js"></script>
+<script type="text/javascript" src="../js/pinyinUtil.js"></script>
+<script type="text/javascript">
+    T.bdMap = (function(){
+        var map = new BMap.Map("mapBox");//创建地图实例
+        var point = new BMap.Point(116.404, 39.915);//初始化地图坐标
+        var cityName = T.Util.getPara('city');//当前城市
+        var address = {province:"",city:"",district:"",street:""};
+        var addressList = [];
+
+        var o = {
+            init:function(){
+                o.initMap();//初始化地图
+                o.bindEvent();//事件绑定
+                o.initCityList();//初始化城市列表
+            },
+            bindEvent:function(){
+                $("#searchInput").on("keydown",function(ev){
+                    var keyword = $("#searchInput").val();
+                    if(!T.isNative && keyword){//网页版搜索
+                        if(ev.keyCode == 13){
+                            o.doSearch();
+                        }
+                    }
+                });
+                /*搜索城市*/
+                $("#selectCityInput").on("focus",function(){
+                    $("#selectCity .navbar").css("top",-$("#selectCity .navbar").height());
+                    $("#selectCity .mainContent").addClass("noNavbar");
+                    $("#selectCityHead").addClass("search");
+                    $("#searchCityBox").show();
+                    $("#searchCityList").css({marginTop:$("#selectCityHead").height()+"px",height:(window.innerHeight - $("#selectCityHead").height())+"px"}).hide();
+                });
+                $("#selectCityInput").on("input",function(ev){
+                    var keyword = $("#selectCityInput").val();
+                    if(!keyword.length){
+                        $("#selectCityMain").show();
+                        $("#searchCityList").hide();
+                        $("#searchCityList").html("");
+                    }
+                });
+                $("#selectCityInput").on("keydown",function(ev){
+                    var keyword = $("#selectCityInput").val();
+                    if(!T.isNative && keyword){//网页版搜索
+                        if(ev.keyCode == 13){
+                            o.searchCity(keyword);
+                        }
+                    }
+                });
+                $("#searchCancel").off().Touch(function(){
+                    $("#selectCity .navbar").css("top",0);
+                    $("#selectCity .mainContent").removeClass("noNavbar");
+                    $("#selectCityHead").removeClass("search");
+                    $("#selectCityMain").show();
+                    $("#searchCityBox").hide();
+                    $("#searchCityList").hide();
+                    $("#searchCityList").removeAttr("style");
+                    $("input,textarea").val("").blur();
+                });
+                $("#getLocation").off().Touch(function(){
+                    o.getLocation(true);
+                });
+                $("#cityInfo").off().Touch(function(){
+                    $("#selectCity").show().siblings().hide();
+                });
+                $("#selectCity .navbar .back_arrow").off().Touch(function(){
+                    $("#selectCity").hide().siblings().show();
+                });
+            },
+            bindCityEvent:function(){
+                $(".cityItem").off().Touch(function(){
+                    cityName = $(this).text();
+                    $(".currentCity").text(T.Util.strSlice(cityName,6));
+                    // 切换城市
+                    map.centerAndZoom(cityName,16);
+                    map.removeEventListener("tilesloaded",o.getCenter);
+                    map.addEventListener("tilesloaded",o.getCenter);
+                    $("input,textarea").blur();
+                    $("#selectCity").hide().siblings().show();
+                });
+            },
+            //点击地址
+            clickAddressItem:function(index){
+                var editAddressInfo = T.Storage.get('editAddressInfo')||{};
+                if($("#resultBox").is(".resultNum")) return false;
+                if(!address.district){
+                    for(var i = 0;i < addressList.length;i++){
+                        if(o.getDistrict(index)){
+                            address.district = o.getDistrict(index);
+                            break;
+                        }else if(o.getDistrict(i)){
+                            address.district = o.getDistrict(i);
+                            break;
+                        }
+                    }
+                }
+                editAddressInfo.area = address.province + ' ' + address.city + (address.district?' ' + address.district:' ');
+                editAddressInfo.areaCode = o.getCityCode(address.province,iosProvinces)+"#"+o.getCityCode(address.city,iosCitys)+(address.district?"#"+o.getCityCode(address.district,iosCountys):"");
+                editAddressInfo.userAddr = o.getStreet(index);
+                T.Storage.set('editAddressInfo',editAddressInfo);
+                setTimeout(function(){
+                    T.Util.back();
+                },10);
+            },
+            //获取县/区
+            getDistrict:function(i){
+                var area = (addressList[i].address||addressList[i].title).match(/([\u4E00-\u9FA5]+(省|(自治区)))*([\u4E00-\u9FA5]+市)+([\u4E00-\u9FA5]+?(县|区))+?/);
+                if(area && area.length){
+                    return area[0].match(/([^省市]+?(县|区))+?/)[0];
+                }
+            },
+            //获取详细地址
+            getStreet:function(index){
+                var address = $(".addressItem").eq(index).find("p").text()||$(".addressItem").eq(index).text()||(addressList[index]||{}).address;
+                var title = $(".addressItem").eq(index).find("h2").text()||(addressList[index]||{}).title;
+                title = (title == address ? "":title);
+                return address + (title?" "+title:"");
+            },
+            //根据城市名获取城市代码
+            getCityCode:function(cityName,data){
+                for(var i = 0;i < data.length;i++){
+                    if(data[i].value == cityName){
+                        return data[i].id;
+                    }
+                }
+            },
+            //初始化城市列表
+            initCityList:function () {
+                var cityList = [];
+                for(var p in iosCountys){
+                    cityList.push(iosCountys[p].value);
+                }
+                cityList.sort(function(a,b){return a.localeCompare(b)});
+                var cityDict = {};
+                for(var i=0;i<26;i++){
+                    cityDict[String.fromCharCode(65+i)] = [];
+                }
+                for(var i = 0;i < cityList.length;i++){
+                    cityDict[pinyinUtil.getFirstLetter(cityList[i],false).slice(0,1)].push(cityList[i]);
+                }
+                var cityListHtml = [];
+                var cityChar = ["热门"];
+                for(var p in cityDict){
+                    if(cityDict[p].length){
+                        cityListHtml.push('<div class="selectCityTitle" id="city' + p + '"><h2>' + p + '</h2></div>');
+                        cityChar.push(p);
+                        var cityArr = cityDict[p];
+                        for(var i = 0;i < cityArr.length;i++){
+                            cityListHtml.push('<div class="cityItem cityListItem"><h2>' + cityArr[i] + '</h2></div>');
+                        }
+                    }
+                }
+                $("#cityList").html(cityListHtml.join(""));
+                var cityNavHtml = [];
+                for(var i = 0;i < cityChar.length;i++){
+                    cityNavHtml.push('<em>' + cityChar[i] + '</em>');
+                }
+                $("#cityNav").css("top",(($(".navbar").height() + parseFloat($("#cityNav").css("top"))) + "px")).html(cityNavHtml.join(""));
+                $("#cityNav em").off().Touch(function(){
+                    var text = $(this).text();
+                    if(text == '热门'){
+                        window.location.href = '#hotCity';
+                    }else{
+                        tip(text,"big");
+                        window.location.href = '#city' + text;
+                    }
+                });
+                o.bindCityEvent();
+            },
+            //获取地图中心点
+            getCenter:function(){
+                var centerPoint = map.getCenter();
+                o.createMap(centerPoint);
+            },
+            //初始化地图
+            initMap:function(){
+                var geolocation = new BMap.Geolocation();//地理定位
+                geolocation.getCurrentPosition(function(r){
+                    if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                        var gpsCity = r.address.city;
+                        var gpsDistrict = r.address.district;
+                        $(".gpsCity").html(r.address.city);
+                        if(cityName && cityName != gpsCity && cityName != gpsDistrict){
+                            $("#cityInfo h2").text(T.Util.strSlice(cityName,6));
+                            map.centerAndZoom(cityName,16);
+                            map.removeEventListener("tilesloaded",o.getCenter);
+                            map.addEventListener("tilesloaded",o.getCenter);
+                        }else{
+                            map.centerAndZoom(r.point,16);
+                            o.createMap(r.point,true);
+                        }
+                    }else {
+                        alert('failed'+this.getStatus());
+                    }
+                },{enableHighAccuracy: true})
+                map.addControl(new BMap.NavigationControl());//平移缩放控件
+                map.addControl(new BMap.MapTypeControl());//地图类型控件
+                map.enableScrollWheelZoom(true);//开启鼠标滚轮缩放
+                map.addEventListener("dragend", function(r){  //拖动事件
+                    map.removeEventListener("tilesloaded",o.getCenter);
+                    var centerPoint = map.getCenter();
+                    o.createMap(centerPoint,true);
+                });
+            },
+            //获取定位
+            getLocation:function(creatMap){
+                var geolocation = new BMap.Geolocation();//地理定位
+                geolocation.getCurrentPosition(function(r){
+                    if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                        $(".gpsCity").html(r.address.city);
+                        if(creatMap){
+                            o.createMap(r.point,true);
+                        }
+                    }else {
+                        alert('failed'+this.getStatus());
+                    }
+                },{enableHighAccuracy: true})
+            },
+            //创建地图
+            createMap:function(rPoint,refreshCity){
+                map.panTo(rPoint);//地图中心移动
+                o.addMarker(rPoint);//添加地图标注
+                var point = new BMap.Point(rPoint.lng,rPoint.lat);//用所定位的经纬度查找所在地省市街道等信息
+                var gc = new BMap.Geocoder();
+                gc.getLocation(point, function(rs){
+                    var htmlArr  =[];
+                    address = rs.addressComponents;
+                    addressList = rs.surroundingPois;
+                    if(refreshCity){
+                        $("#cityInfo h2").text(T.Util.strSlice(address.city,6));
+                    }
+                    for(i=0;i<rs.surroundingPois.length;i++){
+                        var item = rs.surroundingPois[i]||{};
+                        item.address = (item.address||"").replace(/(.+(省|(自治区)))*(.+市)*([^0-9a-zA-Z]+?(县|区))+?/,"");
+                        if(item.title && item.address){
+                            htmlArr.push('<div class="addressItem" data-point="'+ Base64.encode(JSON.stringify(item.point)) + '"><h2>'+item.title+'</h2><p>'+item.address+'</p></div>');
+                        }else{
+                            htmlArr.push('<div class="addressItem">'+(item.title||item.address)+'</div>');
+                        }
+                    }
+                    if(htmlArr.length){
+                        $('#resultBox').html(htmlArr.join(''));
+                    }else if(rs.addressComponents.district && rs.address){
+                        $('#resultBox').html('<div class="addressItem" data-point="'+ Base64.encode(JSON.stringify(rs.point)) + '"><h2>'+rs.addressComponents.district+'</h2><p>'+rs.address+'</p></div>');
+                    }else{
+                        $('#resultBox').html('<div class="addressItem" data-point="'+ Base64.encode(JSON.stringify(rs.point)) + '"><h2>'+rs.addressComponents.province+'</h2><p>'+rs.addressComponents.city+'</p></div>');
+                    }
+                    $(".addressItem").off().Touch(function(){
+                        o.clickAddressItem($(this).index());
+                    });
+                });
+            },
+            //添加地图标注
+            addMarker:function(point){
+                var marker = new BMap.Marker(point);// 创建标注
+                map.clearOverlays();//清空原来的标注
+                map.addOverlay(marker);//将标注添加到地图中
+            },
+            //搜索城市
+            searchCity:function(keyword){
+                var cityList = iosCountys.concat(iosCitys);
+                var resultHtml = [];
+                if(/[\u4E00-\u9FA5]/.test(keyword)){//城市名搜索
+                    for(var i = 0;i < cityList.length;i++){
+                        if(cityList[i].value.match(keyword)){
+                            resultHtml.push('<div class="cityItem cityListItem"><h2>' + cityList[i].value + '</h2></div>');
+                        }
+                    }
+                }else{
+                    for(var i = 0;i < cityList.length;i++){
+                        if(pinyinUtil.getFirstLetter(cityList[i].value).match(keyword.toUpperCase())){
+                            resultHtml.push('<div class="cityItem cityListItem"><h2>' + cityList[i].value + '</h2></div>');
+                        }
+                    }
+                }
+                $("#selectCityMain").hide();
+                $("#searchCityList").show();
+                if(resultHtml.length){
+                    $("#searchCityList").html(resultHtml.join(""));
+                }else{
+                    $("#searchCityList").html("<div class='nodata'>无结果</div>");
+                }
+                o.bindCityEvent();
+            },
+            //搜索
+            doSearch:function(){
+                var keyword = $("#searchInput").val();
+                if(!keyword){
+                    tip("请输入地址");
+                    return false;
+                }
+                $("input,textarea").blur();
+                $("#resultBox").removeAttr("class").addClass("search");
+                map.removeEventListener("tilesloaded",o.getCenter);
+                o.searchOper(keyword);
+            },
+            //渲染搜索结果
+            searchOper:function(keyword){
+                //panel:结果列表显示位置
+                var local = new BMap.LocalSearch(map, {
+                    renderOptions:{
+                        map: map,
+                        panel:"resultBox"
+                    }
+                });
+                //设置分页步长
+                local.setPageCapacity(10);
+                //设置结果列表创建后的回调函数
+                local.setResultsHtmlSetCallback(function(result){
+                    /*返回最近一次检索的结果*/
+                    var data = local.getResults();
+                    address = {};
+                    address.province = data.province;
+                    address.city = data.city;
+                    addressList = data["Br"];
+                    $("#cityInfo h2").text(T.Util.strSlice(address.city,6));
+                    $("#resultBox>div").removeAttr("style");
+                    var lis = $("#resultBox ol li");
+                    if(lis.length){
+                        if(lis[0].children && lis[0].children.length >= 2){
+                            if(lis[0].children[1].nodeName.toLowerCase() == "span"){
+                                $("#resultBox").addClass("resultNum");
+                            }else{
+                                $("#resultBox").removeClass("resultNum");
+                            }
+                        }
+                    }
+                    $.each($("ol li"),function (index,domEle){
+                        /*删除电话一行*/
+                        $(this).find("div div").each(function(){
+                            var bs = $(this).find("b").text();
+                            if(bs == "电话:"){
+                                $(this).remove();
+                            }
+                        });
+                        /*删除详情*/
+                        $(this).find("a").each(function(){
+                            if($(this).text() == "详情»"){
+                                $(this).remove();
+                            }
+                        });
+                        /*搜索结果的单行的点击事件*/
+                        $(this).bind("click",function(){
+                            var index = $(this).index();
+                            setTimeout(function(){
+                                o.clickAddressItem(index);
+                            },200);
+                        });
+                    });/*$.each end*/
+                });
+                local.search(keyword);
+            },
+        }
+
+        return {
+            init:o.init,
+            searchCity:o.searchCity,
+            doSearch:o.doSearch
+        }
+    })();
+
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.bdMap.init();
+            }, function () {//webview再次打开回调函数
+
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.bdMap.init();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>个人信息</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/user.css?a=1">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>个人信息</h1>
+</div>
+<div class="mainContent" id="main">
+    <div id="userinfo-box">
+        <div class="userinfo-item arrow-right" id="myphoto">
+            <div class="userinfo-wrapper"><h2>我的头像</h2>
+                <form id='formFile' name='formFile' enctype="multipart/form-data" >
+                    <div id="userPhoto"><img src="" class="toux-img" id="userImg"></div>
+                    <input type="file" class="image-file" id="fileToUpLoad" name="fileToUpLoad">
+                </form>
+            </div>
+        </div>
+        <div class="userinfo-item" id="nickname"><div class="userinfo-wrapper"><h2>我的昵称</h2><p id="userName"></p></div></div>
+        <div class="userinfo-item arrow-right" id="identity"><div class="userinfo-wrapper"><h2>身份信息</h2><p id="iscertificate" class="red"></p></div></div>
+        <div class="userinfo-item arrow-right" data-type="1" id="tel"><div class="userinfo-wrapper"><h2>手机号码</h2><p id="userTel"></p></div></div>
+        <div class="userinfo-item arrow-right" data-type="3" id="wxItem"><div class="userinfo-wrapper"><h2>微信账号</h2><p id="wechat" class="bind">点击绑定微信</p></div></div>
+        <div class="userinfo-item arrow-right" data-type="2" id="qqItem"><div class="userinfo-wrapper"><h2>QQ账号</h2><p id="qq" class="bind">点击绑定QQ</p></div></div>
+        <div class="userinfo-item arrow-right" id="password"><div class="userinfo-wrapper"><h2>密码管理</h2><p id="isSetPwd" class="red"></p></div></div>
+        <div class="userinfo-item arrow-right" id="bankcard"><div class="userinfo-wrapper"><h2>银行卡管理</h2><p id="isSetBankCard" class="red"></p></div></div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script type="text/javascript" src="../js/Exif.js"></script>
+<script>
+    var ADThirdLoginClick = false;//安卓是否点击过第三方登录
+    var bindType = '';
+    var getUserInfoNum = 0;
+    var base64Image = function (param) {
+
+        var fileInput = param.file;
+
+        var widthInput = param.width ? param.width : 750;
+
+        var ratioInput = param.ratio ? param.ratio : 0.7;
+
+        var callback = param.callback ? param.callback : null;
+
+        if (!window.FileReader) {
+            alert("请升级浏览器");
+            return;
+        }
+        var file   = fileInput;
+        var reader = new FileReader();
+
+        /*判断图片方向*/
+        var orientation = null;
+        EXIF.getData(file, function () {
+            //EXIF.getAllTags(this);
+            orientation = EXIF.getTag(this, 'Orientation');
+            reader.readAsDataURL(file);
+        });
+
+        reader.onloadstart = function () {
+        };
+        reader.onerror     = function () {
+        };
+        reader.onload = function () {
+            /*创建新的图片JS对象*/
+            fileInput.value="";
+
+            /*创建新的图片JS对象*/
+            var image    = new Image();
+            image.src    = this.result;
+            image.onload = function () {
+                var canvas = document.createElement("canvas");
+                var scale  = image.width / image.height;
+                if (orientation == 6) {
+                    //右转 90
+                    canvas.width  = image.height < widthInput ? image.height : widthInput;
+                    canvas.height = parseInt(canvas.width * scale);
+                    canvas.getContext("2d").rotate(90 * Math.PI / 180);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, 0, -canvas.width, canvas.height, canvas.width);
+                } else if (orientation == 8) {
+                    //左转 90
+                    canvas.width  = image.height < widthInput ? image.height : widthInput;
+                    canvas.height = parseInt(canvas.width * scale);
+                    canvas.getContext("2d").rotate(-90 * Math.PI / 180);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, -canvas.height, 0, canvas.height, canvas.width);
+                } else if (orientation == 3) {
+                    //右转 180
+                    canvas.width  = image.width < widthInput ? image.width : widthInput;
+                    canvas.height = parseInt(canvas.width / scale);
+                    canvas.getContext("2d").translate(canvas.width, 0);
+                    canvas.getContext("2d").scale(-1, 1);
+                    canvas.getContext("2d").translate(0, canvas.height);
+                    canvas.getContext("2d").scale(1, -1);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+                } else {
+                    //正常
+                    canvas.width  = image.width < widthInput ? image.width : widthInput;
+                    canvas.height = parseInt(canvas.width / scale);
+                    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+                }
+                var imageUrl = canvas.toDataURL("image/jpeg", ratioInput);
+
+                if (callback) {
+                    callback(imageUrl)
+                }
+            };
+        };
+
+    };
+    /**
+     * 将以base64的图片url数据转换为Blob
+     * @param urlData
+     *            用url方式表示的base64图片数据
+     */
+    function convertBase64UrlToBlob(urlData){
+        var arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    }
+
+    T.userInfo = (function(){
+        var filesArr=[];//文件数组
+        var bindThirdHttpFlag = true;
+        var unbindThirdHttpFlag = true;
+        var o = {
+            //程序入口
+            init:function(){
+                var userinfo = T.Storage.get('userinfo');
+                if(T.Util.isEmpty(T.Storage.get('userinfo'))){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/login.html');
+                    return;
+                }else{
+                    if(userinfo.userPic){
+                        $('#userImg').attr('src',userinfo.userPic);
+                    }
+                    if(userinfo.nickName){
+                        $('#userName').html(userinfo.nickName);
+                    }
+                    if(userinfo.userMobile){
+                        $('#userTel').html(userinfo.userMobile).removeClass('arrow-right');
+                    }
+                    if(userinfo.realName && userinfo.idCard){
+                        $("#iscertificate").text("已认证");
+                    }else{
+                        $("#iscertificate").text("未认证");
+                    }
+                    if(userinfo.isSetPwd == '1'){
+                        $("#isSetPwd").text("");
+                    }else{
+                        $("#isSetPwd").text("未设置");
+                    }
+                    if(userinfo.loginType=='3'){
+                        $("#userPhoto").addClass("wechat");
+                    }
+                    if(userinfo.loginType=='2'){
+                        $("#userPhoto").addClass("qq");
+                    }
+                    if(userinfo.bindCount){
+                        o.bindType(userinfo.bindCount);
+                    }
+                    o.getBankCardList();
+                    o.bindEvent();
+                }
+            },
+            //获取用户银行卡列表
+            getBankCardList:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/bankCardList.json',
+                    callback:function(json){
+                        var data = json.res_data.value.INFO;
+                        if(data.length){
+                            $("#isSetBankCard").text("");
+                        }else{
+                            $("#isSetBankCard").text("未设置");
+                        }
+                        T.Storage.set('bankCardList',data);
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            bindType:function (bindCount){
+                var i = 0;
+                var bindNum = 0;
+                $('#qqItem').addClass('arrow-right');
+                $('#qq').removeClass().addClass('bind').html('点击绑定QQ');
+                $('#wxItem').addClass('arrow-right');
+                $('#wechat').removeClass().addClass('bind').html('点击绑定微信');
+                $('.hasBind').removeClass('hasBind');
+                while(bindCount > 0){
+                    i ++;
+                    if(bindCount & 1 > 0) {
+                        if(i == 1){
+                            console.log("手机已绑定");
+                            bindNum++;
+                        }else if(i == 2){
+                            bindNum++;
+                            console.log("QQ已绑定");
+                            $('#qqItem').removeClass('arrow-right').addClass('hasBind');
+                            $('#qq').html('已绑定');
+                        }else if(i == 3){
+                            bindNum++;
+                            console.log("微信已绑定");
+                            $('#wxItem').removeClass('arrow-right').addClass('hasBind');
+                            $('#wechat').html('已绑定');
+                        }
+                    }
+                    bindCount = bindCount >> 1;
+                }
+                if(bindNum>1){
+                    if($('#qq').html()=='已绑定'){
+                        $('#qqItem').removeClass('arrow-right').removeClass('hasBind');
+                        $('#qq').removeClass().addClass('unbind').html('解绑');
+                    }
+                    if($('#wechat').html()=='已绑定'){
+                        $('#wxItem').removeClass('arrow-right').removeClass('hasBind');
+                        $('#wechat').removeClass().addClass('unbind').html('解绑');
+                    }
+                }
+            },
+            getLastUserInfo:function () {
+                    getUserInfoNum ++;
+                    var userinfoA = T.Storage.get('userinfo');
+                    T.User.getUInfo(function () {
+                        var userinfo = T.Storage.get('userinfo');
+                        if(userinfoA.bindCount==userinfo.bindCount){
+                            if(getUserInfoNum<11){
+                                setTimeout(function () {
+                                    o.getLastUserInfo();
+                                },800);
+                            }
+                        }else{
+                            o.bindType(userinfo.bindCount);
+                            //微信绑定解绑 qq绑定解绑
+                            $('#wxItem,#qqItem').off().Touch(function (el) {
+                                if($(el).hasClass('hasBind')){return;};
+                                bindType = $(el).attr('data-type');
+                                if($(el).hasClass('arrow-right')){
+                                    o.thirdLogin();
+                                }else{
+                                    confirm({html:"您确定要解除"+(bindType==3?'微信':'QQ')+"绑定?", okFun:function(){
+                                        o.unbindThird();
+                                    }});
+                                }
+                            });
+                        }
+                    },1);
+            },
+            thirdLogin:function () {
+                var str = 'QQ';
+                if(bindType=='3'){
+                    str = 'WEIXIN';
+                }
+                if((Global.OS=="Android"&&T.Util.getAppVersion(T.Util.getAppInfo("appVersion")) > 102)||(Global.OS=="IOS"&&T.Util.getAppVersion(T.Util.getAppInfo("appVersion")) > 103)){
+                    T.Util.thirdToken(str,function (ev) {
+                        console.log('EVENT_thirdToken---result:'+JSON.stringify(ev));
+                        if(bindType=='3'){
+                            o.bindThird(ev.code);
+                        }else{
+                            if(Global.OS=="Android"){//ios 安卓 字段不一样 坑坑坑
+                                o.bindThird(ev.access_token,ev.openid);
+                            }else{
+                                o.bindThird(ev.accessToken,ev.openId);
+                            }
+                        }
+
+                    });
+                }else{
+                    T.Util.thirdLogin(str,function (ev) {
+                        console.log('EVENT_thirdLogin---result:'+JSON.stringify(ev));
+                        if(Global.OS!="Android" ||(Global.OS=="Android"&&T.Util.getAppVersion(T.Util.getAppInfo("appVersion")) > 101)){//ios走回调
+                            // o.bindThird(ev.accessToken);
+                        }else{
+                            ADThirdLoginClick = true;
+                        }
+                    });
+                    setTimeout(function () {o.getLastUserInfo()},800)
+                }
+            },
+            bindThird:function (token,openId) {
+                /*
+                 /user/services/user/acct/bind.json POST
+                 参数：type,token,validateCode
+                 */
+                if(!bindThirdHttpFlag){return;};
+                bindThirdHttpFlag = false;
+                var data = {'type':bindType,'token':token};
+                if(bindType==2){//qq
+                    data.openId = openId;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    reqData:data,
+                    errorType:'1',
+                    reqUrl:'/user/services/user/acct/bind.json',
+                    callback:function(){
+                        bindThirdHttpFlag = true;
+                        tip("您的账号已绑定成功",'ok');
+                        T.User.getUInfo(function () {
+                            var userinfo = T.Storage.get('userinfo');
+                            o.bindType(userinfo.bindCount);
+                            //微信绑定解绑 qq绑定解绑
+                            $('#wxItem,#qqItem').off().Touch(function (el) {
+                                if($(el).hasClass('hasBind')){return;};
+                                bindType = $(el).attr('data-type');
+                                if($(el).hasClass('arrow-right')){
+                                    o.thirdLogin();
+                                }else{
+                                    confirm({html:"您确定要解除"+(bindType==3?'微信':'QQ')+"绑定?", okFun:function(){
+                                        o.unbindThird();
+                                    }});
+                                }
+                            });
+                        },1);//刷新用户信息
+                    },
+                    errorCallback:function(data){
+                        bindThirdHttpFlag = true;
+                        if(data.msg_code=='1020'){//产生了合并
+                            T.Storage.set('bindAccountInfo',data.res_data.value);
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/bindAccount.html');
+                        }else{
+                            tip(data.msg);
+                        }
+                    }
+                });
+            },
+            unbindThird:function () {
+                /*
+                 /user/services/user/acct/unbind.json
+                 POST
+                 参数：type,token,validateCode
+                 */
+                if(!unbindThirdHttpFlag){return;};
+                unbindThirdHttpFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    errorType:'1',
+                    reqData:{'type':bindType},
+                    reqUrl:'/user/services/user/acct/unbind.json',
+                    callback:function(){
+                        unbindThirdHttpFlag = true;
+                        tip("解除绑定成功",'ok');
+                        T.User.getUInfo(function () {
+                            var userinfo = T.Storage.get('userinfo');
+                            o.bindType(userinfo.bindCount);
+                            //微信绑定解绑 qq绑定解绑
+                            $('#wxItem,#qqItem').off().Touch(function (el) {
+                                if($(el).hasClass('hasBind')){return;};
+                                bindType = $(el).attr('data-type');
+                                if($(el).hasClass('arrow-right')){
+                                    o.thirdLogin();
+                                }else{
+                                    confirm({html:"您确定要解除"+(bindType==3?'微信':'QQ')+"绑定?", okFun:function(){
+                                        o.unbindThird();
+                                    }});
+                                }
+                            });
+                        },1);
+                    },
+                    errorCallback:function(data){
+                        tip(data.msg);
+                        unbindThirdHttpFlag = true;
+                    }
+                })
+            },
+            //事件绑定
+            bindEvent:function(){
+                //用户信息
+                var userinfo = T.Storage.get('userinfo');
+                //头像
+                var dataURL;
+                $("#fileToUpLoad").off().change(function(){
+                    filesArr = [];
+                    var $file = $(this);
+                    var fileObj = $file[0];
+                    var windowURL = window.URL || window.webkitURL;
+                    var $img = $("#userImg");
+                    if(fileObj && fileObj.files && fileObj.files[0]){
+                        var fileItem = fileObj.files[0];
+                        console.log("压缩前：" + fileItem.size/1024 + "kb");
+                        if(fileItem.size/1024 > 200) { //大于200k，进行压缩上传
+                            var fileUp = function (fileItem) {
+                                base64Image({
+                                    width:750,                             /*【选填】宽度默认750，如果图片尺寸大于该宽度，图片将被设置为该宽度*/
+                                    ratio:0.75,                            /*【选填】压缩率默认0.75 */
+                                    file: fileItem,                              /*【必填】对应的上传元素 */
+                                    callback: function (imageUrl) {        /*【必填】处理成功后的回调函数 */
+                                        dataURL = convertBase64UrlToBlob(imageUrl);
+                                        console.log("压缩后：" + dataURL.size/1024 + "kb");
+                                        $img.attr('src',imageUrl);
+                                        filesArr.push(dataURL);
+                                        doUpload();
+                                    },
+                                });
+                            };
+                            fileUp(fileItem);
+                        }else{
+                            dataURL = windowURL.createObjectURL(fileItem);
+                            $img.attr('src',dataURL);
+                            filesArr.push(fileItem);
+                            doUpload();
+                        }
+                    }else{
+                        dataURL = $file.val();
+                    }
+                    function doUpload() {
+                        var formData = new FormData();
+                        for(var i=0, f; f=filesArr[i]; i++){
+                            formData.append('files', f,new Date().getTime()+f.type.replace('image/','.'));
+                        }
+                        $.ajax({
+                            url: Global.fullHost + '/user/services/servlet/resource?signKey=f95fd9e45de9463186f0984f9b5e0962&type=1' ,
+                            type: 'POST',
+                            data: formData,
+                            async: false,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            headers:{'Authenticate':T.Storage.get("access_token")},
+                            success: function (data) {
+                                if(data.msg_code=='0'){
+                                    tip("图像已上传，审核后生效",'ok',2600);
+                                }else{
+                                    tip(data.msg,'error');
+                                }
+                            },
+                            error: function (data) {
+                                tip(data.msg||Global.neterror,"error");
+                            }
+                        });
+                    }
+                });
+                //编辑昵称
+                $('#nickname').off().Touch(function (el) {
+                    if(T.Util.isEmpty(userinfo.nickName)||(userinfo.isUpdateName == '0')){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editNickName.html');
+                    }
+                });
+                //微信绑定解绑 qq绑定解绑
+                $('#wxItem,#qqItem').off().Touch(function (el) {
+                    if($(el).hasClass('hasBind')){return;};
+                    bindType = $(el).attr('data-type');
+                    if($(el).hasClass('arrow-right')){
+                        o.thirdLogin();
+                    }else{
+                        confirm({html:"您确定要解除"+(bindType==3?'微信':'QQ')+"绑定?", okFun:function(){
+                            o.unbindThird();
+                        }});
+                    }
+                });
+                //认证身份信息
+                $("#identity").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/identityInfo.html');
+                });
+                //绑定、更换手机号码
+                $("#tel").off().Touch(function(){
+                    if(userinfo.userMobile){
+                        //T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/changeMobile.html');//注释更改绑定手机号
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setMobile.html');
+                    }
+                });
+                //密码管理
+                $("#password").off().Touch(function(){
+                    var userinfo = T.Storage.get('userinfo');
+                    if(userinfo && userinfo.userMobile){//已绑定手机号
+                        if(userinfo.isSetPwd == '1'){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/changePwd.html');
+                        }else{
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setPwd.html');
+                        }
+                    }else{
+                        confirm({html:'请先绑定手机号码，再设置登录密码',cancelText:'取消',okText:'确定',okFun:function(){
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setMobile.html');
+                        }});
+                    }
+                });
+                //银行卡管理
+                $("#bankcard").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/myBankCard.html');
+                });
+            }
+        }
+
+        return {
+            bindThird:o.bindThird,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.User.getUInfo(function () {
+                    T.userInfo.init();
+                });
+            }, function () {//webview再次打开回调函数
+                //再次回来还是么有token 直接回退一级
+                if(T.Util.isEmpty(T.Storage.get('userinfo'))){
+                    T.Util.back();
+                    return;
+                }else{
+                    T.User.getUInfo(function () {
+                        T.userInfo.init();
+                    });
+                }
+                if(Global.OS=='Android'&&ADThirdLoginClick){//安卓回调不靠谱 走事件监听
+                    ADThirdLoginClick = false;//触发点击之后还原成未点击
+                    var AndroidThirdLogin = setInterval(function () {
+                        T.appToH5.init(function () {//初始化事件回调函数
+                            if(!T.Util.isEmpty(T.Storage.get('access_token'))) {
+                                window.clearInterval(AndroidThirdLogin);
+                                // T.userInfo.bindThird(T.Storage.get('access_token'));
+                            }
+                        });
+                    },500);
+                }
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            if(window.__wxjs_environment === 'miniprogram'){
+                $('#wxItem').hide();$('#qqItem').hide();
+            }
+            window.onpageshow = function(event) {//ios从缓存里面返回 页面会触发这个方法
+                if(window.location.href.indexOf('/auction/user/userInfo.html')==-1){return;}
+                T.userInfo.init();
+            };
+        }
+    });
+</script>
+</body>
+</html>

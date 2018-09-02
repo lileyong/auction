@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#d8313a;">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>新用户豪享</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/inviteReg.css">
+</head>
+<body>
+<div class="mainContent noNavbar" id="main">
+    <div class="content" id="content">
+        <img src="../img/activity/invite/regbg.png" id="bg">
+        <div id="inviteRegBox">
+            <form id="regForm">
+                <div class="formItem"><input type="tel" maxlength="11" placeholder="请输入手机号码" id="tel"><i class="clear"></i></div>
+                <div class="formItem messageCode"><input type="tel" maxlength="6" placeholder="请输入验证码" id="messageCode"><em id="getMessage">获取验证码</em></div>
+                <div class="formBtn"><em id="receive"></em><em id="download"></em></div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script>
+    T.inviteReg = (function(){
+        var MSG_EVENT = 'LOGIN';
+        var endGetDataFlag = true;
+        var isGetMessage = false;//是否获取验证码
+        var inviteCode = T.Util.getPara('inviteCode');//邀请码
+
+        //表单校验
+        var check = {
+            tel:function(val){
+                if(!val){
+                    tip('请输入手机号码');
+                }else if(!/^1[0-9]{10}$/.test(val)){
+                    tip('号码不正确，请重新输入');
+                }else{
+                    return true;
+                }
+            },
+            message:function(val){
+                if(!isGetMessage){
+                    tip('请获取验证码');
+                }else if(!val){
+                    tip('请输入验证码');
+                }else if(!/^[0-9]{6}$/.test(val)){
+                    tip('请输入正确的验证码');
+                    $("#messageCode").val('');
+                }else{
+                    return true;
+                }
+            }
+        }
+
+        var o = {
+            init:function(){
+                o.bindEvent();//事件绑定
+                T.Util.initAppDownload();//初始化下载
+            },
+            //事件绑定
+            bindEvent:function(){
+                $('#kefu').Touch(function () {
+                    //T.Util.kefu('h5','来源：新用户豪享页面|用户输入的手机号码：'+$('#tel').val());
+                    T.Util.kefuNew('h5','来源：新用户豪享页面|用户输入的手机号码：'+$('#tel').val());
+                });
+                //获取验证码
+                $("#getMessage").off().Touch(function(){
+                    var telNum = T.Util.trim($("#tel").val());
+                    if(!check.tel(telNum)) return false;
+                    if(isGetMessage) return false;
+                    o.getMessageCode(telNum,'REG',function () {
+                        endGetDataFlag = true;
+                        isGetMessage = true;
+                        clearTimeout(T.messageTimeOut);
+                        T.messageTimeOut = setTimeout(function(){
+                            isGetMessage = false;
+                        },60000);
+                        o.countDown();
+                    });
+                });
+                //领取新人礼包
+                $("#receive").off().Touch(function(){
+                    var telNum = T.Util.trim($("#tel").val());
+                    var mesaage = T.Util.trim($("#messageCode").val());
+                    if(!check.tel(telNum)) return false;
+                    if(!check.message(mesaage)) return false;
+                    o.reg(telNum,mesaage);
+                });
+                //下载
+                $("#download").off().Touch(function(){
+                    T.Util.appDownload();
+                });
+                //文本框输入事件
+                $("input").on("input",function(){
+                    if($(this).val().length > 0){
+                        $(this).parent().addClass("writing");
+                    }else{
+                        $(this).parent().removeClass("writing");
+                    }
+                    //文本框内容修改后重置验证码
+                    if($("#tel").val() != T.inputVal){
+                        isGetMessage = false;
+                        $('#getMessage').html('获取验证码');
+                        clearInterval(T.messageTimer);
+                    }
+                    T.inputVal = $("#tel").val();
+                });
+                $("input").on("blur",function(){
+                    $(this).parent().removeClass("writing");
+                });
+                $(".clear").off().Touch(function(){
+                    $(this).parent().find("input").val("");
+                    $(this).parent().removeClass("writing");
+                });
+            },
+            //倒计时
+            countDown:function () {//倒计时
+                var timeVal = 60;
+                T.messageTimer = setInterval(function(){
+                    timeVal--;
+                    $('#getMessage').html(timeVal + 's');
+                    if(timeVal == 0){
+                        isGetMessage = false;
+                        $('#getMessage').html('获取验证码');
+                        clearInterval(T.messageTimer);
+                    }
+                },1000);
+            },
+            //获取验证码
+            getMessageCode:function (telNum,type,callback) {
+                var url = '/user/services/user/sendCode.json';
+                var reqData =
+                    {
+                        "userAcct":telNum,
+                        "event":type
+                    };
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    authError:1,
+                    reqData:reqData,
+                    reqUrl:url,
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        tip('验证码已发送','ok');
+                        try{
+                            MSG_EVENT = data.res_data.value.event;
+                        }catch(e){
+                            tip(Global.neterror,'error');
+                        }
+                        callback(data);
+                        return;
+                    },
+                    errorCallback:function(){
+                        setTimeout(function () {
+                            endGetDataFlag = true;
+                        },1000)
+                    }
+                })
+            },
+            //分享注册
+            reg:function(telNum,message){
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                tip('正在提交注册信息','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/invite/addInvite.json?code=' + inviteCode + '&userMobile=' + telNum + '&validateCode=' + message,
+                    callback:function(json){
+                        endGetDataFlag = true;
+                        pageLoading.hide();
+                        if(json.res_data && json.res_data.value){
+                            T.Util.clearUserInfo();//清除上一个用户的隐私信息
+                            T.Storage.set('access_token',json.res_data.value.token);
+                            T.User.getUInfo(function(){
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUserH5.html?pageFrom=invite&result=1');
+                            });
+                        }else{
+                            data && tip(data.msg);
+                        }
+                    },
+                    errorCallback:function(data){
+                        endGetDataFlag = true;
+                        pageLoading.hide();
+                        //异常提示
+                        if(data && data.msg_code == "1017"){
+                            setTimeout(function(){
+                                confirm({
+                                    html:'手机号已注册，请下载APP',
+                                    cancelText:'取消',
+                                    okText:'立即下载',
+                                    okFun:function(){
+                                        T.Util.appDownload();
+                                    }
+                                });
+                            },400);
+                        }else{
+                            data && tip(data.msg);
+                        }
+                        //清空验证码栏
+                        if(data && data.msg == "验证码输入错误"){
+                            $("#messageCode").val("");
+                        }
+                    }
+                });
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.inviteReg.init();
+            },function () {//webview再次打开回调函数
+                T.inviteReg.init();
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            T.inviteReg.init();
+        }
+    });
+</script>
+</body>
+</html>

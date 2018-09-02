@@ -1,0 +1,241 @@
+/*个人信息页样式*/
+#userinfo-box{margin-top:0.4rem;overflow:hidden;}
+.userinfo-item{position:relative;width:100%;height:1.33rem;background-color:#fff;}
+.userinfo-wrapper{margin-left:0.45rem;height:100%;border-bottom:1px solid #dfdfdf;box-sizing:border-box;-webkit-box-sizing:border-box;}
+.h5 .userinfo-item#wxItem,.h5 .userinfo-item#qqItem{display:none;}
+.userinfo-item:last-child .userinfo-wrapper{border-bottom:none;}
+.userinfo-item #userPhoto{position:relative;float:right;width:1.0666667rem;height:1.0666667rem;margin:0.13rem 1.17rem 0.13rem 0;}
+.userinfo-item #userPhoto img{width:100%;height:100%;border-radius:50%;overflow: hidden;}
+.userinfo-item #userPhoto:after{position:absolute;right:-0.08rem;bottom:-0.0533333rem;content:'';display:inline-block;width:0.4rem;height:0.4rem;}
+.userinfo-item #userPhoto.wechat:after{background: url(../img/usercenter/wechat.png) 0 0 / 100% 100% no-repeat;}
+.userinfo-item #userPhoto.qq:after{background: url(../img/usercenter/qq.png) 0 0 / 100% 100% no-repeat;}
+.userinfo-item h2{float:left;line-height:1.33rem;font-size:0.4rem;color:#333;}
+.userinfo-item p{float:right;line-height:1.33rem;font-size:0.4rem;color:#666;margin-right:1.17rem;max-width: 50%;overflow: hidden;white-space: nowrap;}
+.userinfo-item p.red{color:#f72f2f;}
+.userinfo-item p.bind{font-size:0.32rem;color:#999;}
+.userinfo-item p.unbind {margin: 0.293333rem 1.17rem 0.28rem auto;width: 1.733333rem;height: 0.746667rem;text-align: center;line-height: 0.746667rem;border-radius: 0.04rem;background-color: #008aff;font-size: 0.4rem;color: #fff;}
+.userinfo-item.arrow-right:after{position:absolute;right:0.45rem;top:0.32rem;content:'';display:inline-block;width:0.17rem;height:0.69rem;background:url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;}
+.image-file{position:absolute;width:100%;height:100%;top:0;left:0;z-index:2;opacity:0;}
+
+/*身份信息页样式*/
+#identityinfo-box{margin-top:0.4rem;border-top:1px solid #d9d9d9;border-bottom:1px solid #d9d9d9;}
+.identityinfo-item{position:relative;width:100%;height:1.33rem;background-color:#fff;font-size:0.37rem;}
+.identityinfo-wrapper{margin-left:0.45rem;height:100%;border-bottom:1px solid #d9d9d9;box-sizing:border-box;-webkit-box-sizing:border-box;}
+.identityinfo-item:last-child .identityinfo-wrapper{border-bottom:none;}
+.identityinfo-item h2{float:left;width:2.21rem;height:100%;line-height:1.33rem;font-size:0.4rem;color:#333;}
+.identityinfo-item input{width:calc(100% - 2.67rem);height:100%;font-size:0.37rem;color:#333;}
+.identityinfo-item.message input{width:calc(100% - 3.65rem);}
+.identityinfo-item em {position: absolute;right: 0.453333rem;top: 0.266667rem;display: inline-block;width: 2.4rem;height: 0.8rem;text-align: center;line-height: 0.8rem;background-color: #f72f2f;border-radius: 0.08rem;font-size: 0.373333rem;color: #fff;}
+.identityinfo-item em.no{background-color: #999;}
+.identityinfo-item.tel:before{content:'';position: absolute;left:0.45rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_tel.png) center center / 0.43rem 0.61rem no-repeat;}
+.identityinfo-item.pwd:before{content:'';position: absolute;left:0.45rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_pwd.png) center center / 0.43rem 0.61rem no-repeat;}
+.identityinfo-item.message:before{content:'';position: absolute;left:0.45rem;top:0;display:inline-block;width:0.43rem;height:1.31rem;background: url(../img/usercenter/icon_message.png) center center / 0.43rem 0.61rem no-repeat;}
+.identityinfo-item.writing .clear{content:'';position: absolute;right:0;top:0;display:inline-block;width:1.3rem;height:1.31rem;background: url(../img/usercenter/icon_cha.png) center center / 0.4rem 0.4rem no-repeat;}
+.identityinfo-item.code.writing .clear{right:2.8533333rem;}
+.identityinfo-item.message:after{display:none;}
+.identityinfo-item.message #getMessage{position:absolute;right:0.45rem;top:0.27rem;width:2.4rem;height:0.8rem;text-align:center;line-height:0.8rem;font-size:0.4rem;color:#fff;border-radius:0.08rem;background-color:#f72f2f;}
+.mobile .identityinfo-item{display: block!important;}
+#identityinfo-submit{margin:0 0.45rem;margin-top:1.33rem;height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.45rem;color:#fff;background-color:#f72f2f;border-radius:0.08rem;}
+.identityinfo-text{padding:0.2rem 0.45rem;line-height:0.43rem;font-size:0.32rem;color:#999;}
+
+/*修改昵称页样式*/
+#nickname-box{position:relative;margin-top:0.4rem;height:1.33rem;font-size:0.37rem;border-top:1px solid #d9d9d9;border-bottom:1px solid #d9d9d9;background-color:#fff;}
+#nickname-box.writing .clear{content:'';position: absolute;right:0;top:0;display:inline-block;width:1.3rem;height:1.31rem;background: url(../img/usercenter/icon_cha.png) center center / 0.4rem 0.4rem no-repeat;}
+#nickname-box input{width:100%;height:100%;padding-left:0.45rem;font-size:0.37rem;box-sizing:border-box;-webkit-box-sizing:border-box;}
+#nickname-box .nickNameTips{padding:0 0.4533334rem;line-height:0.7733334rem;font-size:0.2666667rem;color:#999999;}
+.submitOk {margin: 1.04rem auto;display: none;width: 9.093333rem;height: 1.066667rem;text-align: center;line-height: 1.066667rem;border-radius: 0.053333rem;background-color: #ee332b;font-size: 0.4rem;color: #fff;}
+.noNavbar .submitOk {display: block;}
+
+/*设置页样式*/
+#setting-box{margin-top:0.4rem;}
+.setting-item{position:relative;height:1.33rem;background-color:#fff;}
+.setting-wrapper{margin-left:0.45rem;height:100%;border-bottom:1px solid #dfdfdf;box-sizing:border-box;-webkit-box-sizing:border-box;}
+.setting-item h2{float:left;font-size:0.4rem;color:#333;line-height:1.33rem;}
+.setting-item p{float:right;font-size:0.4rem;color:#999;line-height:1.33rem;padding-right:0.45rem;}
+.setting-item.margim-bottom{margin-bottom:0.4rem;border-bottom:1px solid #dfdfdf;}
+.setting-item.margim-bottom .setting-wrapper{border-bottom:none;}
+.setting-item:last-child{border-bottom:1px solid #dfdfdf;}
+.setting-item:last-child .setting-wrapper{border-bottom:none;}
+.setting-item.arrow-right:after{position:absolute;right:0.45rem;top:0.32rem;content:'';display:inline-block;width:0.17rem;height:0.69rem;background:url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;}
+#setting-box #loginout{margin:1.33rem 0.45rem;height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.4rem;color:#fff;border-radius:0.08rem;background-color:#f72f2f;}
+.audit #setting-box #helpcenter{display:none;}
+.noShare #setting-box #shareapp{display:none;}
+.hideLogin #setting-box #loginout{display:none;}
+
+/*账户明细页样式*/
+#accountdetail-tab{position:relative;height:1.13rem;background-color:#fff;border-bottom:1px solid #dfdfdf;}
+#accountdetail-tab .tab-item{float:left;width:25%;text-align:center;line-height:1.13rem;font-size:0.4rem;color:#666;}
+#accountdetail-tab .tab-item.on{color:#f72f31;}
+#accountdetail-tab .pointer{position:absolute;bottom:0;left:calc(16.67% - 0.54rem);display:inline-block;width:1.07rem;height:0.08rem;border-radius:0.04rem;background-color:#f72f2f;}
+.accountdetail-item{height:2rem;background-color:#fff;}
+.accountdetail-item .left{position:relative;float:left;width:1.87rem;height:100%;}
+.accountdetail-item .left:before{position:absolute;left:1.6rem;content:'';display:inline-block;width:2px;height:100%;background-color:#dfdfdf;}
+.accountdetail-item .left:after{position:absolute;left:calc(1.6rem - 4px);top:0.93rem;content:'';display:inline-block;width:10px;height:10px;border-radius:5px;background-color:#dfdfdf;}
+.accountdetail-item .left h2{padding-left:0.45rem;line-height:2rem;font-size:0.35rem;color:#666;}
+.accountdetail-item .right{position:relative;float:left;width:calc(100% - 1.87rem);height:100%;border-bottom:1px solid #c2c2c2;box-sizing:border-box;-webkit-box-sizing:border-box;}
+.accountdetail-item:last-child .right{border-bottom:none;}
+.accountdetail-item .right h2{float:left;margin-top:0.53rem;font-size:0.4rem;color:#333;line-height:0.5rem;}
+.accountdetail-item .right p.time{float:left;clear:both;width:50%;line-height:0.5rem;font-size:0.32rem;color:#999;}
+.accountdetail-item .right p.money{position:absolute;top:0;right:0;text-align:right;padding-right:0.45rem;width:50%;line-height:2rem;font-size:0.37rem;color:#333;}
+.accountdetail-item .right p.money.red{color:#f72f2f;}
+
+/*竞拍记录*/
+#record-tab{position:relative;width:100%;height:1.07rem;background-color:#fff;border-bottom:1px solid #dfdfdf;}
+.record-tabitem{float:left;width:20%;text-align:center;line-height:1.07rem;font-size:0.37rem;color:#999;}
+.record-tabitem.on{color:#f72f2f;}
+#record-tab .pointer{position:absolute;left:calc(10% - 0.535rem);bottom:0;display:inline-block;width:1.07rem;height:2px;background-color:#f72f2f;}
+.record-item{width:100%;height:4.27rem;background-color:#fff;overflow:hidden;margin-bottom:0.13rem;}
+.record-item .record-info{position:relative;margin:0 0.45rem;height:3.2rem;border-bottom:1px solid #dfdfdf;overflow:hidden;}
+.record-item .record-info img{position:absolute;top:0.6rem;width:2rem;height:2rem;}
+.record-item .record-info h2{font-size:0.37rem;color:#333;padding-left:2.33rem;line-height:0.62rem;}
+.record-item .record-info h2.market-price{margin-top:0.31rem;}
+.record-item .record-info h2 em{color:#666;}
+.recore-footer{overflow:hidden;}
+.recore-footer .record-status{float:left;padding-left:0.45rem;line-height:1.07rem;font-size:0.35rem;}
+.recore-footer .record-status em{margin-left:0.27rem;}
+.recore-footer .record-status.doing{color:#008aff;}
+.recore-footer .record-status.overNo{color:#999;}
+.recore-footer .record-status.overOk{color:#f72f2f}
+.recore-footer .record-btn{float:right;margin:0.2rem 0.4rem 0.2rem 0;display:inline-block;width:2.13rem;height:0.67rem;text-align:center;line-height:0.67rem;border-radius:0.33rem;background-color:#f72f2f;font-size:0.35rem;color:#fff;}
+.recore-footer .record-btn:nth-child(3){background-color:#ffab03;}
+
+/*我的银行卡页样式*/
+#bankcard-box{margin-top:0.4rem;overflow:hidden;}
+.backcard-item{float:left;position:relative;left:0;margin:0 0.45rem 0.2rem 0.45rem;width:calc(100% - 0.9rem);height:2.93rem;border-radius:0.13rem;background-color:#3bb69c;transition:all 0.3s ease-in;-webkit-transition:all 0.3s ease-in;}
+.backcard-item.invalid{background-color:#999!important;}
+.backcard-item.edit{left:-1.6rem;}
+.backcard-item.edit .setdefault{position:absolute;right:-0.9333333rem;top:0;width:0.8rem;height:0.8rem;background:url(../img/usercenter/icon_setdefault.png) center center / 0.5333333rem 0.5333333rem no-repeat;}
+.backcard-item.edit .default{background:url(../img/usercenter/icon_default.png) center center / 0.5333333rem 0.5333333rem no-repeat;}
+.backcard-item.edit .delete{position:absolute;right:-1.7333333rem;top:0;width:0.8rem;height:0.8rem;background:url(../img/usercenter/icon_del.png) center center / 0.5333333rem 0.5333333rem no-repeat;}
+.backcard-item img{position:absolute;left:0.4rem;top:0.45rem;width:1rem;height:1rem;}
+.backcard-item h2{padding-left:1.64rem;margin-top:0.44rem;line-height:0.48rem;font-size:0.4rem;color:#fefefe;}
+.backcard-item p.cardtype{padding-left:1.64rem;line-height:0.64rem;font-size:0.32rem;color:#fefefe;}
+.backcard-item p.cardno{padding-left:1.64rem;line-height:1.25rem;font-size:0.64rem;color:#fefefe;}
+#addbankcard{position:relative;margin-top:0.33rem;height:1.33rem;border-top:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf;background-color:#fff;}
+#addbankcard h2{padding-left:1.12rem;line-height:1.33rem;font-size:0.4rem;color:#333;}
+#addbankcard:before{content:'';position:absolute;left:0.53rem;top:0.47rem;display:inline-block;width:0.45rem;height:0.45rem;background:url(../img/usercenter/icon_plus.png) 0 0 / 100% 100% no-repeat;}
+#addbankcard:after{position:absolute;right:0.45rem;top:0.32rem;content:'';display:inline-block;width:0.17rem;height:0.69rem;background:url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;}
+
+/*添加银行卡页样式*/
+.addbankcard-head{width:100%;height:1.15rem;background-color:#f6f6f6;}
+.addbankcard-head h2{padding-left:0.44rem;line-height:1.15rem;font-size:0.32rem;color:#999;}
+.addbankcard-item{position:relative;width:100%;height:1.33rem;font-size:0.37rem;border-bottom:1px solid #c2c2c2;background-color:#fff;}
+.addbankcard-item.username{border-top:1px solid #c2c2c2;}
+.addbankcard-item:last-child .identityinfo-wrapper{border-bottom:none;}
+.addbankcard-item h2{float:left;padding-left:0.48rem;width:2.21rem;height:100%;line-height:1.33rem;font-size:0.4rem;color:#333;}
+.addbankcard-item input{width:calc(100% - 3.15rem);margin-top:1px;height:calc(100% - 2px);font-size:0.37rem;color:#333;padding:0;}
+.addbankcard-item .doubt{content:'';position: absolute;right:0;top:0;display:inline-block;width:1.3rem;height:1.31rem;background: url(../img/usercenter/icon_doubt.png) center center / 0.4rem 0.4rem no-repeat;}
+.addbankcard-item.writing .clear{position: absolute;right:0;top:0;z-index:999;display:inline-block;width:1.3rem;height:1.31rem;background: url(../img/usercenter/icon_cha.png) center center / 0.4rem 0.4rem no-repeat;}
+.banktype{text-align:center;height:0.91rem;line-height:0.91rem;font-size:0.37rem;color:#999;}
+.banktype i{position:relative;top:0.1rem;margin-right:0.27rem;display:inline-block;width:0.48rem;height:0.48rem;background:url(../img/bank_icon/01.png) 0 0 / 100% 100% no-repeat;}
+.banktype em.red{color:#f72f2f;}
+#addbankcard-submit{margin:0.43rem 0.45rem 0 0.45rem;height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.4rem;color:#fff;background-color:#f72f2f;border-radius:0.08rem;}
+#addbankcard-submit.disabled{background-color:#999;}
+.addbankcard-text{text-align:center;line-height:0.76rem;font-size:0.32rem;color:#999;}
+.addbankcard-text em{color:#1f8eec;}
+.popBox.banklist .confirmcontent p{font-size:0.2933334rem;}
+.popBox.banklist .cancelText{display:none;}
+
+/*选择银行卡页样式*/
+#selectbankcard-box .head{height:1.15rem;padding-left:0.45rem;line-height:1.15rem;font-size:0.32rem;color:#999;}
+#selectbankcard-box #bankcard-list{margin-bottom:0.53rem;}
+#selectbankcard-box .bankcard-item{position:relative;height:1.33rem;background-color:#fff;border-bottom:1px solid #dfdfdf;overflow:hidden;}
+#selectbankcard-box .bankcard-item h2{margin-top:0.16rem;padding-left:0.45rem;line-height:0.53rem;font-size:0.35rem;color:#333;}
+#selectbankcard-box .bankcard-item p{padding-left:0.45rem;line-height:0.53rem;font-size:0.29rem;color:#666;}
+#selectbankcard-box .bankcard-item.default:after{content:'';position:absolute;right:0.45rem;top:0.47rem;display:inline-block;width:0.43rem;height:0.44rem;background:url(../img/usercenter/icon_select.png) 0 0 / 100% 100% no-repeat;}
+#selectbankcard-box .bankcard-item.invalid:after{content:'已不支持';position:absolute;right:0.45rem;top:0;line-height:1.33rem;font-size:0.32rem;color:#f72f2f;}
+
+/*管理收获地址页样式*/
+.address-item{width:100%;background-color:#fff;margin-bottom:0.27rem;overflow:hidden;}
+#address-select .address-item{margin-bottom:0;}
+.address-item .address-info{margin:0 0.45rem;min-height:2.29rem;border-bottom:1px solid #dfdfdf;overflow:hidden;}
+.address-item .address-info .username{float:left;font-size:0.3733333rem;color:#333;line-height:1.0266667rem;}
+.address-item .address-info .tel{float:right;font-size:0.3733333rem;color:#333;line-height:1.0266667rem;}
+.address-item .address-info .address{margin-top:0.0666667rem;margin-bottom:0.3466667rem;float:left;width:100%;font-size:0.3733333rem;color:#333;line-height:0.4266667rem;}
+.address-item .address-info .edit{display: none;}
+#address-select .address-item.default .address-info .address:before{content:'[默认地址]';color:#ff5e0e;}
+.address-item .address-edit{margin:0 0.45rem;height:1.15rem;}
+.address-item .address-edit h2{position:relative;float:left;line-height:1.15rem;padding-left:0.57rem;font-size:0.32rem;color:#333;}
+.address-item .address-edit h2:before{content:'';position:absolute;left:0;top:0.36rem;display:inline-block;width:0.4rem;height:0.4rem;background:url(../img/usercenter/icon_wxz.png) 0 0 / 100% 100% no-repeat;}
+.address-item .address-edit h2.default:before{background:url(../img/usercenter/icon_xz.png) 0 0 / 100% 100% no-repeat;}
+.address-item .address-edit h2.default{color:#f72f2f;}
+.address-item .address-edit em{position:relative;float:right;line-height:1.15rem;font-size:0.32rem;color:#333;}
+.address-item .address-edit em.delete{margin-left:0.83rem;}
+.address-item .address-edit em:before{content:'';position:absolute;left:-0.64rem;top:0.32rem;display:inline-block;width:0.51rem;height:0.51rem;}
+.address-item .address-edit em.edit:before{background:url(../img/usercenter/icon_edit.png) 0 0 / 100% 100% no-repeat;}
+.address-item .address-edit em.delete:before{background:url(../img/usercenter/icon_delete.png) 0 0 / 100% 100% no-repeat;}
+#addNewAddress{position:fixed;bottom:0;left:calc(50% - 5rem);width:10rem;height:1.28rem;text-align:center;line-height:1.28rem;font-size:0.45rem;color:#fff;background-color:#f72f2f;}
+#addNewAddress.disabled{background-color:#999;}
+#setUserMobile{height: 1rem;text-align: center;line-height:1rem;font-size: .4rem;background: #f6d768;color: #666;display: none;}
+.noNavbar.select .address-item {position: relative;height: 2.826667rem;}
+.noNavbar.select .address-item .address-info {margin: 0 0 0 0.4rem;height: 2.8rem;border-bottom: 0.026667rem solid #e5e5e5;}
+.noNavbar.select .address-item:last-child .address-info {border-bottom: none;}
+.noNavbar.select .address-item .address-info .username {padding-top: 0.266667rem;height: 0.56rem;line-height: 0.56rem;font-size: 0.4rem;color: #353535;}
+.noNavbar.select .address-item .address-info .tel {margin-right: 0.4rem;padding-top: 0.266667rem;height: 0.56rem;line-height: 0.56rem;font-size: 0.4rem;color: #353535;}
+.noNavbar.select .address-item .address-info .address {margin-top: 0.32rem;width: 7.76rem;height: 1.28rem;line-height: 0.64rem;font-size: 0.4rem;color: #333;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;}
+.noNavbar.select .address-item .address-info .edit {position: absolute;right: 0;bottom: 0;padding-top: 0.64rem;display: inline-block;width: 1.92rem;height: 1.226667rem;text-align: center;line-height: 0.533333rem;font-size: 0.373333rem;color: #999;}
+.noNavbar.select .address-item .address-info .edit:before {position: absolute;right: 0.64rem;top: 0;content: '';display: inline-block;width: 0.64rem;height: 0.64rem;background: url(../img/usercenter/editIcon.png) 0 0 / 100% 100% no-repeat;}
+
+/*新建收货地址页样式*/
+.editaddress-item{position:relative;height:1.28rem;border-bottom:1px solid #dfdfdf;background-color:#fff;font-size:0.37rem;}
+.editaddress-item.arrow-right:after{position:absolute;right:0.45rem;top:0.295rem;content:'';display:inline-block;width:0.17rem;height:0.69rem;background:url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;}
+.editaddress-item h2{float:left;padding-left:0.45rem;width:2.29rem;line-height:1.28rem;font-size:0.4rem;color:#333;}
+.editaddress-item input{margin:0.13rem 0;width:calc(100% - 2.74rem);height:1.02rem;font-size:0.37rem;color:#333;}
+.editaddress-item.writing .clear{height:1.28rem;}
+.editaddress-item .area{position: absolute; left: 2.8rem;height: 1.28rem; line-height: 1.28rem;}
+.editaddress-item.address{padding:0 0.45rem;height:2.35rem;}
+.editaddress-item.address textarea{outline:none;border:none;width:100%;height:100%;padding-top:0.48rem;line-height:0.48rem;font-size:0.37rem;color:#333;box-sizing:border-box;-webkit-box-sizing:border-box;}
+.editaddress-item.address input::-webkit-input-placeholder,textarea::-webkit-input-placeholder{line-height:0.48rem;font-size:0.3466667rem;color: #ccc;}
+.editaddress-item.address input:-moz-placeholder,textarea:-moz-placeholder{line-height:0.48rem;font-size:0.3466667rem;color: #ccc;}
+.editaddress-item.address input::-moz-placeholder,textarea::-moz-placeholder{line-height:0.48rem;font-size:0.3466667rem;color: #ccc;}
+.editaddress-item.address input:-ms-input-placeholder,textarea:-ms-input-placeholder{line-height:0.48rem;font-size:0.3466667rem;color: #ccc;}
+#editaddress-submit{margin:1.33rem 0.45rem 0 0.45rem;width:calc(100% - 0.91rem);height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.4rem;color:#fff;background-color:#ee332b;border-radius:0.08rem;}
+#delete-submit{display:none;margin:0.5333333rem 0.45rem;width:calc(100% - 0.91rem);height:1.07rem;text-align:center;line-height:1.07rem;font-size:0.4rem;color:#fd2b2b;background-color:#fff;border-radius:0.08rem;}
+.noNavbar #delete-submit{display: block;}
+
+/*帮助中心页样式*/
+#help-main{overflow-y:hidden;}
+h2.title{position:relative;padding-left:0.87rem;line-height:1.3066667rem;background-color:#f5f5f5;font-size:0.4rem;color:#ee332b;}
+h2.title:before{position:absolute;left:0.43rem;top:0.4666667rem;content:'';display:inline-block;width:0.13rem;height:0.43rem;background-color:#ee322b;}
+#help-category{background-color:#fff;overflow:hidden;}
+#help-main .category-item{position:relative;float:left;width:33.33%;height:2.77rem;text-align:center;overflow:hidden;}
+#help-main .category-item i{position:absolute;left:calc(50% - 0.44rem);top:0.6rem;display:inline-block;width:0.88rem;height:0.88rem;}
+#help-main .category-item#auction i{background:url(../img/helpcenter/icon_auction.png) 0 0 / 100% 100% no-repeat;}
+#help-main .category-item#account i{background:url(../img/helpcenter/icon_account.png) 0 0 / 100% 100% no-repeat;}
+#help-main .category-item#recharge i{background:url(../img/helpcenter/icon_recharge.png) 0 0 / 100% 100% no-repeat;}
+#help-main .category-item#express i{background:url(../img/helpcenter/icon_express.png) 0 0 / 100% 100% no-repeat;}
+#help-main .category-item#share i{background:url(../img/helpcenter/icon_share.png) 0 0 / 100% 100% no-repeat;}
+#help-main .category-item#other i{background:url(../img/helpcenter/icon_other.png) 0 0 / 100% 100% no-repeat;}
+#help-main .category-item h3{margin-top:1.64rem;line-height:0.53rem;font-size:0.32rem;color:#333;}
+.help-list .list-obj{position:relative;width:100%;border-bottom:1px solid #dfdfdf;background-color:#fff;overflow:hidden;}
+.help-list .list-obj p{margin:0 0.4533334rem;padding:0.22rem 0;line-height:0.5333334rem;font-size:0.3466667rem;color:#333;}
+.help-list .list-obj h3{margin:0 0.4533334rem;line-height:1.3866667rem;font-size:0.3466667rem;color:#333;}
+.help-list .list-obj h3 a{color:#008aff;user-select:all;-webkit-user-select:all;}
+.help-list .list-obj#kfonline h3 i{position:absolute;display:inline-block;width:0.8rem;height:0.8rem;margin:0.2933333rem 0;background:url(../img/helpcenter/kefu.png) 0 0 / 100% 100% no-repeat;}
+.help-list .list-item{position:relative;width:100%;height:1.36rem;border-bottom:1px solid #dfdfdf;background-color:#fff;}
+.help-list .list-item:after{position:absolute;right:0.45rem;top:0.58rem;content:'';display:inline-block;width:0.3733334rem;height:0.2rem;background:url(../img/usercenter/icon_godown.png) 0 0 / 100% 100% no-repeat;}
+.help-list .list-item.slidedown:after{transform:rotate(180deg);}
+.help-list .list-item h3{padding-left:0.87rem;line-height:1.36rem;font-size:0.35rem;color:#333;}
+.help-item{height:0;padding:0 0.4533333rem 0 0.7333333rem;overflow:hidden;background-color:#fff;transition:all 0.2s ease-in;-webkit-transition:all 0.2s ease-in;}
+.help-item.show{height:auto;padding:0.2666667rem 0.4533333rem 0.2666667rem 0.7333333rem;background-color:#f3f3f3;border-bottom:1px solid #dfdfdf;}
+.help-item p{position:relative;line-height:0.5066667rem;font-size:0.32rem;color:#999;}
+.help-item p:first-child:before{content:'';position:absolute;left:-0.3066667rem;top:0.16rem;display:inline-block;width:0.16rem;height:0.16rem;border-radius:0.08rem;background-color:#008aff;}
+
+/*关于我们页样式*/
+#appinfo #applogo{margin:auto;margin-top:1.866667rem;display:block;width:1.6rem;height:1.6rem;background:url(../img/goods/lazy_load.png) 0 0 / 100% 100% no-repeat;border-radius:0.08rem;}
+#appinfo h2{margin-top:0.16rem;text-align:center;line-height:0.533333rem;font-size:0.32rem;color:#666;}
+#appinfo p{text-align:center;line-height:0.533333rem;font-size:0.32rem;color:#999;}
+#copyright{position:fixed;bottom:0;padding-bottom:1.04rem;width:10rem;text-align:center;line-height:0.53rem;color:#666;}
+#copyright h2{font-size:0.29rem;}
+#copyright p{font-size:0.32rem;}
+
+/*委托协议页样式*/
+#protocol-box p{padding:0 0.4533334rem 0.2133334rem 0.4533334rem;line-height:0.48rem;font-size:0.3466667rem;color:#333;}
+#protocol-box p:first-child{padding-top:0.5333334rem;}
+#userProtocol-box {margin-bottom: 1.8rem;}
+#userProtocol-box h2 {height: 0.866667rem;padding: 0.666667rem 0.533333rem 0 0.533333rem;text-align: left;font-size: 0.426667rem;font-weight: bold;color: #333;}
+#userProtocol-box p {padding: 0 0.533333rem;line-height: 0.453333rem;font-size: 0.333333rem;color: #666;}
+#userProtocol-box .red{font-weight:bold;color:#fd2b2b;}
+#agreeBtn {position: fixed;bottom: 0;width: 10rem;height: 1.6rem;background-color: #fff;}
+#agreeBtn #disAgree {float: left;margin: 0.266667rem 0 0.266667rem 0.533333rem;width: 3.12rem;height: 1.066667rem;border-radius: 0.106667rem;background-color: #cccccc;text-align: center;line-height: 1.066667rem;font-size: 0.426667rem;color: #999;}
+#agreeBtn #agree {float: right;margin: 0.266667rem 0.533333rem 0.266667rem 0;width: 4.8rem;height: 1.066667rem;border-radius: 0.106667rem;background-color: #d41e15;text-align: center;line-height: 1.066667rem;font-size: 0.426667rem;color: #fff;}

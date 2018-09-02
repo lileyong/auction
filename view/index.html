@@ -1,0 +1,807 @@
+<style>
+    .swiper-banner{width:100%;height: 4.0rem;position: relative;margin-bottom: 0.133333rem;margin-top: -1.7066667rem;overflow:hidden;}
+    #imglist{height:4rem;}
+    #imglist img {position: relative;float: left;margin: 0.133333rem 0.4rem;width: 9.2rem!important;height: 3.733333rem;border-radius: 0.186667rem;}
+    #indicator{position:absolute;left:calc(50% - 0.45rem);bottom:0;height:0.64rem;text-align:center;}
+    #indicator em{float:left;margin:0.24rem 0.07rem;display:inline-block;width:0.16rem;height:0.16rem;background-color:#e5e5e5;border-radius:50%;}
+    #indicator em.on{background-color:#fd2b2b;}
+     html,body{background: #f5f5f5;}
+    .banner-hd span {display: inline-block;width: 0.16rem;height: 0.16rem;margin-right: 0.16rem;background: rgba(255,255,255,.3);border-radius: 100%;}
+    .banner-hd span.on {background: #fd2b2b;}
+    .msg-box{height:0.933333rem;line-height:0.009333rem;overflow:hidden;padding:0 0.453333rem;position: relative;background: #fff;}
+    .msg-box span{position: absolute;transform:translateY(50%);-webkit-transform:translateY(50%);}
+    .msg-list{color:#333;}
+    .msg-list li{height:0.933333rem;line-height:0.933333rem;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;padding-left: 1.6rem;font-size:0.32rem;}
+    .msg-list li em{color:#f72f2f;}
+
+     #otherPage{border-top:1px solid #f5f5f5;height: 2.24rem;font-size: 0.346667rem;}
+     #otherPage p{padding-top: 0.293333rem;background: #fff;}
+     #otherPage p img{width:0.93rem;height:0.93rem;}
+     #otherPage p span{padding-top: 0.04rem;}
+    .indexType{height: 1.066667rem;line-height:1.066667rem;margin-top: 0.266667rem;margin-bottom: 0.0266667rem;font-size: 0.373333rem;color: #999;background: #fff;position: relative;}
+    .indexType .icon-index7,.indexType .icon-index11,.indexType .icon-index12,.indexType .icon-index13{position: absolute;left: 0.466666rem;top:50%;transform: translateY(-50%);-webkit-transform: translateY(-50%);}
+    .indexType .icon-index8{position: absolute;right: 0.466666rem;top:50%;transform: translateY(-50%);-webkit-transform: translateY(-50%);}
+    .indexType em{margin-left: 1rem;color:#333;font-size: .4rem;}
+    .indexType em.red{color:#f72f2f;}
+    .zntjBox{height: 3.7333333rem;background: #fff;overflow: hidden;width: 100%}
+    .zntjBox section{overflow-x:scroll;white-space: nowrap;height: 3.7333333rem;-webkit-overflow-scrolling:touch;}
+    .zntjBox div{width: 2.5rem;text-align: center;display: inline-block;}
+    .zntjBox div.nodata{display:block;width:auto;}
+    .zntjBox span{width:2rem;height: 2.88rem;display: inline-block;line-height: 2.88rem;overflow:visible;}
+    .zntjBox img{vertical-align: middle;max-width: 2rem;max-height: 2.5rem;}
+    .zntjBox p{width: 2.5rem;font-size:0.2933334rem;color:#999;overflow: hidden;text-overflow: ellipsis;}
+    .xptdBox{background: #fff;height: 4rem;}
+    .xptdBox span{text-align: left;margin-left: 0.4666666rem;color: #999;}
+    .xptdBox span:first-child{padding-top: 0.3333333rem;color:#ee332b;font-size: 0.3733333333rem;}
+    .bzxp span:first-child{color: #ff4005;}
+    .rmhh span:first-child{color: #ff720b;}
+    .xptdBox em{position: absolute;right: .3rem;top:50%;transform: translateY(-50%);-webkit-transform: translateY(-50%);}
+    .xptdBox p{margin:0.1333334rem 0;}
+    .xptdBox p:first-child{border-right:1px solid #f0f0f0;}
+    .xptdBox i{position: relative;display: block;height: 2rem;margin-right:0.1333334rem;}
+    .xptdBox p:nth-child(2) i:first-child{border-bottom:1px solid #f0f0f0;}
+    #xstj em{transform: inherit;-webkit-transform: inherit;top:0.6rem;}
+    .auctionNumBox{height: .8rem;line-height: .8rem;color: #679eee;text-align: center;background: #fff;}
+
+    #confirmBox.layer .box-content{background-color:transparent;}
+    #confirmBox.layer .box-content i#close{content:'';position:absolute;right:0rem;top:0rem;display:inline-block;width:1.5rem;height:1.5rem;background:none;}
+    #confirmBox.layer .confirmcontent{padding:0!important;height:auto;max-height:100%;}
+    #confirmBox.layer .confirmcontent img{display:block;width:100%;}
+    #confirmBox.layer .confirmbutton{display:none;}
+
+
+    #news-box {background-color: #fff;}
+    .news-item {position: relative; margin: 0 0.453333rem; height: 2.6rem;border-bottom: 0.013333rem solid #ebeaea;overflow: hidden;}
+    .news-item img {position: absolute; right: 0;top: 0.333333rem;width: 2.533333rem;height: 1.866667rem;border-radius: 0.106667rem;}
+    .news-item h2 {margin-top: 0.333333rem; width: calc(100% - 2.88rem);line-height: 0.586667rem;max-height:1.173333rem;word-break:break-all;font-size: 0.4rem;color: #333333;overflow:hidden;min-height: 1.2rem;}
+    .news-item p {width: calc(100% - 2.88rem);line-height: 1.066667rem;font-size: 0.32rem;color: #666;}
+    .news-item p .time {position: relative;top: -0.013333rem;margin-left: 0.533333rem;font-size: 0.293333rem;}
+    .news-item p .pv { position: relative;float: right; font-size: 0.293333rem;}
+    .news-item p .pv:before { content: ''; position: absolute;left: -0.573333rem;top: 0.333333rem;display: inline-block; width: 0.426667rem;height: 0.426667rem;background: url(../img/news/icon_eyes.png) 0 0 / 100% 100% no-repeat;}
+    .hasAuction{background: url("../img/goods/hasAuction.png") no-repeat;background-size: 1.066666666rem 1.066666666rem;width: 1.066666666rem;height: 1.066666666rem;position: absolute;top:.2rem;left: 0.2rem;}
+    #icon-xptd2b{
+        background: url("../img/goods/xptd2b.png") no-repeat;background-size: 3.08rem 2.8533333333rem;width: 3.08rem;height: 2.8533333333rem;top:0.5733333rem;transform: inherit;-webkit-transform: inherit;
+    }
+    #icon-xptd3b{
+        background: url("../img/goods/xptd3b.png") no-repeat;background-size: 3.4rem 2.3333333rem;width: 3.4rem;height: 2.3333333rem;top:0.833333rem;transform:inherit;-webkit-transform: inherit;
+    }
+    #officialAccount {width: 100%;height: 1.973333rem;text-align: center;line-height: 1.973333rem;font-size: 0.346667rem;color: #666;display: none;}
+    #officialAccount span {color: #ee332b;}
+    #officialAccount em {font-size: 0.266667rem;}
+    .regIconBox{position: fixed;bottom: .2rem;right:calc(50% - 4.8rem);display: none;}
+    .regIconBox img{width: 1.6rem;height: 1.6rem;}
+    .regIconBox.web{bottom: 1.5rem;}
+    .auctionIngNumBox{position: absolute;display: none;}
+    .animatedAuctionIngNum {-webkit-animation-duration: 5s;animation-duration: 5s;-webkit-animation-fill-mode: both;animation-fill-mode: both;-webkit-animation-name: auctionIngNum;animation-name: auctionIngNum;height: 100%;}
+     @-webkit-keyframes auctionIngNum {from {right: 1.5rem; } to {right: 3.8rem;}}
+    @keyframes auctionIngNum {from {right: 1.5rem; } to {right: 3.8rem;}}
+
+</style>
+<div id="content">
+    <section id="webBox" class="hide">
+    <div class="swiper-banner" id="swiper-banner">
+        <div id="indexbanner">
+            <div id="imglist"></div>
+            <div id="indicator"></div>
+        </div>
+    </div>
+    <div class="msg-box">
+        <span class="icon-index1"></span>
+        <div class="msg-list">
+            <ul id="radioUl"></ul>
+        </div>
+    </div>
+    <div class="Item" id="otherPage">
+        <p data-href="#page=auctionList.html&type=my"><em class="icon-index2"></em><span>我在拍</span></p>
+        <p data-href="#page=auctionList.html&type=pre"><em class="icon-index3"></em><span>预约拍</span></p>
+        <p data-href="#page=cjg.html"><em class="icon-index4"></em><span>差价购</span></p>
+        <p data-href="#page=auctionList.html&type=collect"><em class="icon-index5"></em><span>我收藏</span></p>
+        <p data-href="user/helpCenter.html"><em class="icon-index6"></em><span>新手指南</span></p>
+    </div>
+</section>
+    <div class="indexType" data-href="/view/go.html#page=auctionList.html&type=hot" id="nativeIndexOne">
+        <span class="icon-index7"></span>
+        <em class="red">正在热拍</em>
+        <span class="auctionIngNumBox clcikCls"><i class="clcikCls"></i>我在拍<i id="auctionIngNum" class="clcikCls">5</i>件商品</span>
+        <span class="icon-index8"></span>
+    </div>
+    <div>
+        <ul class="shopBox" id="shopBox"><li class="shopList"></li><li class="shopList"></li><li class="shopList"></li><li class="shopList"></li><li class="shopList"></li><li class="shopList"></li></ul>
+        <div class="auctionNumBox">
+            共有<em id="auctionNum">--</em>件商品正在热拍
+        </div>
+    </div>
+    <div class="indexType" data-href="/view/go.html#page=auctionList.html&type=intelligent">
+        <span class="icon-index11"></span>
+        <em>智能推荐</em>
+        <span class="icon-index8"></span>
+    </div>
+    <div class="zntjBox">
+        <section id="zntjBox"></section>
+    </div>
+    <div id="newUser" class="hide">
+        <div class="indexType" data-href="/view/go.html#page=newGoods.html&type=xstj">
+            <span class="icon-index12"></span>
+            <em>新品天地</em>
+            <span class="icon-index8"></span>
+        </div>
+        <div class="xptdBox Item">
+               <p class="newgoods xptdBox1" data-id="xstj" id="xstj">
+                    <span>新手推荐</span>
+                    <span>深受喜爱</span>
+                    <em class="icon-xptd1"></em>
+                </p>
+                <p class="xptdBox1">
+                    <i class="newgoods xptdBox3" data-id="bzxp" class="bzxp">
+                        <span>本周新品</span>
+                        <span>大牌来袭</span>
+                        <em class="icon-xptd2"></em>
+                    </i>
+                    <i class="newgoods xptdBox3" data-id="rmhh" class="rmhh">
+                        <span>热门好货</span>
+                        <span>正品尖货</span>
+                        <em class="icon-xptd3"></em>
+                    </i>
+                </p>
+        </div>
+    </div>
+    <div id="oldUser">
+        <div class="indexType" data-href="/view/go.html#page=newGoods.html&type=rmhh">
+            <span class="icon-index12"></span>
+            <em>新品天地</em>
+            <span class="icon-index8"></span>
+        </div>
+        <div class="xptdBox Item">
+            <p class="newgoods xptdBox1" data-id="bzxp" class="bzxp">
+                <span>本周新品</span>
+                <span>大牌来袭</span>
+                <em id="icon-xptd2b"></em>
+            </p>
+            <p class="newgoods xptdBox1" data-id="rmhh" class="rmhh">
+                <span>热门好货</span>
+                <span>正品尖货</span>
+                <em id="icon-xptd3b"></em>
+            </p>
+        </div>
+    </div>
+
+    <div class="indexType" data-href="/news/index.html">
+        <span class="icon-index13"></span>
+        <em>竞拍资讯</em>
+        <span class="icon-index8"></span>
+    </div>
+    <div id="news-box"></div>
+    <div id="officialAccount">更多资讯请关注公众号:<span>掌上乐购商城</span><em>(点击可复制)</em></div>
+    <div id="regIconBox" class="regIconBox"><img src="../img/goods/index_regIcon.png"></div>
+    <div class="clearboth"></div>
+</div>
+<script>
+    if(T.isNative){
+        $('#webBox').hide();
+        $('.mainContent').css('margin-top',0);
+        $('footer').css('display','none');
+    }else{
+        $('#webBox').show();
+        $('footer').css('display','-webkit-box');
+        $(".clearboth").addClass("h5");
+    }
+    Global.indexHotActionId = '';//热拍id串
+    Global.indexRecommend = '';//智能推荐id串
+    Global.indexNewsId = '';//新闻列表id串
+    T.index = (function(){
+        var page = T.Util.getParaHash('page');
+        //主对象
+        var o = {
+            init:function(){
+                if(T.Storage.get('userinfo') && T.Storage.get('userinfo').isSuccessAuction==1){//老用户
+                    $('#newUser').hide();
+                    $('#oldUser').show();
+                }else{
+                    $('#newUser').show();
+                    $('#oldUser').hide();
+                }
+                $(".pageType p[data-href]").eq(0).addClass('on').siblings().removeClass("on");
+                if(T.isNative&&Global.isiOS){//首页ios兼容
+                    $('#nativeIndexOne').css('margin-top',(Global.blankHeight*1+(10*window.devicePixelRatio))+'px');
+                }
+                console.time('getHotAuction');
+                o.getHotAuction();//热拍接口
+                o.bindEvent();//事件绑定
+                if(!T.isNative){
+                    o.getBanner();//获取banner
+                    o.getRadioMsg();//获取广播内容
+                    $('.regIconBox').addClass('web');
+                    o.getLayer();
+                }else{
+                    if((Global.OS=="Android"&&T.Util.getAppVersion(T.Util.getAppInfo("appVersion")) > 103)||(Global.OS=="IOS"&&T.Util.getAppVersion(T.Util.getAppInfo("appVersion")) > 104)){
+                        $('html,body').css('background','none');
+                    }
+                }
+                if(T.isNative&&Global.isiOS){
+                    o.setAppChannel();//给胖子丢idfa 只需要ios设备
+                }
+                o.getWebChatPublic();
+                console.timeEnd('dom');
+            },
+            showRegIcon:function () {//
+                if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                   /* if(Global.isAndroid){
+                        $(document).on("touchstart",function(event){
+                            //tip(event.changedTouches[0].screenY+'----')//
+                            $('.regIconBox').css('top',event.changedTouches[0].screenY/75+'rem')
+                        })
+                    }*/
+                    /*if(Global.isAndroid){
+                        $('.regIconBox').css('top','2rem');
+                    }*/
+                    if((Global.OS=="Android"&&T.Util.getAppVersion(T.Util.getAppInfo("appVersion")) > 102)){//安卓1。0。3以上原生处理 h5不显示
+                        $('.regIconBox').hide();
+                    }else{
+                        $('.regIconBox').show();
+                        $('.regIconBox').off().Touch(function () {
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/reg.html?goNewUser=1');
+                        });
+                    }
+                }else{
+                    $('.regIconBox').hide();
+                }
+            },
+            auctionIngNum:function (num) {
+                $('.auctionIngNumBox').css('display','inline-block');
+                $('#auctionIngNum').html(num);
+                $('.auctionIngNumBox').removeClass('animatedAuctionIngNum').addClass('animatedAuctionIngNum').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+
+                });
+                $('#nativeIndexOne').off().on('click',function (el) {
+                    if($(el.target).hasClass("clcikCls")){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=my');
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                     }
+                });
+            },
+            setAppChannel:function () {
+                var reqData={
+                    'deviceCd':T.Util.getAppInfo().deviceID,
+                    "deviceType":'ios',
+                    "idfa":T.Util.getAppInfo().idfa,
+                    "fpCode":Global.inviteChannelCode
+                };
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    authError:1,
+                    errorType:1,
+                    reqData:reqData,
+                    reqUrl:'/user/services/user/setAppChannel',
+                    callback:function(data){
+                    },
+                    errorCallback:function(data){}
+                });
+            },
+            loadCache:function(){
+                var index = T.Storage.get("index");
+                if(index){
+                    $("#content").html(index);
+                }
+            },
+            getRecommend:function (type) {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/shop/shopType.json?type=2&page=1&limit=10',//商城类别列表1：//商城 2智能推荐 3/热拍 4/预约拍',
+                    callback:function(data){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO,htmlArr=[];
+                        var idArr= [];
+                        for(var i=0;i<d.length;i++){
+                            idArr.push(d[i].COMMODITY_ID);
+                            if(Global.indexRecommend!=''){
+                                if($('#zntjBox div[data-shopId="'+d[i].COMMODITY_ID+'"]').find('img').attr('src')=='../img/goods/lazy_load.png'){//如果还是默认图 需要重新赋值新图
+                                    $('#zntjBox div[data-shopId="'+d[i].COMMODITY_ID+'"]').find('img').attr('src',d[i].COMMODITY_LOGO);
+                                }
+                            };
+                            var imgStr = '';
+                            if(!type){
+                                imgStr = 'class="lozad" src="../img/goods/lazy_load.png" data-src="'+d[i].COMMODITY_LOGO+'"';
+                            }else{
+                                imgStr = 'src="'+d[i].COMMODITY_LOGO+'"';
+                            };
+                            htmlArr.push('<div data-shopId="'+d[i].COMMODITY_ID+'" data-no="'+d[i].EXPECT_NO+'"><span><img '+imgStr+'></span><p>'+d[i].COMMODITY_NAME+'</p></div>');
+                        }
+
+                        if(Global.indexRecommend!=idArr.join(',')){//拉取出来的id如果跟上次拉取的一样 不做重新渲染处理
+                            Global.indexRecommend = idArr.join(',');
+                            if(htmlArr.length){
+                                $('#zntjBox').html(htmlArr.join(''));
+                                $('#zntjBox div').off().Touch(function (el) {
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id=' + $(el).attr("data-shopId") + '&expectNo=' + $(el).attr("data-no")+'&isNext=1'+(T.Storage.get('isH5Auction')?'&isH5Auction=1':''));
+                                });
+                                if(!type){
+                                    lozad().observe();
+                                }
+                            }else{
+                                $('#zntjBox').html('<div class="nodata"><h2>暂无数据</h2></div>');
+                            }
+                           /* setTimeout(function(){
+                                if(/index.html/.test(window.location.href)){
+                                    T.Storage.set('index',$("#content").html().replace(/src="http.+?"/g,'src="../img/goods/lazy_load.png"'));}
+                            },10);*/
+                        }
+
+
+                    },
+                    errorCallback:function(data){
+                        setTimeout(function(){
+                            //tip(data ? data.msg : Global.neterror,"error");
+                        },500);
+                    }
+                });
+            },
+            intoAgain:function () {//退出app重进
+                o.getHotAuction('viewAgain');//热拍接口
+                o.getRecommend('viewAgain');//智能推荐接口每次回来都重新请求
+                o.getNewsList();//资讯列表
+                o.bindEvent();//事件绑定
+            },
+            viewAgain:function () {
+               /* console.time('loadCache');
+                 o.loadCache();//加载缓存
+                 console.timeEnd('loadCache');*/
+                T.User.getUInfo(function(){
+                    if(T.Storage.get('userinfo') && T.Storage.get('userinfo').isSuccessAuction==1){//老用户
+                        $('#newUser').hide();
+                        $('#oldUser').show();
+                    }else{
+                        $('#newUser').show();
+                        $('#oldUser').hide();
+                    }
+                },'1');
+                o.getHotAuction('viewAgain');//热拍接口
+                o.getRecommend('viewAgain');//智能推荐接口每次回来都重新请求
+                o.getNewsList();//资讯列表
+                o.bindEvent();//事件绑定
+            },
+            //日期格式化
+            timeFormat:function(time){
+                if(typeof time == 'string'){
+                    return new Date(time.replace(/-/g,'/')).format("yyyy-MM-dd hh:mm");
+                }else if(typeof time == 'number'){
+                    return new Date(time).format("yyyy-MM-dd hh:mm");
+                }else{
+                    return '--:--';
+                }
+            },
+            getNewsList:function(fromMore){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/template/INFOMATION.json?page=1&limit=5',
+                    callback:function(data){
+                        var html = [];
+                        var idArr= [];
+                        $.each(data.res_data.INFO,function(i,item) {
+                            idArr.push(item.ID);
+                            if(Global.indexNewsId!=''){
+                                if($('#news-box div[data-newsId="'+item.ID+'"]').find('img').attr('src')=='../img/goods/lazy_load.png'){//如果还是默认图 需要重新赋值新图
+                                    $('#news-box div[data-newsId="'+item.ID+'"]').find('img').attr('src',item.LOG_PIC);
+                                }
+                            };
+                            html.push('<div class="news-item" data-newsId="'+item.ID+'"><img class="lozad" src="../img/goods/lazy_load.png" data-src="' + (item.LOG_PIC||'../img/nodata/nopic200.png') + '"><h2>' + item.TITLE + '</h2>');
+                            html.push('<p>' + item.AUTHOR + '<em class="time">' + o.timeFormat(item.CRT_TIME) + '</em><em class="pv">' + item.READ_COUNT + '</em></p></div>');
+                        });
+                        if(Global.indexNewsId!=idArr.join(',')){//拉取出来的id如果跟上次拉取的一样 不做重新渲染处理
+                            Global.indexNewsId=idArr.join(',');
+                            if(html.length){
+                                $('#news-box').html(html.join(""));
+                                $('.news-item').off().Touch(function (el) {
+                                    //“竞拍资讯”入口的点击量（jpzx_djl）
+                                    T.Util.setUserBehaviorList({
+                                        "busId":"竞拍资讯",
+                                        "conductCode": "jpzx_djl",
+                                        "comductDesc": "“竞拍资讯”入口的点击量",
+                                        "time": new Date().getTime()
+                                    });
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/news/newsdetail.html?data-id='+$(el).attr('data-newsId'));
+                                });
+                            }else{
+                                $('#news-box').html('<div class="nodata"><i></i><h2>暂无数据</h2></div>');
+                            }
+                            /*setTimeout(function(){
+                                if(/index.html/.test(window.location.href)){
+                                    T.Storage.set('index',$("#content").html().replace(/src="http.+?"/g,'src="../img/goods/lazy_load.png"'));
+                                }
+                            },10);*/
+                            lozad().observe();
+                        }else{//需要覆盖阅读数量
+                            $.each(data.res_data.INFO,function(i,item) {
+                                $('[data-newsId="'+item.ID+'"]').find('.pv').html(item.READ_COUNT);
+                            });
+                        }
+                    },
+                    errorCallback:function(data){}
+                });
+            },
+            getHotAuction:function (type) {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/product/hotAuction.json',
+                    callback:function(data){
+                        console.timeEnd('getHotAuction');
+                        $('#auctionNum').html(data.res_data.value.ALL_COUNT);//总数
+                        var idArr = [];
+                        var dd = data.res_data.value.INFO;
+                        for(var ii = 0;ii<dd.length;ii++){
+                            idArr.push(dd[ii].COMMODITY_ID);
+                            if(Global.indexHotActionId!=''){//拉过一次接口之后 给竞拍人 和竞拍价赋值
+                                $('li[data-id="'+dd[ii].COMMODITY_ID+'"]').find('.AUCTION_PRICE').html((dd[ii].AUCTION_PRICE*1).toFixed(2));
+                                $('li[data-id="'+dd[ii].COMMODITY_ID+'"]').find('.shopUserName').html(dd[ii].AUCTION_USER_NAME);
+                                addTimer('#'+dd[ii].COMMODITY_ID,Math.ceil(dd[ii].SURPLUS_TIME/1000));//倒计时
+                                if($('li[data-id="'+dd[ii].COMMODITY_ID+'"]').find('img').attr('src')=='../img/goods/lazy_load.png'){//如果还是默认图 需要重新赋值新图
+                                    $('li[data-id="'+dd[ii].COMMODITY_ID+'"]').find('img').attr('src',dd[ii].COMMODITY_LOGO);
+                                }
+                            }
+                        }
+                        if(Global.indexHotActionId!=idArr.join(',')){//第二次拉的数据跟上次一样 不做渲染
+                            Global.indexHotActionId = idArr.join(',');
+                            var htmlArr = T.Util.doShopListHtml(dd,type);
+                            if(htmlArr.length>0){
+                                $('#shopBox').html(htmlArr.join(''));
+                            }else{
+                                $('#shopBox').html('<div class="nodata"><i></i><h2>暂无数据</h2></div>');
+                            }
+                            T.Util.shopListClick();
+                            if(!type){lozad().observe();}
+                        }
+
+                        console.time('getRecommend');
+                        o.getRecommend();//智能推荐接口
+                        console.timeEnd('getRecommend');
+                        console.time('getNewsList');
+                        o.getNewsList();//资讯列表
+                        console.timeEnd('getNewsList');
+
+                        if(T.Storage.get('access_token')&&Global.indexHotActionId!=''){//拉取对应商品用户相关信息
+                            T.Util.xmlHttpRequest({
+                                type:'get',
+                                authError:1,
+                                errorType:1,
+                                reqUrl:'/commodity/services/product/hotAuction/userInfo.json?commodityIds='+ Global.indexHotActionId,
+                                callback:function(data){
+                                    if(!data.res_data){return;}
+                                    var d = data.res_data.value;
+                                    if(data.res_data.auction_num&&data.res_data.auction_num>0){
+                                          o.auctionIngNum(data.res_data.auction_num);
+                                    }else{
+                                        $('.auctionIngNumBox').hide();
+                                    }
+                                    for(var i=0;i<d.length;i++){
+                                        if(d[i].STATUS==1){
+                                            $('li[data-id="'+d[i].COMMODITY_ID+'"]').find('.shopFavorite i').removeClass().addClass('icon-favoriteOn');
+                                        }else{
+                                            $('li[data-id="'+d[i].COMMODITY_ID+'"]').find('.shopFavorite i').removeClass().addClass('icon-favorite');
+                                        }
+                                        if(d[i].IS_AUCTION&&d[i].IS_AUCTION==1){
+                                            if($('li[data-id="'+d[i].COMMODITY_ID+'"]').find('hasAuction').length==0){
+                                                $('li[data-id="'+d[i].COMMODITY_ID+'"]').prepend('<span class="hasAuction"></span>');
+                                            }
+                                        }else{
+                                            $('li[data-id="'+d[i].COMMODITY_ID+'"] .hasAuction').remove();
+                                        }
+                                    }
+                                },
+                                errorCallback:function(data){}
+                            });
+                        }
+                        /*setTimeout(function(){
+                            if(/index.html/.test(window.location.href)){
+                                T.Storage.set('index',$("#content").html().replace(/src="http.+?"/g,'src="../img/goods/lazy_load.png"'));
+                            }
+                        },10);*/
+
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".shopList").length && /index.html/.test(window.location.href)){
+                                $("#content").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }
+                        console.timeEnd('getHotAuction');
+                        console.time('getRecommend');
+                        o.getRecommend();//智能推荐接口
+                        console.timeEnd('getRecommend');
+                        console.time('getNewsList');
+                        o.getNewsList();//资讯列表
+                        console.timeEnd('getNewsList');
+                    }
+                });
+            },
+            getBanner:function(){//获取banner
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/template/APP_CONFIG.json?CODE=BANNER&channelCode=' + (Global.isiOS?"iosh5":"adh5") + '&deviceType=3&appVersion=all',
+                    callback:function(data){
+                        var d = data.res_data;
+                        var imgHtml = [],indicatorHtml=[];
+                        indicatorHtml.push('<div id="indicator" style="left:calc(50% - ' + 0.15 * d.length + 'rem)">');
+                        imgHtml.push('<div id="imglist">');
+                        for(var index = 0;index < 2;index++){
+                            for(var i=0;i<d.length;i++){
+                                imgHtml.push('<img src="' + d[i].URL + '" data-href="'+d[i].LINK_URL+'">');
+                                if(index == 0){
+                                    indicatorHtml.push('<em' + (i == 0? ' class="on"' : '') + '></em>');
+                                }
+                            }
+                        }
+                        imgHtml.push('</div>');
+                        indicatorHtml.push('</div>');
+                        $("#indexbanner").html(imgHtml.join("") + indicatorHtml.join(""));
+                        //事件绑定
+                        $("#imglist img").off().Touch(function(el){
+                            //每个banner的点击量（banner_djl）
+                            T.Util.setUserBehaviorList({
+                                "busId":"banner",
+                                "conductCode": "banner_djl",
+                                "comductDesc": "每个banner的点击量",
+                                "time": new Date().getTime()
+                            });
+                            if($(el).attr("data-href").split('/auction/').length>1){//兼容多个域名 zsp66.com ruirun123.cn
+                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/'+$(el).attr("data-href").split('/auction/')[1]);
+                            }else{
+                                T.Util.openWindow($(el).attr("data-href"));
+                            }
+                        });
+                        //执行banner动画
+                        var elem = document.getElementById('indexbanner');
+                        var num = d.length;
+                        function img_num(p) {
+                            if (p > (num - 1)) {
+                                return p - num;
+                            } else {
+                                return p;
+                            }
+                        }
+                        window.imgScroll = Swipe(elem, {
+                            auto: 3000,
+                            autoplayDisableOnInteraction: true,
+                            callback: function() {
+                                $("#indicator em").removeClass("on").eq(img_num(imgScroll.getPos())).addClass("on");
+                            }
+                        });
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            getRadioMsg:function () {//获取广播内容
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/broadCast.json?page=1&limit=5',
+                    callback:function(data){
+                        if(data && data.res_data && data.res_data.value){
+                            var htmlArr=[],d=data.res_data.value.INFO;
+                            for(var i=0,j=d.length;i<j;i++){
+                                htmlArr.push('<li>'+d[i].BROADCAST_CONTENT+'</li>');
+                            }
+                            $('#radioUl').html(htmlArr.join(''));
+                            $('.msg-box').off().scrollText({sBox:'.msg-list',speed:3000});
+                        }
+
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            getLayer:function(){//获取引导弹层
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/template/APP_CONFIG.json?CODE=APP_LAYER_V2&channelCode=' + (Global.isiOS?"iosh5":"adh5") + '&deviceType=3&appVersion=all',//+(Global.isiOS ? 'iosh5':'adh5'),
+                    callback:function(data){// 1：未登录首页  2：登录个人中心 3:注册送弹窗  4:全局 运营弹窗
+                        // type 1：未登录首页  2：登录个人中心 3:注册送弹窗  4:全局 运营弹窗  5：登陆-预约  6：登陆-新用户  7：登陆-老用户  8：登陆-未付款弹窗  9：登陆-购物币当天失效
+                        var d = data.res_data,layer='';
+                        var layerType = -1;
+                        var layerTypeIsLogin = 1;
+                        //清除昨天以前弹过的标记
+                        for (var i= 1;i<10;i++){
+                            var userinfo = T.Storage.get('userinfo');
+                            if(userinfo && userinfo.userId){//删除用户弹层信息
+                                if(new Date(parseInt(T.Storage.get(userinfo.userId+'LayerTime'+i)||1529280000000)).format('YYYY-MM-dd')!= new Date(new Date().getTime()+parseInt(T.Storage.get('difTime'))).format('YYYY-MM-dd')){//不是同一天
+                                    T.Storage.remove(userinfo.userId+'LayerTime'+i);
+                                }
+                            }else{
+                                if(new Date(parseInt(T.Storage.get('LayerTime'+i)||1529280000000)).format('YYYY-MM-dd')!= new Date(new Date().getTime()+parseInt(T.Storage.get('difTime'))).format('YYYY-MM-dd')){//不是同一天
+                                    T.Storage.remove('LayerTime'+i);
+                                }
+                            }
+                        }
+                        //清除昨天以前弹过的标记
+                        if(T.Util.isEmpty(T.Storage.get('userinfo'))){//未登录
+                                if(d[1]&&d[1].length>0){
+                                    for(var i=0;i<d[1].length;i++){
+                                        if(T.Util.isEmpty(T.Storage.get('LayerTime'+d[1][i].TYPE))){
+                                            layer = d[1][i];
+                                            layerType = layer.TYPE;
+                                            break;
+                                        }
+                                        continue;
+                                    }
+                                }
+
+                        }else{//已登录
+                                var userinfo = T.Storage.get('userinfo');
+                                if(d[2]&&d[2].length>0){
+                                    layerTypeIsLogin = 2;
+                                    for(var i=0;i<d[2].length;i++){
+                                        if(userinfo && userinfo.userId && T.Util.isEmpty(T.Storage.get(userinfo.userId+'LayerTime'+d[2][i].TYPE))){
+                                            layerTypeIsLogin = 2;
+                                            layer = d[2][i];
+                                            layerType = layer.TYPE;
+                                            break;
+                                        }
+                                        continue;
+                                    }
+                                }
+                        }
+                        if(layerType== -1&& d[4]&&d[4].length>0){//全局类型 运营弹窗 没有触发 1 2 再触发4 每个一天只触发一次
+                            for(var i=0;i<d[4].length;i++){
+                                if(T.Util.isEmpty(T.Storage.get('LayerTime'+d[4][i].TYPE))){
+                                    layer = d[4][i];
+                                    layerType = layer.TYPE;
+                                    break;
+                                }
+                                continue;
+                            }
+                        }
+                        if(layer!=''&&layerType!=-1){
+                            if(layerTypeIsLogin==2){
+                                var userinfo = T.Storage.get('userinfo');
+                                if(userinfo && userinfo.userId){//记录用户弹层信息
+                                    T.Storage.set(userinfo.userId+'LayerTime'+layerType,new Date().getTime());
+                                }
+                            }else{
+                                T.Storage.set('LayerTime'+layerType,new Date().getTime());
+                            }
+
+                            window.confirm({className:'layer',html:'<img src="' + layer.LAYER_PIC + '" data-href="'+layer.TAG_URL+'" data-src="'+layer.LAYER_DESC+'" data-type="'+layerType+'">',close:true,okFun:function (el) {
+                                T.Util.openWindow(Global.fullHost + $(el).attr('data-href'));//弹层跳转
+                            }});
+                        }
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            getWebChatPublic:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/template/APP_INFO_CONFIG.json?channelCode='+T.Util.getAppInfo("channelCode")+'&appVersion='+T.Util.getAppInfo("appVersion")+'&deviceType=' + (Global.isiOS?2:1),
+                    callback:function(data){
+                        var d = data.res_data[0];
+                        if(d&&d.PUBLIC_NAME&&d.PUBLIC_NUM){
+                            $('#officialAccount span').html(d.PUBLIC_NAME);
+                            $('#officialAccount span').attr('data-num',d.PUBLIC_NUM);
+                            $('#officialAccount').show();
+                            $("#officialAccount").off().Touch(function(){
+                                T.Util.copyToClipboard(d.PUBLIC_NAME,1);
+                                tip('微信号复制成功');
+                                if(!T.isNative){
+                                    setTimeout(function(){
+                                        window.location.href = 'weixin://';
+                                    },500);
+                                }
+                            });
+                        }else{
+                            $('#officialAccount').hide();
+                        }
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            bindEvent:function(){
+                o.showRegIcon();//是否显示引导注册icon
+                $('.auctionNumBox').off().Touch(function (el) {
+                    //“全部热拍”入口的点击量（zzrp_djl）
+                    T.Util.setUserBehaviorList({
+                        "busId": "全部热拍",
+                        "conductCode": "zzrp_djl",
+                        "comductDesc": "“全部热拍”入口的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                });
+                $('#otherPage p').off().Touch(function (el) {
+                    var conductCode = "",comductDesc = "";
+                    var href = $(el).attr('data-href');
+                    if(/page=auctionList.html&type=my/.test(href)){
+                        conductCode = "sywzp_djl";
+                        comductDesc = "“我在拍”入口点击量";
+                    }else if(/page=auctionList.html&type=pre/.test(href)){
+                        conductCode = "syyyp_djl";
+                        comductDesc = "“预约拍”入口点击量";
+                    }else if(/cjg.html/.test(href)){
+                        conductCode = "sycjg_djl";
+                        comductDesc = "“差价购”入口点击量";
+                    }else if(/page=auctionList.html&type=collect/.test(href)){
+                        conductCode = "wdsc_djl";
+                        comductDesc = "“我的收藏”入口点击量";
+                    }else if(/helpCenter.html/.test(href)){
+                        conductCode = "xszd_djl";
+                        comductDesc = "“新手指导”首页入口点击量";
+                    }
+                    //首页菜单点击量
+                    T.Util.setUserBehaviorList({
+                        "busId":"首页",
+                        "conductCode": conductCode,
+                        "comductDesc": comductDesc,
+                        "time": new Date().getTime()
+                    });
+                    if($(el).attr('data-href').indexOf('#page')>-1){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html'+$(el).attr('data-href'));
+                    }else{
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/'+$(el).attr('data-href'));
+                    }
+                });
+                //二级页面
+                $(".indexType").off().Touch(function(el){
+                    var href = $(el).attr('data-href');
+                    if(/page=auctionList.html&type=hot/.test(href)){
+                        //“全部热拍”入口的点击量（zzrp_djl）
+                        T.Util.setUserBehaviorList({
+                            "busId": "全部热拍",
+                            "conductCode": "zzrp_djl",
+                            "comductDesc": "“全部热拍”入口的点击量",
+                            "time": new Date().getTime()
+                        });
+                    }else if(/page=auctionList.html&type=intelligent/.test(href)){
+                        //“智能推荐”入口的点击量（zntj_djl）
+                        T.Util.setUserBehaviorList({
+                            "busId": "智能推荐",
+                            "conductCode": "zntj_djl",
+                            "comductDesc": "“智能推荐”入口的点击量",
+                            "time": new Date().getTime()
+                        });
+                    }
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+$(el).attr('data-href'));
+                });
+                //新品天地
+                $(".newgoods").off().Touch(function(el){
+                    //“新品天地”入口的点击量（xptd_djl）
+                    T.Util.setUserBehaviorList({
+                        "busId": "新品天地",
+                        "conductCode": "xptd_djl",
+                        "comductDesc": "“新品天地”入口的点击量",
+                        "time": new Date().getTime()
+                    });
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newGoods.html&type='+$(el).attr('data-id'));
+                });
+            },
+        }
+        return {
+            intoAgain:o.intoAgain,
+            viewAgain:o.viewAgain,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.Util.canShowBigAward('1');//弹层消失告诉原生可以弹出大奖弹层
+        //Global.indexDomReadyTime = new Date().getTime();
+        //T.Util.mqtt([]);
+        console.time('dom');
+        var img = new Image();
+        img.src ='../img/goods/lazy_load.png';
+        img.onload = (function () {
+            console.log('lazy_load_img_ok--------');
+        })();
+        T.index.init();
+        document.addEventListener("sendEvent", function (ev) {//index页面兼容ios 点不到webviewbug 当原生下拉刷新的时候会重新请求接口 有可能会改变原生高度 所以需要重新做兼容
+            console.log('sendEvent---result:'+JSON.stringify(ev.result));
+            if(ev.result.type =='blankHeight'){
+                if(T.isNative&&Global.isiOS){//首页ios兼容
+                    Global.blankHeight = ev.result.blankHeight;
+                    $('#nativeIndexOne').css('margin-top',(ev.result.blankHeight*1+(10*window.devicePixelRatio))+'px');
+                }
+            }
+        },false);
+    });
+</script>
+
+

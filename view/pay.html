@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>确认支付</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <style>
+        /*确认支付页样式*/
+        #pay-box #buyinfo{width:100%;background-color:#fff;}
+        #pay-box #userinfo{width:100%;min-height:2rem;background-color:#fff;display:none;}
+        .showAddress #pay-box #userinfo{display:block;}
+        #pay-box #userinfo h2{float:left;margin-top:0.27rem;line-height:0.67rem;font-size:0.4rem;color:#333;}
+        #pay-box #userinfo h2:first-child{padding-left:0.45rem;}
+        #pay-box #userinfo h2:nth-child(2){padding-left:0.53rem;}
+        #pay-box #userinfo p{position:relative;clear:both;line-height:0.5rem;font-size:0.37rem;color:#666;padding: 0.2rem 0 0.2rem 1.03rem;}
+        #pay-box #userinfo p:before{content:'';position:absolute;left:0.37rem;top:0.16rem;display:inline-block; background: url('../img/sprite.png') no-repeat -2.48rem -11.146667rem;background-size: 13.226667rem 11.946667rem;width: 0.533333rem;height: 0.533333rem;}
+        #noEntity{min-height:2rem;}
+        #pay-box #telinfo{margin:0 0.45rem;font-size:0.3733333rem;}
+        #pay-box #telinfo input{margin-top:0.4rem;width:100%;height:1.066667rem;border-bottom:1px solid #dfdfdf;font-size:0.3733333rem;}
+        #pay-box #noAddress{width:100%;height:2rem;background-color:#fff;line-height: 2rem;font-size: .4rem;text-align: center;display: none;}
+        #pay-box img{display:block;height:0.16rem;}
+        #pay-box #goodsinfo{position:relative;margin-top:0.45rem;height:2.93rem;background-color:#fafafa;}
+        #goodsinfo img{float:left;margin:0.26rem 0.4rem 0.26rem 0.45rem;width:2.4rem;height:2.4rem;background-color:#fff;border:1px solid #dfdfdf;}
+        #goodsinfo h2{float:left;margin-top:0.2rem;line-height:0.48rem;width:calc(100% - 3.7rem);font-size:0.35rem;color:#333;text-overflow: ellipsis;
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;overflow: hidden;}
+        #goodsinfo .goodsprice{position:absolute;left:3.28rem;bottom:0.27rem;width:calc(100% - 3.7rem);}
+        #goodsinfo .goodsprice span{font-size:0.4rem;}
+        #goodsinfo .goodsprice .price{color:#f72f2f;margin-right:0.53rem;}
+        #goodsinfo .goodsprice .price em:first-child{font-size:0.32rem;}
+        #goodsinfo .goodsprice .price em:nth-child(2){font-size:0.4rem;}
+        #goodsinfo .goodsprice .price em:last-child{font-size:0.32rem;}
+        #goodsinfo .goodsprice .delprice{color:#acacac;text-decoration:line-through;}
+        #goodsinfo .goodsprice .num{float:right;}
+        #paynum{clear:both;width:100%;height:1.0666667rem;background-color:#fff;overflow:hidden;margin-bottom:0.2666667rem;}
+        #paynum h2{float:left;padding-left:0.4533333rem;line-height:1.0666667rem;font-size:0.4rem;color:#333;}
+        #paynum #addsub{float:right;margin:0.2rem 0.4533333rem;}
+        #payDescBox{clear:both;width:100%;height:1.0666667rem;background-color:#fff;overflow:hidden;margin-bottom:0.2666667rem;}
+        #payDescBox h2{float:left;padding-left:0.4533333rem;line-height:1.0666667rem;font-size:0.4rem;color:#333;}
+        #payDescBox input{width: 7rem;height:.8rem;margin-left: .5rem;margin-top:0.1333rem;font-size: .4rem;outline: none;}
+        #feesinfo{padding-top:0.27rem;padding-bottom:0.13rem;background-color:#fff;}
+        #feesinfo .feesitem{overflow:hidden;padding:0 0.45rem;font-size:0.35rem;}
+        #feesinfo .feesitem h2{float:left;line-height:0.69rem;color:#666;}
+        #feesinfo .feesitem h2#fees_tips i{position:relative;top:0.026667rem;margin-left:0.053333rem;display:inline-block; background: url('../img/sprite.png') no-repeat -12.813333rem -5.973333rem;background-size: 13.226667rem 11.946667rem; width: 0.32rem; height: 0.32rem;}
+        #feesinfo .feesitem p{position:relative;float:right;line-height:0.69rem;font-weight:bold;color:#333;}
+        #feesinfo .feesitem p em{font-weight:bold}
+        #feesinfo .select .feesitem p{padding-right:0.573333rem;}
+        #feesinfo .feesitem p.select i{position:absolute;right:0;top:0.146667rem;display:inline-block;width:0.4rem;height:0.4rem;text-align:center;line-height:0.4rem;border:1px solid #d0d0d0;border-radius:0.2rem;box-sizing:border-box;-webkit-box-sizing:border-box;overflow:hidden;}
+        #feesinfo .feesitem p.selected i{background: url('../img/sprite.png') no-repeat -12.813333rem -2.88rem;background-size: 13.226667rem 11.946667rem;width: 0.4rem;height: 0.4rem;}
+        #payinfo{line-height:1.07rem;font-size:0.37rem;padding:0 0.45rem;background-color:#fff;border-top:1px solid #dfdfdf;overflow:hidden;}
+        #payinfo h2{float:left;color:#333;}
+        .noNavbar.cjgPage #payinfo h2:after {content: '';position: relative;top: 0.026667rem;margin-left: 0.066667rem;display: inline-block;background: url(../img/sprite.png) no-repeat -12.813333rem -5.973333rem;background-size: 13.226667rem 11.946667rem;width: 0.32rem;height: 0.32rem;}
+        #payinfo p{float:right;color:#f72f2f;}
+        #payinfo p em{font-size:0.32rem;color:#999;}
+        #payinfo p .mustPay em:first-child{font-weight:bold;font-size:0.4rem;color:#f72f2f;}
+        #payinfo p .mustPay em:last-child{font-weight:bold;font-size:0.32rem;color:#f72f2f;}
+        #payfooter{position:absolute;bottom:0;width:100%;height:1.33rem;background-color:#fff;border-top:1px solid #dfdfdf;box-shadow:0 -0.1066667rem 0.2133333rem 0 rgba(28,31,33,0.1);}
+        #payfooter #paytotal{float:left;font-size:0.4rem;height:1.33rem;line-height:1.33rem;padding-left:0.45rem;}
+        #payfooter #paytotal span:nth-child(2){color:#f72f2f;margin:0 0.13rem;}
+        #payfooter #paytotal span:nth-child(2) em:first-child{font-weight:bold;font-size:0.4533333rem;}
+        #payfooter #paytotal span:nth-child(2) em:last-child{font-weight:bold;font-size:0.3733333rem;}
+        #payfooter #paytotal span:last-child{color:#999;}
+        #payfooter #paysubmit{position:absolute;right:0;top:0;width:4rem;height:1.33rem;text-align:center;line-height:1.33rem;background-color:#f72f2f;font-size:0.4rem;color:#fff;}
+        html.paySuccess .navbar{background-color:#e24c4c;}
+        html.paySuccess #navInfo{display: none !important;}
+        html.paySuccess body{background-color:#e24c4c;}
+        #paySuccess {position: relative;margin: 1.12rem auto;width: 9.333333rem;height: 7.24rem;text-align: center;background: url(../img/goods/pay_success.png) center center / 100% 100% no-repeat;overflow: hidden;}
+        #paySuccess h2 {margin-top: 3.426667rem;text-align: center;line-height: 0.533333rem;font-size: 0.533333rem;color: #333;}
+        #paySuccess p {margin-top: 1.6rem;text-align: center;line-height: 0.48rem;font-size: 0.48rem;color: #e24c4c;}
+        #paySuccess div{position: relative;margin-top: .5rem;}
+        #paySuccess span{color:#666;border: 0.013333333333rem solid #999;border-radius:0.5rem;width: 2.4rem;height: 0.66666666rem;line-height: 0.66666666rem;font-size: 0.346666666rem;text-align: center;}
+        #paySuccess span:first-child{position: absolute;top:0;left: 1.5rem;}
+        #paySuccess span:last-child{position: absolute;top:0;right: 1.5rem;}
+
+        /*h5版支付成功页*/
+        #paySuccessH5 {
+            position: relative;
+            margin: 1.12rem auto;
+            width: 9.333333rem;
+            height: 8.706667rem;
+            background: url(../img/goods/pay_successH5.png) center center / 100% 100% no-repeat;
+            overflow: hidden;
+        }
+
+        #paySuccessH5 .download {
+            margin: 4.666667rem auto 0 auto;
+            display: block;
+            width: 7.733333rem;
+            height: 1.066667rem;
+        }
+        html.payWait .navbar{background-color:#e24c4c;}
+        html.payWait #navInfo{display: none !important;}
+        html.payWait body{background-color:#e24c4c;}
+        #payWait{position: relative;margin: 1.12rem auto;width: 9.333333rem;height: 7.24rem;text-indent: center;background: url(../img/goods/pay_wait.png) center center / 100% 100% no-repeat;overflow: hidden;}
+        #payWait h2 {margin-top: 3.426667rem;text-align: center;line-height: 0.533333rem;font-size: 0.533333rem;color: #333;}
+        #payWait p {margin-top: 0.626666rem;text-align: center;line-height: 0.48rem;color: #666;padding: 0 1.3866666rem;}
+        #payWait .btn{color:#f72f2f;border: 0.013333333333rem solid #f72f2f;border-radius:0.5rem;width: 2.4rem;height: 0.66666666rem;line-height: 0.66666666rem;font-size: 0.346666666rem;text-align: center;margin: 0 auto;margin-top: 0.5333333rem;}
+
+        .payRecharge{position: fixed;bottom: 0;background: #fff;width: 100%;z-index: 102;}
+        .payRechargeTitle{height: 1.1rem;line-height: 1.1rem;color:#666666;font-size: 0.37333333rem;padding-left: 0.4533rem;background: #f5f5f5;}
+        /*.payRechargeTitle>p:nth-child(2){padding-top:.3rem;}*/
+        .payRechargeTitle span{position:absolute;right:0.4533rem;top:0.28333rem;width:0.53333333rem;height:0.53333333rem;background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAElBMVEUAAADOzs7Pz8/////Pz8/Nzc2ksMrOAAAABXRSTlMA1BUFYEF13PkAAAB3SURBVCjPxdLLDYAgEEVRozagxr1agXZgCy7svxUXfg6RBFbG2XDDuwSYTPFVzQFX11q3hRrXc1224dkr++6GlngKSA7FWEoVvlQilUglhiqROhGpDZG6E6PNzHEXZZ7k8dlvakiydXGTsRSKkTwxDPHYxAP2dx0QAxPLSBasEgAAAABJRU5ErkJggg==");background-size: 0.53333333rem auto;}
+        .payRechargeTitle em{font-size: 0.37333333333rem;color:#f72f2f;vertical-align: middle;padding-left: .2rem;}
+        /*.choosePayType{background:#fafafa; color:#999;font-size: 0.37333333rem;padding-left: 0.45333rem;padding-top: .2rem;padding-bottom: .1rem;}*/
+        .needPayBox{text-align: center;
+            height: 2.4666666666rem;
+            background: #f5f5f5;
+            border-top: 1px solid #dfdfdf;}
+        .needPayBox span{font-size: 0.373333333333rem;
+            display: inline-block;
+            padding-top: .5rem;
+            color: #333;}
+        .needPayBox p{color: #f72f2f;
+            font-size: 0.9333333rem;}
+        .needPayBox p i{font-size: 0.42666rem;}
+        .payType{background: #fff;height: 3.2rem;margin-left: 0.506666rem;color:#333333;font-size: 0.426666666rem; }
+        .payLine{height: 1.2rem;background:#fafafa;}
+        .payBtn{
+            background:#e00e0e;
+            border-radius:0.05333333rem;
+            width:9.09333333rem;
+            height:1.306666rem;
+            line-height:1.306666rem;
+            color:#ffffff;
+            text-align: center;
+            font-size: 0.453333333333rem;
+            margin-left: 0.453333333333rem;
+            margin-bottom: 0.53333333333rem;
+            margin-top: 1rem;
+        }
+
+        #recharge-list{background-color:#fff;border-top:1px solid #dbdbdb;border-top:1px solid #dbdbdb;overflow:hidden;min-height: 5rem;}
+        .recharge-item{position:relative;margin-left:1.32rem;height:1.32rem;line-height:1.32rem;font-size:0.4rem;color:#333;border-bottom:1px solid #dbdbdb;}
+        .recharge-item i{position:absolute;left:-0.87rem;top:0rem;content:'';display:inline-block;width:1.32rem;height:1.32rem;}
+        .recharge-item:after{position:absolute;right:0.45rem;top:0.32rem;content:'';display:inline-block;width:0.17rem;height:0.69rem;background:url(../img/usercenter/icon_goto.png) 0 0 / 100% 100% no-repeat;}
+        #recharge-text{margin:0.18rem 0.45rem;}
+        #recharge-text p{line-height:0.53rem;font-size:0.32rem;color:#ccc;}
+    </style>
+    <script type="text/javascript" src="../js/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/main.js?v=0.01"></script>
+    <script>
+        //收货地址开关
+        if(T.Util.getPara('isentity') == '1' && T.Storage.get('userAddress')){
+            $("html").addClass("showAddress");
+        }
+        //h5版竞拍开关
+        var isH5Auction = T.Util.getPara('isH5Auction')||T.Storage.get('isH5Auction',1);
+        if(isH5Auction){
+            $("html").addClass("isH5Auction");
+            T.Storage.set('isH5Auction',1,1);
+        }
+        $("html").addClass(T.Util.getPara('payType'));
+    </script>
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1 id="navTitle">确认支付</h1>
+    <div class="hide" id="navInfo"><i></i></div>
+</div>
+<div class="mainContent" id="main">
+    <div id="pay-box">
+        <div id="buyinfo">
+            <div id="isEntity">
+                <div id="userinfo"><h2></h2><h2></h2><p id="address"></p></div>
+                <div id="noAddress" style="display:none;">去添加收货地址</div>
+            </div>
+            <div id="noEntity" class="hide">
+                <div id="telinfo"><input type="tel" maxlength="11" placeholder="请输入手机号码或qq号码" id="mobile"></div>
+            </div>
+        </div>
+        <img src="../img/goods/pattern.png" width="100%">
+        <div id="goodsinfo">
+            <img src="" id="infoImg">
+            <h2 id="infoTitle">...</h2>
+            <div class="goodsprice"><span></span><span>市场价￥<em class="infoMarketPrice">--</em></span><span id="shopNum">×1</span></div>
+        </div>
+        <div id="paynum" style="display:none;">
+            <h2>购买数量</h2>
+            <div id="addsub">
+                <em id="sub" class="addsub down"></em>
+                <input type="tel" value="1" id="num">
+                <em id="add" class="addsub up"></em>
+            </div>
+        </div>
+        <div id="payDescBox" class="hide">
+            <h2>备注</h2>
+                <input type="text" id="payDesc" placeholder="商品颜色、规格等，默认随机发货。" maxlength="20">
+            </div>
+        </div>
+        <div id="feesinfo">
+            <div id="auctionPay" class="hide">
+                <div class="feesitem"><h2>商品竞拍价</h2><p><span id="auctionPrice">--</span><em class="coinunit">币</em></p></div>
+                <div class="feesitem"><h2 id="fees_tips">竞拍手续费<span class="serviceRatio">5%</span><i></i></h2><p>+<span id="servicePrice">--</span><em class="coinunit">币</em></p></div>
+                <div class="feesitem"><h2 class="freightTitle">运费</h2><p>+<span class="freight">0.00</span><em class="coinunit">币</em></p></div>
+            </div>
+            <div id="cjgPay" class="hide select">
+                <div class="feesitem"><h2>商品市场价</h2><p><span class="infoMarketPrice">--</span><em class="coinunit">币</em></p></div>
+                <div class="feesitem useshopcoin"><h2>使用购物币</h2><p class="red select selected">-<span class="free">--</span><em class="coinunit">币</em><i></i></p></div>
+                <div class="feesitem" id="freightPrice"><h2 class="freightTitle">运费</h2><p>+<span class="freight">0.00</span><em class="coinunit">币</em></p></div>
+            </div>
+            <div id="shopMallPay" class="hide select">
+                <div class="feesitem"><h2>商品总价</h2><p><span class="allInfoMarketPrice">--</span><em class="coinunit">币</em></p></div>
+                <div class="feesitem useshopcoin"><h2>使用购物币</h2><p class="red select selected">-<span class="free">--</span><em class="coinunit">币</em><i></i></p></div>
+                <div class="feesitem"><h2 class="freightTitle">运费</h2><p>+<span class="freight">0.00</span><em class="coinunit">币</em></p></div>
+            </div>
+        </div>
+        <div id="payinfo"><h2>实付款</h2><p><span class="mustPay">--</span><em> <em class="coinunit">币</em></em></p></div>
+        <div id="payfooter">
+            <div id="paytotal"><span class="hide">共<em class="paynum">1</em>件</span></span>实付<span class="mustPay">--</span><span><em class="coinunit">币</em></span></div>
+            <div id="paysubmit">立即支付</div>
+        </div>
+        <div id="paySuccess" style="display:none;">
+            <h2>付款成功</h2>
+            <div><span id="viewOrder">查看订单</span><span id="backIndex">回到首页</span></div>
+            <p id="addAddress" class="hide">+添加收货地址</p>
+        </div>
+        <div id="paySuccessH5" style="display:none;"><em class="download"></em></div>
+        <div id="payWait" style="display:none;">
+            <h2>订单交易等待确认 </h2>
+            <p>请确认是否已支付，如已支付请勿重复支付， 查看我的订单核实。  </p>
+            <div class="btn" id="payWaitViewOrder">查看订单</div>
+        </div>
+    </div>
+    <div class="mask hide"></div>
+    <div class="payRecharge hide" id="payRecharge">
+        <div class="payRechargeTitle"><span></span><p id="uMoneyBox">拍币抵扣:<em id="uMoney">¥--</em></p></div><!--<p>商品金额：<em id="sMoney">¥--</em></p><p>账户余额(拍币)：<em id="uMoney">¥--</em></p>-->
+        <div class="needPayBox"><span>还需支付:</span><p><em id="pMoney"></em><i>拍币</i></p></div>
+        <div id="recharge-list"></div>
+    </div>
+</div>
+<script>
+    T.pay = (function(){
+        //订单信息相关
+        var commodityId = T.Util.getPara('commodityId');
+        var payType = T.Util.getPara('payType');
+        var auctionPrice = T.Util.getPara('auctionPrice');
+        var expectId = T.Util.getPara('expectId');
+        var coinunit = "币";
+        var addressId = '';
+        var addressLength=0;
+        var orderNo=T.Util.getPara('NEW_ORDER_NO');
+        var isUseShopCoin = true;
+        var IS_ENTITY = 1;//是否实物
+        var shopNum = T.Util.getPara('count')||1;
+        var free = 0;
+        var MARKET_PRICE='';
+        var freight = 0;//运费
+        var prompt ='';
+        //差额支付相关
+        var rechargeMoney = 0;
+        var ruleType = 0;//规则类型 0:没有规则 1:区间固定值  2:区间比例值  3:固定充值金额
+        var ruleList = [];//规则列表
+        var endGetDataFlag = true;//接口是否请求完毕
+        T.isDoRecharge = false;//是否在充值
+        T.hasCallBack = false;//是否拿到回调
+        var paySubmitOrderNo = '';
+        var check = {
+            money:function(val){
+                if(val==''){
+                    tip('请输入充值金额');
+                }else {
+                    return true;
+                }
+            }
+        }
+
+        var o = {
+            //程序入口
+            init:function(){
+                if(payType=='cjgPage'){
+                    $('#navInfo').show();
+                    $('#navInfo').off().Touch(function () {
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=cjgRule.html');
+                    });
+                }else{
+                    $('#navInfo').hide();
+                }
+                if(payType=='auctionSuc'){
+                    $("#paynum").hide();
+                    $('#auctionPay').show().siblings().hide();
+                    $('#auctionPrice').html(auctionPrice);
+                }else if(payType=='auctionFail'||payType=='cjgPage'){
+                    $("#paynum").hide();
+                    $('#cjgPay').show().siblings().hide();
+                }else if(payType=='mall'){
+                    $("#paynum").show();
+                    $("#paytotal span").eq(0).html('共<em class="paynum">'+shopNum+'</em>件 ').show();
+                    $('#shopMallPay').show().siblings().hide();
+                    $('#shopNum').html('x'+shopNum);
+                }else if(payType=='auctionYhm'){
+                    $("#paynum").hide();
+                }
+                if(isH5Auction){
+                    T.Util.initAppDownload();
+                }
+                //审核环境下修改支付单位、隐藏使用购物币选项
+                if(Global.isAudit && Global.isAudit == '1'){
+                    coinunit = "元";
+                    $(".coinunit").text("元");
+                    $(".useshopcoin").hide();
+                }
+                o.getCommodityInfo();
+                o.bindEvent();
+            },
+            payWait:function () {
+                if(payType=='auctionSuc'||payType=='auctionFail'||payType=='cjgPage'){
+                    T.Storage.set('paySuc',{'expectId':expectId,'paySubmitOrderNo':paySubmitOrderNo});
+                }
+                $("html").addClass("payWait");
+                $("#navTitle").text("交易待确认");
+                $("#payWait").show().siblings().hide();
+            },
+            paySuccess:function () {
+                if(payType=='auctionSuc'||payType=='auctionFail'||payType=='cjgPage'){
+                    T.Storage.set('paySuc',{'expectId':expectId,'paySubmitOrderNo':paySubmitOrderNo});
+                }
+                $("html").addClass("paySuccess");
+                $("#navTitle").text("支付成功");
+                if(isH5Auction){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/paySuccessH5.html');
+                }else{
+                    $("#paySuccess").show().siblings().hide();
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //页面返回
+                $("#back").off().Touch(function(){
+                    T.Util.back();
+                });
+                $('#viewOrder,#payWaitViewOrder').off().Touch(function () {//查看订单
+                    window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/myOrder.html?type=waitDelivery';
+                });
+                $('#backIndex').off().Touch(function () {//回到首页
+                    T.Util.goTabbar('0');
+                });
+                $('.payRechargeTitle span,.mask').off().Touch(function () {
+                    $('#payRecharge').hide();
+                    $('.mask').hide();
+                });
+                //立即支付
+                var httpEndFlag=true;
+                $("#paysubmit").off().Touch(function(){
+                    $("input,textarea").blur();
+                    var val = addressId;
+                    var payDesc = $('#payDesc').val();
+                    if(IS_ENTITY==0){//不是实物
+                        val = $('#mobile').val();
+                    }else{
+
+                    }
+                    if(!httpEndFlag){return;}//防止重复点击
+                    httpEndFlag = false;
+                    if(payType=='mall'){
+                        var _url = '/commodity/services/shop/shopPay.json?commodityId='+commodityId+'&count='+shopNum+'&val='+val+'&payDesc='+payDesc;
+                        if(isUseShopCoin){
+                            _url =_url+'&isUseShop=1';
+                        }
+                        T.Util.xmlHttpRequest({
+                            type:'get',
+                            errorType:'1',
+                            reqUrl:_url,
+                            callback:function(data){
+                                paySubmitOrderNo = data.res_data.value.orderId;
+                                if(data.res_data&&data.res_data.value&&data.res_data.value.isPay=='2'){//拍币余额不足
+                                    var m  =  data.res_data.value.margainMoney*1;
+                                    if(m.toFixed(2)!=$('.mustPay').attr('data-money')&&isUseShopCoin){//接口返回的需要支付的金额对不上页面上的需要支付的金额 需要重新拉去接口或许最新的优惠金额
+                                        o.getCommodityInfo();
+                                    }
+                                    $('#pMoney').html(m.toFixed(2));
+                                    T.User.getUInfo(function(){
+                                        var userinfo = T.Storage.get('userinfo');
+                                        var um = userinfo.moneyList[2]*1;
+                                        $('#uMoney').html(um.toFixed(2)+'拍币');
+                                        $('#sMoney').html((um+m).toFixed(2)+'拍币');
+                                    });
+                                    o.loadList(m,paySubmitOrderNo);//把价格传过去拉去充值接口
+                                }else {//余额足够 默认余额支付成功
+                                    if(T.Util.isEmpty(val)){//没有填写地址
+                                        $('#addAddress').show();
+                                        $('#addAddress').off().Touch(function () {
+                                            if(IS_ENTITY==0){//不是实物
+                                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setOrderInfo.html?orderNo='+paySubmitOrderNo+'&prompt='+prompt);
+                                            }else{
+                                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?orderNo='+paySubmitOrderNo);
+                                            }
+                                        });
+                                    }
+                                    o.paySuccess();
+                                }
+                            },
+                            errorCallback:function(data){
+                                httpEndFlag = true;
+                                if(data.msg_code != '-20'){
+                                    tip(data ? data.msg : Global.neterror,"error");
+                                }
+                            }
+                        });
+                    }else if(payType=='auctionYhm') {
+                        T.Util.xmlHttpRequest({
+                            type:'get',
+                            errorType:'1',
+                            reqUrl:'/commodity/services/product/newUser/buy.json?orderNo='+orderNo+'&payDesc='+payDesc,
+                            callback:function(data){
+                                paySubmitOrderNo = data.res_data.value.orderId;
+                                if(data.res_data&&data.res_data.value&&data.res_data.value.isPay=='2'){//拍币余额不足
+                                    var m  =  data.res_data.value.margainMoney*1;
+                                    if(m.toFixed(2)!=$('.mustPay').attr('data-money')&&isUseShopCoin){//接口返回的需要支付的金额对不上页面上的需要支付的金额 需要重新拉去接口或许最新的优惠金额
+                                        o.getCommodityInfo();
+                                    }
+                                    $('#pMoney').html(m.toFixed(2));
+                                    T.User.getUInfo(function(){
+                                        var userinfo = T.Storage.get('userinfo');
+                                        var um = userinfo.moneyList[2]*1;
+                                        $('#uMoney').html(um.toFixed(2)+'拍币');
+                                        $('#sMoney').html((um+m).toFixed(2)+'拍币');
+                                    });
+                                    o.loadList(m,paySubmitOrderNo);//把价格传过去拉去充值接口
+                                }else {//余额足够 默认余额支付成功
+                                    if(T.Util.isEmpty(val)){//没有填写地址
+                                        $('#addAddress').show();
+                                        $('#addAddress').off().Touch(function () {
+                                            if(IS_ENTITY==0){//不是实物
+                                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setOrderInfo.html?orderNo='+paySubmitOrderNo+'&prompt='+prompt);
+                                            }else{
+                                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?orderNo='+paySubmitOrderNo);
+                                            }
+                                        });;
+                                    }
+                                    o.paySuccess();
+                                }
+                            },
+                            errorCallback:function(data){
+                                httpEndFlag = true;
+                                if(data.msg_code != '-20'){
+                                    setTimeout(function(){
+                                        tip(data ? data.msg : Global.neterror,"error");
+                                    },500);
+                                }
+                            }
+                        })
+                    }else {
+                        var _url = '/commodity/services/product/marginBuy.json?commodityId='+commodityId+'&expectId='+expectId+'&addressId='+val+'&payDesc='+payDesc;
+                       if(!T.Util.isEmpty(orderNo)){
+                           _url = _url+'&orderNo='+orderNo
+                       }
+                        if((payType=='auctionFail'||payType=='cjgPage')&&isUseShopCoin){
+                            _url =_url+'&isUseShop=1';
+                        }
+                        if(!T.Util.isEmpty(T.Util.getPara('isNotMargain'))){//拍中弹层过来特有参数
+                            _url = _url+'&isNotMargain=1';
+                        }
+                        T.Util.xmlHttpRequest({
+                            type:'get',
+                            errorType:'1',
+                            reqUrl:_url,
+                            callback:function(data){
+                                paySubmitOrderNo = data.res_data.value.orderId;
+                                if(data.res_data&&data.res_data.value&&data.res_data.value.isPay=='2'){//
+                                    var m  =  data.res_data.value.margainMoney*1;
+                                    if(m.toFixed(2)!=$('.mustPay').attr('data-money')&&isUseShopCoin){//接口返回的需要支付的金额对不上页面上的需要支付的金额 需要重新拉去接口或许最新的优惠金额
+                                        o.getCommodityInfo();
+                                    }
+                                    $('#pMoney').html(m.toFixed(2));
+                                    T.User.getUInfo(function(){
+                                        var userinfo = T.Storage.get('userinfo');
+                                        var um = userinfo.moneyList[2]*1;
+                                        $('#uMoney').html(um.toFixed(2)+'拍币');
+                                        $('#sMoney').html((um+m).toFixed(2)+'拍币');
+                                    });
+                                    o.loadList(m,paySubmitOrderNo);//把价格传过去拉去充值接口
+                                }else {//余额足够 默认余额支付成功
+                                    if(T.Util.isEmpty(val)){//没有填写地址
+                                        $('#addAddress').show();
+                                        $('#addAddress').off().Touch(function () {
+                                            if(IS_ENTITY==0){//不是实物
+                                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setOrderInfo.html?orderNo='+paySubmitOrderNo+'&prompt='+prompt);
+                                            }else{
+                                                T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?orderNo='+paySubmitOrderNo);
+                                            }
+                                        });;
+                                    }
+                                    o.paySuccess();
+                                }
+                            },
+                            errorCallback:function(data){
+                                httpEndFlag = true;
+                                if(data.msg_code == '1019'){//交易支付已提交未到账
+                                    T.Storage.set('paySuc',{'expectId':expectId,'paySubmitOrderNo':data.res_data});
+                                    alert('您有一笔订单交易待确认，请勿重复支付。',function () {
+                                        T.Util.back();
+                                    },'立即查看');
+                                }else if(data.msg_code == '1009'){//交易已结束已提交已到账
+                                    T.Storage.set('paySuc',{'expectId':expectId,'paySubmitOrderNo':data.res_data});
+                                    alert('上一笔订单交易已完成，请勿重复支付，立即查看。',function () {
+                                        T.Util.back();
+                                    },'立即查看');
+                                }else{
+                                    if(data.msg_code != '-20'){
+                                        setTimeout(function(){
+                                            tip(data ? data.msg : Global.neterror,"error");
+                                        },500);
+                                    }
+                                }
+
+                            }
+                        })
+                    }
+                });
+                //选择收货地址
+                $('#userinfo,#noAddress').off().Touch(function () {
+                    if(addressLength>0){//如果地址条数大于0 则去选择
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/address.html?from=buy#page=select'+(T.isNative?"":"&backUrl="+Base64.encode(window.location.href).replace(/=/g,"_")));
+                    }else{//没地址直接新建
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html');
+                    }
+                });
+                //竞拍手续费提示
+                $("#fees_tips").off().Touch(function(){
+                    confirm({
+                        className:'alert',
+                        html:"<h2>什么是竞拍手续费？</h2><p>为保证本商品的正常竞拍，需按最终竞拍价的" + $(".serviceRatio").text() + "支付竞拍手续费给委托的第三方机构，由本平台代扣支付。</p>",
+                        okText:"我知道了"
+                    });
+                });
+                //使用购物币
+                $(".feesitem p.select").off().Touch(function(el){
+                    $(el).toggleClass("selected");
+                    if($(el).hasClass("selected")){
+                        isUseShopCoin = true;
+                        if(payType=='mall'){
+                            var m = (MARKET_PRICE*shopNum)-free+freight*1
+                            $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                        }else if(payType=='auctionFail'||payType=='cjgPage'){
+                            var m  = MARKET_PRICE-free+freight*1;
+                            $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                        }
+                    }else{
+                        isUseShopCoin = false;
+                        if(payType=='mall'){
+                            var m  =(MARKET_PRICE*shopNum)+freight*1;
+                            $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                        }else if(payType=='auctionFail'||payType=='cjgPage'){
+                            var m = MARKET_PRICE+freight*1;
+                            $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                        }
+                    }
+                });
+                //差价购提示
+                $(".noNavbar.cjgPage #payinfo h2").off().Touch(function(){
+                    confirm({
+                        className:'alert left',
+                        html:'<h2>规则说明</h2><p>1.发货时间一般为付款后3天内，如遇特殊情况，会有延迟；</p><p>2.购物币是该商品在拍卖中所消耗的拍币 × 该商品拍卖过程中实时的退币比例；</p><p>3.实付总额=商品市场价 + 运费(虚拟物品为充值手续费) - 购物币；</p><p>4.如有疑问，可致电客服：<a href="tel://400-0816066">400-0816066</a>。</p>'
+                    });
+                });
+                //下载APP
+                $(".download").off().Touch(function(){
+                    T.Util.appDownload();
+                });
+            },
+            //获取商品信息
+            getCommodityInfo:function () {
+                var _url = '/commodity/services/template/QUERY_PRODUCT_INFO.json?commodityId='+commodityId;
+                if(!T.Util.isEmpty(expectId)){
+                    _url = '/commodity/services/template/QUERY_PRODUCT_INFO.json?commodityId='+commodityId+'&expectId='+expectId;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:_url,
+                    callback:function(data){
+                        var d = data.res_data[0];
+                        $('#infoImg').attr('src',d.COMMODITY_LOGO);
+                        $('#infoTitle').html(d.COMMODITY_TITLE);
+                        if(payType == 'auctionSuc'){
+                            $(".goodsprice").html('<span class="price"><em></em>' + T.Util.priceFormat(auctionPrice) + coinunit + '</span><span class="delprice">' + d.MARKET_PRICE.toFixed(2) + '</span><span class="num">x1</span>');
+                        }else if(payType == 'auctionYhm'){
+                            $(".goodsprice").html('<span class="price"><em></em>' + T.Util.getPara('money') + '</span><span class="num">x1</span>');
+                            var m = T.Util.getPara('money');
+                            $('.mustPay').html(m).attr('data-money',m.toFixed(2));
+                        }else{
+                            $(".goodsprice").html('<span class="price"><em></em>' + T.Util.priceFormat(d.MARKET_PRICE.toFixed(2)) + coinunit + '</span><span class="num">x' + shopNum + '</span>');
+                        }
+                        $('.infoMarketPrice').html(d.MARKET_PRICE);
+                        $('.allInfoMarketPrice').html(parseFloat(d.MARKET_PRICE*shopNum).toFixed(2));
+                        IS_ENTITY = d.IS_ENTITY;
+                        $('.freight').html(d.freight);
+                        free = d.SUPER_MONEY>(d.MARKET_PRICE*shopNum)?(d.MARKET_PRICE*shopNum):d.SUPER_MONEY||0;
+                        $('.free').html(free);//可使用购物币数量
+                        freight = d.freight;//运费
+                        MARKET_PRICE = d.MARKET_PRICE;
+                        prompt = d.PROMPT;
+                        if(d.IS_ENTITY==1){//1是实物 0是虚拟物品
+                            $('#isEntity').show().siblings().hide();
+                            o.getAddress();//实物获取地址
+                            $('#payDescBox').show();
+                        }else{
+                            $('#payDescBox').hide();
+                            $('.freightTitle').html('充值手续费');
+                        }
+                        if(payType=='auctionSuc'){
+                            var servicePrice = auctionPrice*(d.servicePrice/100);
+                            $('#servicePrice').html(servicePrice.toFixed(2));
+                            var m = auctionPrice*1+servicePrice+freight*1 ;
+                            $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                            $(".serviceRatio").text(d.servicePrice + "%");
+                        }else if(payType=='mall'){
+                            var m = (MARKET_PRICE*shopNum)-free+freight*1;
+                            $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                        }else if(payType=='auctionFail'||payType=='cjgPage'){
+                            var m = MARKET_PRICE-free+freight*1;
+                            $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                        }
+                        //选择数量
+                        $("#num").NumInput({
+                            val:shopNum,
+                            min:1,
+                            max:d.COMMODITY_NUM > 99999 ? 99999 : d.COMMODITY_NUM,
+                            fn:function(){
+                                shopNum = $("#num").val();
+                                $(".num").text("x" + shopNum);
+                                $(".paynum").text(shopNum);
+                                free = d.SUPER_MONEY>(d.MARKET_PRICE*shopNum)?(d.MARKET_PRICE*shopNum):d.SUPER_MONEY||0;
+                                $('.free').html(free);//可使用购物币数量
+                                $('.allInfoMarketPrice').html(parseFloat(MARKET_PRICE*shopNum).toFixed(2));
+                                if(isUseShopCoin){
+                                    var m = (MARKET_PRICE*shopNum)-free+freight*1;
+                                    $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                                }else{
+                                    var m = (MARKET_PRICE*shopNum)+freight*1;
+                                    $('.mustPay').html(T.Util.priceFormat(m)).attr('data-money',m.toFixed(2));
+                                }
+                            }
+                        });
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            //获取收货地址
+            getAddress:function () {
+                if(IS_ENTITY!=1){return;}//非实物return
+                if(!T.Util.isEmpty(T.Storage.getAndRemove('selectAddressInfo'))){
+                    var d = T.Storage.getAndRemove('selectAddressInfo');
+                    addressId = d.ADDR_ID;
+                    addressLength=1;
+                    var address = d.AREA ? (d.AREA + d.USER_ADDR) : d.USER_ADDR;
+                    $('#userinfo').html('<h2>'+d.USER_NAME+'</h2><h2>'+d.USER_PHONE+'</h2><p id="address">'+address+'</p>').show().siblings().hide();
+                    return;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/user/services/user/userAddressList.json',
+                    callback:function(data){
+                        var d=data.res_data.value;
+                        addressLength = d.length;//地址条数
+                        if(d.length){
+                            for(var i=0;i<1;i++){
+                                var address = d[i].AREA ? (d[i].AREA + d[i].USER_ADDR) : d[i].USER_ADDR;
+                                addressId = d[i].ADDR_ID;
+                                $('#userinfo').html('<h2>'+d[i].USER_NAME+'</h2><h2>'+d[i].USER_PHONE+'</h2><p id="address">'+address+'</p>').show().siblings().hide();
+                            }
+                            $('#buyinfo').show();
+                        }else{
+                            addressId = '';
+                            $('#buyinfo').hide();
+                        }
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            //加载充值列表
+            loadList:function(limitMoney,orderId){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/acct/recList?limitMoney='+limitMoney+'&deviceType='+ (T.isNative?T.Util.getDeviceType():'h5')+ '&channelCd=' + T.Util.getAppInfo('channelCode') + '&appVersion=' + (T.isNative?T.Util.getAppInfo('appVersion'):'all') + '&isH5=' + (T.isNative?"0":"1") + '&platform=' + T.Util.getPlatform(),
+                    callback:function(data){
+                        if(data.msg_code == "0" && data.res_data){
+                            //获取充值活动规则
+                            ruleType = data.res_data.ruleType;
+                            ruleList = data.res_data.ruleList;
+                            //渲染充值列表
+                            o.showRechargeList(data.res_data,limitMoney,orderId);
+                        }else{
+                            tip(data.msg||Global.neterror);
+                        }
+                    },
+                    errorCallback:function(){}
+                });
+            },
+            //获取总金额
+            getTotalMoney:function(){
+                var coinUint = (Global.isAudit && Global.isAudit == '1') ? "元" : "拍币";
+                var totalMoney = Number(rechargeMoney).toFixed(2) + coinUint;
+                if(ruleList && ruleList.length){
+                    for(var i = 0;i < ruleList.length;i++){
+                        if(ruleType == '3'){//固定充值金额
+                            if(rechargeMoney == ruleList[i].START_MONEY){
+                                totalMoney += "+" + Number(ruleList[i].GIVE_MONEY).toFixed(2) + "赠币";
+                            }
+                        }else{
+                            if(rechargeMoney >= ruleList[i].START_MONEY && rechargeMoney < ruleList[i].END_MONEY){
+                                if(ruleType == '1'){//区间固定值
+                                    totalMoney += "+" + Number(ruleList[i].GIVE_MONEY).toFixed(2) + "赠币";
+                                }else if(ruleType == '2'){//区间比例值
+                                    totalMoney += "+" + Number(rechargeMoney * ruleList[i].GIVE_MONEY / 100).toFixed(2) + "赠币";
+                                }
+                            }
+                        }
+
+                    }
+                }
+                return totalMoney;
+            },
+            //支付宝充值成功后通知后端
+            alipayRechargeCallback:function(orderNo){
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/notify/alipayRechargeCallback?orderNo=' + orderNo,
+                    callback:function(json){
+
+                    }
+                });
+            },
+            //充值
+            doRecharge:function(opt){
+                rechargeMoney = opt.rechargeMoney;
+                var rec_code = opt.rec_code;
+                var is_form = parseInt(opt.is_form);
+                var successCallbackUrl = opt.successCallbackUrl;
+                if((/^alipay/.test(rec_code)||/^wechat/.test(rec_code)) && !/H5$/i.test(rec_code)){
+                    T.isH5Pay = false;
+                }else{
+                    T.isH5Pay = true;
+                }
+                T.isDoRecharge = true;//是否在支付
+                //clearTimeout(T.showRechargeTips);
+
+                //公用数据
+                var recData = {
+                    "orderNo":opt.orderNo,
+                    "rechargeMoney":rechargeMoney,  //充值金额  notNull
+                    "rechargeType":rec_code,  	//充值模式(微信：wx，京东：jd，支付宝：ali) NotNull
+                    "successCallbackUrl":successCallbackUrl,  //支付成功回调地址
+                    "failCallbackUrl":successCallbackUrl, //支付失败回调地址
+                    "subject":"拍币",   //	//商品的标题/交易标题/订单标题/订单关键字等
+                    "describe":"拍币充值",  //商品描述
+                    "payTimeout":"100000",  //支付超时时间
+                    "appCd":T.Util.getAppInfo('bundleID'),  //应用包id  NotNull
+                    "appName":T.Util.getAppInfo('appName'),  //应用包名字   NotNull
+                    "channelCd":T.Util.getAppInfo('channelCode'),  //渠道cd   NotNull
+                    "appVersion":T.Util.getAppInfo('appVersion'), //版本  NotNull
+                    "client_os":Global.isiOS ? "ios" : "Android",  //手机系统类型  NotNull
+                    "joinType":"0",  //0为H5, 1为APP, 为空则采用H5方式
+                    "userIp":'127.0.0.1' //IP地址
+                }
+
+                endGetDataFlag = false;
+                tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'post',
+                    errorType:1,
+                    reqUrl:'/commodity/services/acct/rechargeMode',//type =1：全部 2：收入 3：支出
+                    reqData:recData,
+                    callback:function(json){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        T.hasCallBack = false;
+                        var from = T.Util.getParaSearch('from');
+                        //跳第三方支付
+                        if(json.res_data && json.res_data.data){
+                            var payData,payUrl;
+                            if(/^alipay/.test(rec_code) && !/H5$/i.test(rec_code)){//支付宝官充
+                                T.Util.aliPay({"payOrder":Base64.encode(json.res_data.data)},function(d){
+                                    T.hasCallBack = true;
+                                    T.isDoRecharge = false;
+                                    var data = JSON.parse(Base64.decode(d.data));
+                                    if(data && data.resultStatus == '9000'){
+                                        $('#payRecharge').hide();
+                                        $('.mask').hide();
+                                        o.showTips();
+                                        o.alipayRechargeCallback(JSON.parse(data.result)["alipay_trade_app_pay_response"]["out_trade_no"]);//通知后端
+                                    }else{
+                                        tip("支付失败","error");
+                                    }
+
+                                });
+                            }else if(/^wechat/.test(rec_code) && !/H5$/i.test(rec_code)){//微信官充
+                                T.Util.weixinPay(json.res_data.data,function(d){
+                                    T.hasCallBack = true;
+                                    T.isDoRecharge = false;
+                                    if(d.data && d.data.errCode == 0){
+                                        $('#payRecharge').hide();
+                                        $('.mask').hide();
+                                        o.showTips();
+                                    }else{
+                                        tip("支付失败","error");
+                                    }
+
+                                });
+                            }else{//非官充
+                                if(/^alipay.*H5$/i.test(rec_code)){
+                                    payData = json.res_data.data;
+                                }else{
+                                    payData = JSON.parse(/{.*:.*}/.test(json.res_data.data)?json.res_data.data:'{"payurl":"' + json.res_data.data + '"}');
+                                    payUrl = payData["payurl"]||payData["url"];
+                                }
+                                if(is_form||/^alipay.*H5$/i.test(rec_code)){
+                                    payUrl = T.Util.getRootPath()+'/'+Global.webRoot+'/user/rechargeForm.html';
+                                    T.Storage.set('payData',payData);
+                                }
+                                if(Global.isiOS && T.isNative){
+                                    $('#payRecharge').hide();
+                                    $('.mask').hide();
+                                    T.Util.openWindow(Base64.encode(payUrl + (payUrl.indexOf("?") > -1 ? "&" : "?") + "JPNativeTitle=" + encodeURIComponent("充值")),{isBase64Encode:1});
+                                }else{
+                                    $('#payRecharge').hide();
+                                    $('.mask').hide();
+                                    T.Util.openWindow(payUrl + (payUrl.indexOf("?") > -1 ? "&" : "?") + "JPNativeTitle=充值");
+                                }
+                            }
+                        }else{
+                            T.isDoRecharge = false;
+                            tip(Global.neterror,'error');
+                        }
+                    },
+                    errorCallback:function(data){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        T.hasCallBack = false;
+                        setTimeout(function(){
+                            if(data && data.msg){
+                                tip(data.msg);
+                            }else{
+                                tip(Global.neterror,"error");
+                            }
+                        },500);
+                    }
+                });
+            },
+            isPayFuc:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:'1',
+                    reqUrl:'/order/services/order/recordInfo.json?orderNo=' + paySubmitOrderNo,
+                    callback:function(data){
+                        var d  = data.res_data.value;
+                        if(!d.ORDER_INFO || T.Util.isEmpty(d.ORDER_INFO)){//未填写地址 需要在支付成功页把填写地址按钮放出来
+                            $('#addAddress').show();
+                            $('#addAddress').off().Touch(function () {
+                                if(IS_ENTITY==0){//不是实物
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/setOrderInfo.html?orderNo='+paySubmitOrderNo+'&prompt='+prompt);
+                                }else{
+                                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/editAddress.html?orderNo='+paySubmitOrderNo);
+                                }
+                            });
+                        }
+                        if(!T.Util.isEmpty(d.PAY_STATUS)&&d.PAY_STATUS==10){//已付款
+                            o.paySuccess();
+                        }else{
+                            setTimeout(function () {
+                                o.isPayFuc();
+                            },800);
+                        }
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        setTimeout(function () {
+                            o.isPayFuc();
+                        },800);
+                    }
+                });
+            },
+            //充值完成提示
+            showTips:function(){
+                o.payWait();
+                o.isPayFuc();
+            },
+            //渲染充值列表
+            showRechargeList:function(data,limitMoney,orderId){
+                //渲染运营信息
+                if(data.ruleTotal){
+                    $("#advert").text(data.ruleTotal);
+                }
+                //渲染充值按钮
+                var btnList = data.recButton||[];
+                var btnHtml = [];
+                var money = T.Util.getParaSearch('money');
+                var defaultMoney = limitMoney;
+                $.each(btnList,function(i,item){
+                    //审核环境修改充值单位
+                    if(Global.isAudit && Global.isAudit == '1'){
+                        item.BUTTON_NAME = item.BUTTON_NAME.replace(/拍币/,"元");
+                    }
+                    if(!T.Util.isEmpty(money) && money != 'NaN'){
+                        defaultMoney = money;
+                        btnHtml.push('<em' + (parseFloat(item.BUTTON_NAME) == money ? ' class="on"' : '') + '>' + item.BUTTON_NAME + (item.BUTTON_GIFT ? '<span>' + item.BUTTON_GIFT + '</span>':'') + '</em>');
+                    }else{
+                        parseInt(item.IS_DEFAULT) && (defaultMoney = parseFloat(item.BUTTON_NAME));
+                        btnHtml.push('<em' + (parseInt(item.IS_DEFAULT) ? ' class="on"' : '') + '>' + item.BUTTON_NAME + (item.BUTTON_GIFT ? '<span>' + item.BUTTON_GIFT + '</span>':'') + '</em>');
+                    }
+                });
+                $("#recharge-quick").html(btnHtml.join(""));
+                $('.mask').show();
+                $('#payRecharge').show();
+                T.Storage.set('recharge_quick',$("#recharge-quick").html());
+                o.bindEvent();
+                //渲染充值列表
+                var recList = data.recList||[];
+                var recHtml = [];
+                $.each(recList,function(i,item){
+                    recHtml.push('<div class="recharge-item" data-obj=' + "'" + JSON.stringify(item) + "'" + '><i style="background:url(' + T.Util.getFullPic(item.REC_PIC) + ') left center / 0.72rem auto no-repeat;"></i>' + item.JOIN_INFO + '</div>');
+                });
+                $("#recharge-list").html(recHtml.join(""));
+                T.Storage.set('recharge_list',$("#recharge-list").html());
+                //显示页面
+                $("#recharge-quick,#recharge-total,#recharge-list,#recharge-text").removeClass("hide");
+                //事件绑定
+                $(".recharge-item").off().Touch(function(){
+                    var data = JSON.parse($(this).attr("data-obj"));
+                    //充值金额校验
+                    if(!check.money(limitMoney)) return false;
+                    o.doRecharge({
+                        orderNo:orderId,
+                        rec_no:data.REC_NO,
+                        rec_code:data.REC_CODE,
+                        is_form:data.isForm,
+                        rechargeMoney:limitMoney,
+                        successCallbackUrl:data.SYN_S_URL
+                    });
+                });
+                //设置缓存
+                T.Storage.set('recharge.html',$("#main").html());
+            }
+        }
+
+        return {
+            showTips:o.showTips,
+            getAddress:o.getAddress,
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if(T.isNative){
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.pay.init();
+            },function () {//webview再次打开回调函数
+                if(!T.Util.isEmpty(T.Storage.get('orderAddAddressOK'))){//填写了地址成功返回后直接跳转订单
+                    $('#addAddress').hide();
+                    T.Storage.remove('orderAddAddressOK');
+                    window.location.href = T.Util.getRootPath()+'/'+Global.webRoot+'/view/myOrder.html?type=waitDelivery';
+                }else{
+                    if(T.isH5Pay){//非官充
+                        T.pay.showTips();
+                    }
+                    T.pay.getAddress();//实物获取地址
+                }
+            },function () {//webview消失第一视角回调函数
+
+            },function () {//app退到系统后台回调函数
+
+            },function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        }else{
+            window.onpageshow = function(){
+                T.pay.init();
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="Cache-Type" content='image/gif,image/png,image/jpg'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的券</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="index">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-title" content=""/>
+    <script type="text/javascript" src="../js/flexible.js"></script>
+    <script type="text/javascript" src="../js/flexible_css.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/coupon.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="back_arrow back_home" id="back"></div>
+    <h1>我的券</h1>
+    <span class="navIcon" id="navInfo"></span>
+</div>
+<div class="mainContent" id="main">
+    <div id="content">
+        <div id="myCouponBox">
+            <div id="myCouponTab">
+                <div class="tab-item on">未使用</div>
+                <div class="tab-item">已使用</div>
+                <div class="tab-item">已过期</div>
+                <span class="pointer"></span>
+            </div>
+            <div id="myCouponList">
+                <div class="myCouponList"></div>
+                <div class="myCouponList"></div>
+                <div class="myCouponList"></div>
+            </div>
+        </div>
+        <em class="floatWidget" id="floatExplain"></em>
+    </div>
+</div>
+<script type="text/javascript" src="../js/zepto.min.js"></script>
+<script type="text/javascript" src="../js/main.js?v=0.01"></script>
+<script>
+    T.myCoupon = (function(){
+        var dropLoad = '';//下拉刷新
+        var pageSize = 10;//分页条目
+        var pageIndex = [1,1,1];//分页索引
+        var hasMore = [false,false,false];//是否加载更多
+        var endGetDataFlag = true;//是否请求完毕
+
+        var o = {
+            //程序入口
+            init:function(){
+                if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                    T.Util.login();
+                }else{
+                    if(T.Storage.get('noNavbar',1)||T.Util.getPara('noNavbar')=='1'){
+                        $(".floatWidget").addClass("show");
+                    }
+                    o.getMyCoupon(1);//获取我的优惠券
+                    o.bindEvent();//事件绑定
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定下滑加载更多
+                $(window).off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    var nowTab = $(".tab-item.on").index();
+                    if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                        if(hasMore[nowTab]){
+                            var nowTab = $(".tab-item.on").index();
+                            o.getMyCoupon(nowTab + 1,true);
+                        }
+                    }
+                });
+                //绑定下拉刷新
+                $('#myCouponList').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        var nowTab = $(".tab-item.on").index();
+                        pageIndex[nowTab] = 1;
+                        o.getMyCoupon(nowTab + 1);
+                    },
+                    threshold : 50
+                });
+                //tab切换
+                $(".tab-item").off().Touch(function(el){
+                    var index = $(el).index();
+                    var dom = $("#myCouponList .myCouponList").eq(index);
+                    $(".tab-item").eq(index).addClass("on").siblings().removeClass("on");
+                    $(".pointer").animate({"left":(3.333 * index + 1.131667) + "rem"});
+                    dom.show().siblings().hide();
+                    if(dom.find(".couponItem").length){
+                        $("html,body").removeClass("white");
+                    }else{
+                        o.getMyCoupon(index + 1);
+                    }
+                });
+                //显示使用说明
+                $("#floatExplain,#navInfo").off().Touch(function(){
+                    confirm({
+                        className:'alert left',
+                        html:'<h2>使用说明：</h2><p>1、竞拍成功后，委托兑现过程中，需委托券才可委托，每委托一次需要消耗一张委托券。</p><p>2、委托券应在有效期内使用，过期则无法使用；</p><p>3、委托时，如遇到委托失败，委托券则原路返还至您的账户，保持原有的有效期时间；</p><p>4、如发现非正常手段获得的委托券或存在刷券行为，本平台有权取消或收回该券；</p><p>5、本平台在法律允许的范围内有本规则的解释权。</p>'
+                    });
+                });
+            },
+            //获取我的委托券
+            getMyCoupon:function(type,fromMore){
+                if(!endGetDataFlag){
+                    return false;
+                }
+                endGetDataFlag = false;
+                tip('加载中','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/delegate/couponList.json?couponType=1&type=' + type + '&page=' + pageIndex[type - 1] + '&limit=' + pageSize,//type 1 未使用 2 已使用 3 已过期
+                    callback:function(data){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        var d = data.res_data.value.INFO;
+                        if(data.res_data.value.ISEND==2){//还有更多
+                            hasMore[type - 1] = true;
+                            pageIndex[type - 1]++;
+                        }else{
+                            hasMore[type - 1] = false;
+                        }
+                        o.showMyCoupon(d,type,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        endGetDataFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            $("#myCouponList").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                            $("#page-refresh").off().Touch(function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染我的委托券
+            showMyCoupon:function(data,type,fromMore){
+                var htmlArr = [];
+                var dom = $("#myCouponList .myCouponList").eq(type - 1);
+                //获取优惠券logo
+                function getCouponIcon(item){
+                    if(type == '1'){
+                        return '../img/coupon/weituoQuan.png';
+                    }else{
+                        return '../img/coupon/weituoGrey.png';
+                    }
+                }
+                //获取有效期
+                function getAvailTime(item){
+                    var invideDays = Math.ceil((new Date(item.INVIDE_TIME).getTime() - new Date().getTime()) / (24 * 3600 * 1000))||1;
+                    if(type == 1 && invideDays <= 3){
+                        return '剩余有效期' + invideDays + '天';
+                    }else{
+                        return new Date(item.CRT_TIME).format('yy.MM.dd') + '至' + new Date(item.INVIDE_TIME).format('yy.MM.dd');
+                    }
+                }
+                //获取优惠券状态
+                function getCouponStatus(){
+                    if(type == 1){
+                        return '<div class="useCoupon">使用</div>';
+                    }else if(type == 2){
+                        return '<i class="used"></i>';
+                    }else{
+                        return '<i class="overdue"></i>';
+                    }
+                }
+                $.each(data,function(i,item){
+                    htmlArr.push('<div class="couponItem"><img src="' + getCouponIcon(item) + '"><h2>委托券</h2><p>竞拍成功使用此券可兑现</p><p>' + getAvailTime(item) + '</p>');
+                    htmlArr.push('<div class="status">' + getCouponStatus(item) + '</div></div>');
+                });
+                if(htmlArr.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? dom.append(htmlArr.join("")) : dom.html(htmlArr.join(""));
+                }else{
+                    $("html,body").addClass("white");
+                    dom.html('<li class="nodata detail"><i></i><h2>暂无数据~</h2></li>');
+                }
+                //使用优惠券
+                $(".useCoupon").off().Touch(function(){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsRecord.html&type=overOk');
+                });
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        if (T.isNative) {
+            T.appToH5.init(function () {//初始化事件回调函数
+                T.myCoupon.init();
+            }, function () {//webview再次打开回调函数
+                if(T.Util.isEmpty(T.Storage.get('access_token'))){
+                    T.Util.back();
+                }else{
+                    T.myCoupon.init();
+                }
+            }, function () {//webview消失第一视角回调函数
+
+            }, function () {//app退到系统后台回调函数
+
+            }, function () {//app退到系统后台后重新回到app触发的函数
+
+            });
+        } else {
+            T.myCoupon.init();
+        }
+    });
+</script>
+</body>
+</html>

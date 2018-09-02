@@ -1,0 +1,595 @@
+<style>
+    #mallbox{overflow:hidden;}
+    .shoptab {
+        position: fixed;
+        z-index: 99;
+        width: 10rem!important;
+        height: 1.066667rem;
+        overflow:hidden;
+        background-color: #fff;
+        border-bottom: 0.0533334rem solid #f5f5f5;
+    }
+
+    .shoptab-wrapper {
+        margin: 0 0.453333rem;
+        height: 1.066667rem;
+        overflow: hidden;
+        white-space:nowrap;
+    }
+
+    .shoptab em {
+        float: left;
+        display: inline-block;
+        min-width: 1.026667rem;
+        line-height: 1.066667rem;
+        padding-right: 0.4rem;
+        font-size: 0.373333rem;
+        color: #666;
+    }
+    .shoptab em.on {color:#f72f2f;}
+    .shoptab em:last-child {
+        padding-right: 0;
+    }
+
+    #mallbox {
+        background-color: #f5f5f5;
+        padding-bottom: 0.36rem;
+    }
+
+    #shopcontent {
+        margin-top: 1.08rem;
+    }
+
+    .shoptitle {
+        width: 100%;
+        height: 1.066667rem;
+        text-align: center;
+        line-height: 1.066667rem;
+        background-color: #f5f5f5;
+    }
+
+    .shoptitle h2 {
+        position: relative;
+        display: inline-block;
+        margin: auto;
+        font-size: 0.426667rem;
+        color: #ff2110;
+    }
+
+    .shoptitle h2:before {
+        content: '';
+        position: absolute;
+        left: -1.466667rem;
+        top: 0;
+        display: inline-block;
+        width: 1.653333rem;
+        height: 1.066667rem;
+        background: url(../img/goods/malltitle_left.png) 0 0 / 100% 100% no-repeat;
+    }
+
+    .shoptitle h2:after {
+        content: '';
+        position: absolute;
+        right: -1.466667rem;
+        top: 0;
+        display: inline-block;
+        width: 1.653333rem;
+        height: 1.066667rem;
+        background: url(../img/goods/malltitle_right.png) 0 0 / 100% 100% no-repeat;
+    }
+
+    .shoptitle h2 em {
+        margin: 0 0.093333rem;
+    }
+
+    .banner {
+        margin: 0.266667rem 0.333333rem 0 0.333333rem;
+    }
+
+    .banner img {
+        width: 100%;
+    }
+
+    .shopbox {
+        min-height:4.9333333rem;
+        background-color: #fff;
+        overflow: hidden;
+    }
+    #gshBox,#ashBox,#pssBox{background: #f5f5f5;}
+    .brand {
+        position: relative;
+        border-radius: 0.16rem;
+        background-color: #fff;
+        overflow: hidden;
+        box-shadow:0 0.0266667rem 0.08rem rgba(0,0,0,0.07);
+    }
+
+    .brand h2 {
+        padding-left: 0.266667rem;
+        line-height: 0.666667rem;
+        font-size: 0.346666rem;
+        color: #f72f2f;
+        width: 6rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .brand p {
+        padding-left: 0.266667rem;
+        line-height: 0.48rem;
+        font-size: 0.32rem;
+        color: #666;
+        max-width: 6rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .brand1 {
+        display: block;
+        margin: 0 0.333333rem;
+        height: 2.4rem;
+    }
+
+    .brand1 h2 {
+         margin-top: 0.266667rem;
+     }
+
+    .brand2 h2 {
+        margin-top:0.1333333rem;
+        width:2.2533333rem;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        overflow:hidden;
+    }
+
+    .brand2 p {
+        width:2.186667rem;
+    }
+
+    .brand1 img {
+        position: absolute;
+        right: 0.413333rem;
+        top: 0.133333rem;
+        height: 2.133333rem;
+    }
+
+    .brand2 {
+        float: left;
+        width: calc(50% - 0.4rem);
+        height: 2.4rem;
+    }
+
+    .shopbox .brand2.first {
+        margin: 0.133333rem 0.066667rem 0 0.333333rem;
+    }
+
+    .shopbox .brand2.second {
+        margin: 0.133333rem 0.333333rem 0 0.066667rem;
+        color:#ff720b;
+    }
+
+    .shopbox .brand2.first h2{
+        color:#ff4005;
+    }
+
+    .shopbox .brand2.second h2{
+        color:#ff720b;
+    }
+
+    .brand2 img {
+        position: absolute;
+        right: 0.133333rem;
+        top: 0.2rem;
+        height: 2rem;
+    }
+
+    .goods {
+        position: relative;
+        float: left;
+        width: 50%;
+        height: 6.32rem;
+        background-color: #fff;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        border-bottom: 0.0266667rem solid #f5f5f5;
+        overflow: hidden;
+    }
+
+    .goods:nth-child(odd){
+        border-right:0.0266667rem solid #f5f5f5;
+    }
+
+    .goods img {
+        display: block;
+        width: 2.933333rem;
+        height: 2.933333rem;
+        margin: auto;
+        margin-top: 0.653333rem;
+    }
+
+    .goods h2 {
+        text-align: center;
+        padding:0 0.16rem;
+        line-height: 0.626667rem;
+        margin-top: 0.346667rem;
+        font-size: 0.373333rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .goods p.desc {
+        text-align: center;
+        line-height: 0.48rem;
+        padding:0 0.16rem;
+        font-size: 0.32rem;
+        color: #999;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        padding: 0 .3rem;
+    }
+
+    .goods p.price{
+        text-align: center;
+        line-height: 0.813333rem;
+        font-size: 0.506667rem;
+        color: #f72f2f;
+    }
+
+    .goods p.price em{
+        position:relative;
+        top:-0.02666667rem;
+        font-size:0.3466667rem;
+    }
+</style>
+<div id="content">
+    <div id="mallbox">
+        <div class="shoptab" id="malltab"><div class="shoptab-wrapper" id="malltab-wrapper"></div></div>
+        <div id="shopcontent">
+            <div id="shopIndexBox">
+                <div class="shoptitle" data-type="gsh"><h2>购<em>/</em>实<em>/</em>惠</h2></div>
+                <div class="shopbox" id="gshBox"></div>
+                <div class="banner"><div class="imglist"><img src="../img/goods/banner.png"></div></div>
+                <div class="shoptitle" data-type="ash"><h2>爱<em>/</em>生<em>/</em>活</h2></div>
+                <div class="shopbox" id="ashBox"></div>
+                <div class="shoptitle" data-type="pss"><h2>品<em>/</em>时<em>/</em>尚</h2></div>
+                <div class="shopbox" id="pssBox"></div>
+                <div class="shoptitle"><h2>热<em>/</em>品<em>/</em>好<em>/</em>货</h2></div>
+                <div class="shopbox" id="hotShopBox"></div>
+            </div>
+            <div id="shopOtherBox" class="hide">
+                <div class="shopbox" id="otherShopBox"></div>
+            </div>
+        </div>
+    </div>
+    <div class="clearboth"></div>
+</div>
+<script>
+    T.mall = (function(){
+        var colId='';//栏目ID
+        var dropLoad = '';//下拉刷新
+        var pageIndex = 1;//分页索引
+        var pageSize = 10;//分页步长
+        var hasMore=false;//是否加载更多
+        var endGetDataFlag = true;//接口是否请求完毕
+        var isLoadIscroll = false;//是否加载iscroll插件
+
+        //主对象
+        var o = {
+            //初始化
+            init:function(){
+                o.loadCache();//加载缓存
+                o.initPage();//初始化页面
+                o.getShopType();//获取商城栏目
+                o.getIndexShop();//获取首页商品列表
+                o.getHotShop();//获取热门好货
+                o.bindEvent();//事件绑定
+            },
+            //初始化页面
+            initPage:function(){
+                pageIndex = 1;
+                $(".pageType p[data-href]").eq(3).addClass('on').siblings().removeClass("on");
+                if(!T.isNative){$(".clearboth").addClass("h5");}
+                $('#shopIndexBox').show().siblings().hide();
+            },
+            //加载缓存
+            loadCache:function(){
+                var content = T.Storage.get("mall");
+                if(content){
+                    $("#content").html(content);
+                }
+            },
+            //事件绑定
+            bindEvent:function(){
+                //绑定下滑加载更多
+                $(window).off().scroll(o.loadMoreData);
+                //绑定下拉刷新
+                $('#shopcontent').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        var colId = $("#malltab-wrapper em.on").attr("data-shopId");
+                        if(colId){
+                            o.getShopList(colId);
+                        }else{
+                            o.getIndexShop();
+                            o.getHotShop();
+                            o.getShopType();//获取商城栏目
+                        }
+                    },
+                    threshold : 50
+                });
+                //首页栏目
+                $('.shoptitle[data-type]').off().Touch(function (el) {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=benefit.html&type='+$(el).attr('data-type'));
+                });
+            },
+            //加载更多数据
+            loadMoreData:function(){
+                var scrollTop = $(this).scrollTop()+5;
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if(scrollTop + windowHeight >= scrollHeight && endGetDataFlag){
+                    if(hasMore){
+                        var colId = $("#malltab-wrapper em.on").attr("data-shopId");
+                        if(colId){
+                            o.getShopList(colId,true);
+                        }else{
+                            o.getHotShop(true);
+                        }
+                    }
+                }
+            },
+            //加载iscroll插件
+            loadIscroll:function(callback){
+                if(!isLoadIscroll){
+                    T.Util.jsLoad('../js/iScroll.js',function(){
+                        isLoadIscroll = true;
+                        callback && callback();
+                    });
+                }else{
+                    callback && callback();
+                }
+            },
+            //商城栏目滑动
+            tabScroll:function(){
+                $("#malltab").width(window.innerWidth);
+                var tabs = $("#malltab-wrapper em");
+                var width = 68;
+                $.each(tabs,function(i,item){
+                    width += item.offsetWidth;
+                });
+                $("#malltab-wrapper").css({width:width});
+                window.auctionListScroll = new iScroll('#malltab', {bounce: true,scrollX:true,scrollY: false});
+                auctionListScroll.refresh();
+                setTimeout(function() {
+                    auctionListScroll.refresh();
+                },200);
+            },
+            //获取商城栏目列表
+            getShopType:function () {
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/shop/shopType.json?type=1',//商城类别列表1：//商城 2智能推荐 3/热拍
+                    callback:function(data){
+                        var htmlArr=[],d=data.res_data.value.COL_LIST;
+                        htmlArr.push('<em class="on">全部</em>');
+                        for(var i=0;i<d.length;i++){
+                            htmlArr.push('<em data-shopId="'+d[i].COLUMN_ID+'">'+d[i].COLUMN_NAME+'</em>');
+                        }
+                        $('#malltab-wrapper').html(htmlArr.join(''));
+                        setTimeout(function(){
+                            if(/mall.html/.test(window.location.href)){
+                                T.Storage.set('mall',$("#content").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true"'));
+                            }
+                        },10);
+                        o.loadIscroll(o.tabScroll);
+
+                        $('#malltab-wrapper em').off().Touch(function (el) {
+                            if($(el).hasClass('on')){return;}
+                            window.scrollTo(0,0);
+                            $(el).addClass('on').siblings().removeClass('on');
+                            pageIndex = 1;
+                            colId = $(el).attr('data-shopId');
+                            if(T.Util.isEmpty(colId)){
+                                $('#shopIndexBox').show().siblings().hide();
+                            }else{
+                                $('#shopOtherBox').show().siblings().hide();
+                            }
+                            o.getShopList(colId);
+                        });
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".brand ").length){
+                                $("#mallbox").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }
+                    }
+                })
+            },
+            //获取首页商品列表
+            getIndexShop:function () {//商场首页 9够实惠 7爱生活 8品好货
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/shop/tagCode.json?tag=9,7,8',
+                    callback:function(data){
+                        var htmlArr7=[],htmlArr8=[],htmlArr9=[],d=data.res_data.value;
+                        for(i in d){
+                            var dd=d[i];
+                            for(var ii=0;ii<dd.length;ii++){
+                                var clsStr = ii==0?'brand1':ii==1 ? 'brand2 first':'brand2 second';
+                                if(i==7){htmlArr7.push('<div class="brand '+clsStr+'" data-shopId="'+dd[ii].COMMODITY_ID+'">\
+                                    <img src="'+dd[ii].COMMODITY_LOGO+'">\
+                                        <h2>'+(dd[ii].COMMODITY_NAME||"&nbsp")+'</h2>\
+                                        <p>'+(dd[ii].MALL_PRODUCT_NOTE||"&nbsp")+'</p>\
+                                </div>')}
+                                if(i==8){htmlArr8.push('<div class="brand '+clsStr+'" data-shopId="'+dd[ii].COMMODITY_ID+'">\
+                                    <img src="'+dd[ii].COMMODITY_LOGO+'">\
+                                        <h2>'+(dd[ii].COMMODITY_NAME||"&nbsp")+'</h2>\
+                                        <p>'+(dd[ii].MALL_PRODUCT_NOTE||"&nbsp")+'</p>\
+                                </div>')}
+                                if(i==9){htmlArr9.push('<div class="brand '+clsStr+'" data-shopId="'+dd[ii].COMMODITY_ID+'">\
+                                    <img src="'+dd[ii].COMMODITY_LOGO+'">\
+                                        <h2>'+(dd[ii].COMMODITY_NAME||"&nbsp")+'</h2>\
+                                        <p>'+(dd[ii].MALL_PRODUCT_NOTE||"&nbsp")+'</p>\
+                                </div>')}
+                            }
+                        }
+                        $('#gshBox').html(htmlArr9.join(''));
+                        $('#ashBox').html(htmlArr7.join(''));
+                        $('#pssBox').html(htmlArr8.join(''));
+                        setTimeout(function(){
+                            if(/mall.html/.test(window.location.href)){
+                                T.Storage.set('mall',$("#content").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true" '));
+                            }
+                        },10);
+
+                        $('.brand').off().Touch(function (el) {
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+$(el).attr('data-shopId'));
+                        });
+                    },
+                    errorCallback:function(){}
+                })
+            },
+            //获取热门好货
+            getHotShop:function (fromMore) {//热门好货
+                endGetDataFlag = false;
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    reqUrl:'/commodity/services/template/HOM_SHOP.json?page='+pageIndex+'&limit=10',
+                    callback:function(data){
+                        endGetDataFlag = true;
+                        var htmlArr=[],d=data.res_data.INFO;
+                        if(data.res_data.ISEND==2){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        for(var i=0;i<d.length;i++){
+                            htmlArr.push('<div class="goods" data-shopId="'+d[i].COMMODITY_ID+'">\
+                                <img class="lozad"  src="../img/goods/lazy_load.png" data-src="'+d[i].COMMODITY_LOGO+'">\
+                                <h2>'+(d[i].COMMODITY_NAME||"&nbsp")+'</h2>\
+                            <p class="desc">'+(d[i].MALL_PRODUCT_NOTE||"&nbsp")+'</p>\
+                                <p class="price"><em>￥</em>'+d[i].MARKET_PRICE.toFixed(2)+'</p>\
+                            </div>');
+                        }
+                        if(dropLoad != ''){
+                            $('#hotShopBox').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(htmlArr.length){
+                            $("html,body").removeClass("white");
+                            fromMore ? $('#hotShopBox').append(htmlArr.join('')) : $('#hotShopBox').html(htmlArr.join(''));
+                        }else{
+                            if(!fromMore){
+                                $("html,body").addClass("white");
+                                $('#hotShopBox').html('<div class="nodata"><i></i><h2>暂无数据~</h2></div>');
+                            }
+                        }
+                        lozad().observe();
+                        setTimeout(function(){
+                            if(/mall.html/.test(window.location.href)){
+                                T.Storage.set('mall',$("#content").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true"'));
+                            }
+                        },10);
+                        $('#hotShopBox .goods').off().Touch(function (el) {
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+$(el).attr('data-shopId'));
+                        });
+                    },
+                    errorCallback:function(){
+                        endGetDataFlag = true;
+                    }
+                })
+            },
+            //获取商品列表
+            getShopList:function(colId,fromMore){
+               // endGetDataFlag = false;
+                tip('加载中...','loading');
+                var _url = '/commodity/services/shop/shopType.json?page=' + pageIndex + '&limit=' + pageSize + '&type=1';
+                if(colId && !T.Util.isEmpty(colId)){
+                    _url = '/commodity/services/shop/shopType.json?page=' + pageIndex + '&limit=' + pageSize + '&type=1&colId='+colId;
+                }
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:_url,
+                    callback:function(json){
+                        pageLoading.hide();
+                        var d = json.res_data.value.INFO||[],htmlArr=[];
+                        if(json.res_data.value.ISEND=="2"){//还有更多
+                            hasMore = true;
+                            pageIndex++;
+                        }else{
+                            hasMore = false;
+                        }
+                        for (var i=0;i<d.length;i++){
+                           htmlArr.push('<div class="goods" data-shopId="'+d[i].COMMODITY_ID+'">\
+                                <img src="'+d[i].COMMODITY_LOGO+'">\
+                                <h2>'+(d[i].COMMODITY_NAME||"&nbsp")+'</h2>\
+                                <p class="desc">'+(d[i].MALL_PRODUCT_NOTE||"&nbsp")+'</p>\
+                                <p class="price"><em>￥</em>'+d[i].MARKET_PRICE.toFixed(2)+'</p>\
+                            </div>');
+                        }
+                        if(dropLoad != ''){
+                            $('#otherShopBox').html('');
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(htmlArr.length){
+                            fromMore ? $('#otherShopBox').append(htmlArr.join('')) : $('#otherShopBox').html(htmlArr.join(''));
+                        }else{//无数据
+                            if(!fromMore){
+                                $('#otherShopBox').html('<div class="nodata" style="background-color: #f5f5f5;"><i></i><h2>暂无类别数据哦~</h2></div>');
+                            }
+                        }
+                        setTimeout(function(){
+                            if(/mall.html/.test(window.location.href)){
+                                T.Storage.set('mall',$("#content").html().replace(/\ssrc="http.+?"/ig,' src="../img/goods/lazy_load.png" data-loaded="true"'));
+                            }
+                        },10);
+                        $('.goods').off().Touch(function (el) {
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=mallDetail.html&id='+$(el).attr('data-shopId'));
+                        });
+                    },
+                    errorCallback:function(data){
+                        pageLoading.hide();
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        setTimeout(function(){
+                            tip(data ? data.msg : Global.neterror,"error");
+                        },500);
+                    }
+                });
+            }
+        }
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.mall.init();
+    });
+</script>
+
+

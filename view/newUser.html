@@ -1,0 +1,322 @@
+<link type="text/css" rel="stylesheet" href="../css/newUser.css">
+<style>
+    html,
+    body {
+        background-color: #f6f6f6;
+    }
+
+    #newUserHead {
+        width: 10rem;
+        height: 2.32rem;
+        margin: auto;
+        background: url(../img/goods/newUserHead.png) 0 0 / 100% 100% no-repeat;
+        overflow: hidden;
+    }
+
+    #newUserGoods{overflow:hidden;}
+
+    .newUserTitle {
+        display: none;
+        width: 100%;
+        height: 1.306667rem;
+        background-color: #fff;
+        border-bottom: 0.026667rem solid #f5f5f5;
+    }
+
+    .newUserTitle h2 {
+        position: relative;
+        margin: auto;
+        width: 3.093333rem;
+        height: 1.093333rem;
+        text-align: center;
+        line-height: 1.093333rem;
+        padding-top: 0.213333rem;
+        font-size: 0.373333rem;
+        color: #333;
+    }
+
+    .newUserTitle h2:before {
+        position: absolute;
+        left: -0.453333rem;
+        top: 0.746667rem;
+        content: '';
+        display: inline-block;
+        width: 0.453333rem;
+        height: 0.026667rem;
+        background-color: #bbbbbb;
+    }
+
+    .newUserTitle h2:after {
+        position: absolute;
+        right: -0.453333rem;
+        top: 0.746667rem;
+        content: '';
+        display: inline-block;
+        width: 0.453333rem;
+        height: 0.026667rem;
+        background-color: #bbbbbb;
+    }
+
+    .goods {
+        position: relative;
+        float: left;
+        width: 50%;
+        height: 6.32rem;
+        background-color: #fff;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        border-bottom: 0.0266667rem solid #f5f5f5;
+        overflow: hidden;
+    }
+
+    .goods:nth-child(odd) {
+        border-right: 0.0266667rem solid #f5f5f5;
+    }
+
+    .goods img {
+        display: block;
+        width: 2.933333rem;
+        height: 2.933333rem;
+        margin: auto;
+        margin-top: 0.653333rem;
+    }
+
+    .goods h2 {
+        text-align: center;
+        padding: 0 0.16rem;
+        line-height: 0.626667rem;
+        margin-top: 0.346667rem;
+        font-size: 0.373333rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .goods p.desc {
+        margin-top: 0.426667rem;
+        height: 0.906667rem;
+        text-align: left;
+        line-height: 0.453333rem;
+        padding: 0 0.24rem;
+        font-size: 0.373333rem;
+        color: #333333;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .goods p.price {
+        text-align: left;
+        line-height: 1.013333rem;
+        padding: 0 0.24rem;
+        font-size: 0.506667rem;
+        color: #f72f2f;
+    }
+
+    .goods p.price em {
+        position: relative;
+        top: -0.02666667rem;
+        font-size: 0.346667rem;
+    }
+
+    .goods .auction {
+        position: absolute;
+        right: 0.226667rem;
+        top: 5.106667rem;
+        display: block;
+        width: 2.133333rem;
+        height: 0.666667rem;
+        text-align: center;
+        line-height: 0.64rem;
+        border-radius: 0.333333rem;
+        background-color: #f72f2f;
+        font-size: 0.373333rem;
+        color: #fff;
+    }
+    .newUserIcon {
+        background: url(../img/goods/newUserIcon.png) no-repeat;
+        background-size: 1.066666666rem 0.973333333rem;
+        width: 1.066666666rem;
+        height: 0.973333333rem;
+        position: absolute;
+        top: .2rem;
+        left: .2rem;
+    }
+    /*新手引导*/
+    .newUserTeachMask{position: fixed;left:calc(50% - 5rem);top:0;width: 10rem;z-index: 9999; background: rgba(0,0,0,.7); height: 100%;}
+    .newUserTeach{position: fixed;left:calc(50% - 5rem);top:0;width: 10rem;height: 100%;z-index: 99999;margin-top: -1.71rem;}
+</style>
+<div class="content" id="content">
+    <div id="newUserBox">
+        <div id="newUserHead"></div>
+        <div class="newUserTitle"><h2>新人专享</h2></div>
+        <div class="shopbox" id="newUserGoods"></div>
+    </div>
+    <div class="clearboth"></div>
+</div>
+<script>
+    T.newUser = (function(){
+        var dropLoad = '';//下拉刷新
+        var pageIndex = 1;
+        var pageSize = 10;
+        var hasMore = false;
+        var reqEndFlag = true;
+
+        var o = {
+            init:function(){
+                if(T.Util.isEmpty(T.Storage.get('newUserTeachConfrim',1))){
+                    confirm({
+                        html:'新手教程大揭秘，教您如何正确抢购！',
+                        cancelText:'我是老司机,去抢购',cancelFun:function () {
+
+                        },okText:'我是新手,去学习',okFun:function () {
+                            T.Storage.set('newUserTeachConfrim',1,1);
+                            T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/user/newUserTeach.html');
+                        }
+                    });
+                }
+                $('.newUserTitle').show();
+                /*if(T.Util.isEmpty(T.Storage.get('isNewUserTeach'))){
+                    $('body').css('overflow','hidden');
+                    $('#main').prepend('<div id="newUserTeachBox"><div class="newUserTeachMask"></div><div class="newUserTeach step1" style="background: url(../img/goods/teach1.png) no-repeat;background-size: 100%;"></div></div>');
+                    $('.newUserTeach').off().Touch(function (el) {
+                        if($(el).hasClass('step1')){
+                            $(el).removeClass('step1');
+                            $(el).addClass('step2');
+                            $(el).css({'background':'url(../img/goods/teach2.png) no-repeat','background-size':'100%','height':'10.92rem','margin-top':'5.1rem'});
+                        }else if($(el).hasClass('step2')){
+                            T.Storage.set('isNewUserTeach','1');
+                            $('body').css('overflow','');
+                            $('#newUserTeachBox').hide();
+                            $('#newUserTeachBox').remove();
+                        }
+                    });
+                };*/
+                $(".pageType p").removeClass("on");
+                $(".clearboth").addClass("h5");
+                o.getNewGoods();//获取新手专区商品
+                o.bindEvent();//事件绑定
+            },
+            bindEvent:function(){
+                $('#navInfo').off().Touch(function () {
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=newUserRule.html');
+                });
+                $('#back').off().Touch(function () {
+                    var from = T.Util.getParaSearch('from');
+                     if(from == 'reg'){
+                         T.Util.back({index:4});//返回两层
+                     }else{
+                         T.Util.back();
+                    }
+                });
+                //绑定下滑加载更多
+                $(window).off().scroll(function(){
+                    var scrollTop = $(this).scrollTop()+5;
+                    var scrollHeight = $(document).height();
+                    var windowHeight = $(this).height();
+                    if(scrollTop + windowHeight >= scrollHeight && reqEndFlag){
+                        if(hasMore){
+                            o.getNewGoods(true);
+                        }
+                    }
+                });
+                //绑定下拉刷新
+                $('#newUserBox').off().dropload({
+                    scrollArea : window,
+                    loadUpFn : function(me){
+                        dropLoad = me;
+                        pageIndex = 1;
+                        o.getNewGoods();
+                    },
+                    threshold : 50
+                });
+            },
+            //获取新手专区商品
+            getNewGoods:function(fromMore){
+                if(!reqEndFlag){
+                    return false;
+                }
+                reqEndFlag = false;
+                //tip('加载中...','loading');
+                T.Util.xmlHttpRequest({
+                    type:'get',
+                    errorType:1,
+                    reqUrl:'/commodity/services/world/newProduct.json?page=' + pageIndex + '&limit=' + pageSize + '&code=4',//code：4 新手推荐 6 热门好货 5 本周新品
+                    callback:function(json){
+                        pageLoading.hide();
+                        reqEndFlag = true;
+                        var data = json.res_data.value.INFO;
+                        if(json.res_data.value.ISEND==2){//还有更多
+                            pageIndex++;
+                            hasMore = true;
+                        }else{
+                            hasMore = false;
+                        }
+                        o.showNewGoods(data,fromMore);
+                    },
+                    errorCallback:function(data,xhr,textStatus){
+                        pageLoading.hide();
+                        reqEndFlag = true;
+                        if(dropLoad != ''){
+                            dropLoad.resetload();
+                            dropLoad.unlock();
+                            dropLoad.noData(false);
+                            dropLoad = '';//刷新完 还原对象
+                        }
+                        if(textStatus == 'timeout'||textStatus == 'abort'||textStatus == 'error'){
+                            if(!$(".shopList").length){
+                                $("#content").html('<div class="nonet"><i></i><h2>您的网络不稳定，请刷新重试~</h2><div id="page-refresh" class="btn">刷新</div></div>');
+                                $("#page-refresh").off().Touch(function(){
+                                    window.location.reload();
+                                });
+                            }
+                        }else{
+                            setTimeout(function(){
+                                tip(data ? data.msg : Global.neterror,"error");
+                            },500);
+                        }
+                    }
+                });
+            },
+            //渲染新手专区商品
+            showNewGoods:function(data,fromMore){
+                var htmlArr = [];
+                $.each(data,function(i,item){
+                    htmlArr.push('<div class="goods" data-id="' + item.COMMODITY_ID + '" data-no="' + item.EXPECT_NO + '"><span class="newUserIcon"></span>');
+                    htmlArr.push('<div class="goodsInfo"><img class="lozad" src="' + item.COMMODITY_LOGO + '" data-loaded="true"><p class="desc">' + (item.COMMODITY_TITLE||item.PRODUCT_NOTE) + '</p><p class="price"><em>￥</em>' + Number(item.MARKET_PRICE).toFixed(2) + '</p><em class="auction">立即竞拍</em></div></div>');
+                });
+                if(htmlArr.length){
+                    $("html,body").removeClass("white");
+                    fromMore ? $("#newUserGoods").append(htmlArr.join("")) : $("#newUserGoods").html(htmlArr.join(""));
+                }else{
+                    $("html,body").addClass("white");
+                    $("#newUserGoods").html('<div class="nodata"><i></i><h2>暂无数据</h2><div class="btn">立即去竞拍</div></div>');
+                    $(".nodata .btn").off().Touch(function(){
+                        T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=auctionList.html&type=hot');
+                    });
+                }
+                $(".goodsInfo").off().Touch(function(el){
+                    T.Util.openWindow(T.Util.getRootPath()+'/'+Global.webRoot+'/view/go.html#page=goodsDetail.html&id=' + $(el).parent().attr("data-id") + '&expectNo=' + $(el).parent().attr("data-no") + '&isNext=1');
+                });
+                T.Util.shopListClick();
+                if(dropLoad != ''){
+                    dropLoad.resetload();
+                    dropLoad.unlock();
+                    dropLoad.noData(false);
+                    dropLoad = '';//刷新完 还原对象
+                }
+            }
+        }
+
+        return {
+            init:o.init
+        }
+    })();
+    $(document).ready(function () {
+        T.newUser.init();
+    });
+</script>
+
+
